@@ -274,7 +274,7 @@ $routes->group('',['filter' => 'authGuard'], function ($routes)
     $routes->get('user/edit_papers_submission/(:any)', 'User::edit_papers_submission/$1');
 
     $routes->get('user/authors_and_copyright/(:any)', 'User::authors_and_copyright/$1');
-
+    $routes->get('user/level_of_evidence/(:any)', 'User::level_of_evidence/$1');
     $routes->get('user/submission_menu/(:any)', 'User::submission_menu/$1');
     $routes->get('user', 'User::index/$1');
     $routes->get('user/finalize_paper/(:any)', 'User::finalize_paper/$1');
@@ -282,6 +282,7 @@ $routes->group('',['filter' => 'authGuard'], function ($routes)
 
     $routes->post('user/search_author_ajax', 'User::search_author_ajax');
     $routes->post('user/get_paper_authors', 'User::get_paper_authors');
+    $routes->post('user/get_designations', 'User::get_designations');
     $routes->post('user/submit_paper_ajax', 'User::submit_paper_ajax/$1');
     $routes->post('user/update_paper_ajax', 'User::update_paper_ajax');
     $routes->post('user/assign_abstract_author', 'User::assign_abstract_author');

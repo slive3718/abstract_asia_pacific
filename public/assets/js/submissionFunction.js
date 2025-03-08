@@ -25,89 +25,90 @@ $(function() {
     $(function() {
         $('#abstractSubmissionForm').validate({
             rules: {
-                division: "required",
-                paper_type: "required",
-                is_interested: "required",
+                previous_presentation: "required",
+                basic_science_format: "required",
+                abstract_category: "required",
+                abstract_title: "required",
+                hypothesis: "required",
+                study_design: "required",
+                introduction: "required",
+                methods: "required",
+                results: "required",
+                conclusions: "required",
+                additional_notes: "required",
             },
             messages: {
-                division: "Please select a division",
-                paper_type: "Please select a paper type",
-                is_interested: "Please specify if you are interested",
+                previous_presentation: "Please specify if this has been previously presented.",
+                basic_science_format: "Please select whether this is a Basic Science format.",
+                abstract_category: "Please choose an abstract category.",
+                abstract_title: "Please provide the abstract title.",
+                hypothesis: "Please enter your hypothesis.",
+                study_design: "Please describe the study design.",
+                introduction: "Please write the introduction.",
+                methods: "Please explain the methods used.",
+                results: "Please summarize the results.",
+                conclusions: "Please provide the conclusions.",
+                additional_notes: "Please add any additional notes.",
             },
+
             errorPlacement: function(error, element) {
-                if (element.attr("name") == "content") {
-                    error.appendTo(element.parent()); // Appends error message after the Summernote field
+                if (element.hasClass("summernote")) {
+                    error.insertAfter(element.siblings('.note-editor')); // Place error below Summernote editor
                 } else {
-                    error.insertAfter(element); // Appends error message after the input field
+                    error.insertAfter(element);
                 }
             },
             highlight: function(element) {
-                $(element).addClass('error'); // Adds the 'error' class to the input field
+                $(element).addClass('error');
             },
             unhighlight: function(element) {
-                $(element).removeClass('error'); // Removes the 'error' class from the input field
+                $(element).removeClass('error');
             },
             submitHandler: function(form) {
-                let totalWordsError = 0;
-                let emptyError = 0;
 
-                $('.wordsExceed').each(function() {
-                    if (!$(this).hasClass('d-none')) {
-                        totalWordsError = 1;
-                    }
-                });
-
-                $(".summernote").each(function() {
-                    if ($(this).summernote('isEmpty')) {
-                        emptyError = 1;
-                    }
-                });
-
-                if (totalWordsError > 0) {
-                    swal.fire({
-                        'title': 'Info',
-                        'html': 'Total number of words should not exceed limit',
-                        'icon': 'info',
-                    });
-                    return false;
-                }
-
-                if (emptyError > 0) {
-                    swal.fire({
-                        'title': 'Info',
-                        'html': 'Required text field is empty',
-                        'icon': 'info',
-                    });
-                    return false;
-                }
-
+                let totalWordsCount = parseInt($('#abstract_body_character_count').text());
                 let formData = new FormData(form);
-                let abstractTitle = $('#title').val();
+                formData.append('total_words_count', totalWordsCount)
+                let abstractTitle = $('#q1').val();
+
+                if (typeof userID === 'undefined') {
+                    console.error("userID is not defined!");
+                    return false;
+                }
+
+                if(totalWordsCount > 2500){
+                    toastr.error('Total words exceed 2500 limit.')
+                    return false;
+                }
 
                 formData.append("user_id", userID);
 
                 Swal.fire({
-                    title: "info",
+                    title: "Info",
+                    html: 'Can you confirm that your abstract title, <strong>' + abstractTitle + '</strong>, is in title case? If not, click ‘Cancel’ to edit your title.',
+                    icon: 'info',
                     showCancelButton: true,
                     confirmButtonText: "Save",
-                    icon: 'info',
-                    html: 'Can you confirm that your abstract title, '+abstractTitle+' is in title case?  If not, click on ‘cancel’ to return to the page to edit your title.'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
                             url: $(form).attr('action'),
                             data: formData,
                             method: "POST",
-                            processData: false, // Prevent jQuery from processing the data
-                            contentType: false, // Prevent jQuery from setting contentType
+                            processData: false,
+                            contentType: false,
                             success: function(response) {
-                                response = JSON.parse(response);
-                                // console.log(response.data.insert_id);
-                                if (response.status == '200') {
-                                    window.location.href = base_url + '/user/submission_menu/' + response.data.insert_id + '/new';
-                                }else{
-                                    toastr.error(response)
+                                console.log(response)
+                                if (response.status === 200) {
+                                    window.location.href = base_url + '/user/authors_and_copyright/' + response.data.insert_id;
+                                } else {
+                                    $.each(response.msg, function(i, val){
+                                        toastr.error(val);
+                                    })
                                 }
+                            },
+                            error: function(xhr) {
+                                toastr.error("Submission failed! " + (xhr.responseJSON?.msg || xhr.statusText));
                             }
                         });
                     }
@@ -116,72 +117,6 @@ $(function() {
             }
         });
     });
-
-
-    // $('#saveAbstractBtn').on('click', function (e) {
-    //     e.preventDefault();
-    //     let totalWords = 0
-    //     let totalWordsError = 0;
-    //     $('.total_sum_check').each(function () {
-    //         totalWords = (totalWords) + parseInt($(this).val());
-    //         if (totalWords > 400) {
-    //             totalWordsError++;
-    //         }
-    //     })
-    //
-    //     if (totalWordsError > 0) {
-    //         swal.fire({
-    //             'title': 'Info',
-    //             'html': 'Total number of words should not exceed limit (400) <br> Word(s) count: <span class="text-danger">' + totalWords + '</span>',
-    //             'icon': 'info',
-    //         })
-    //         return false;
-    //     }
-    //     if ($('#any_error').val() == "1") {
-    //         swal.fire(
-    //             'Please note',
-    //             'Please fix any error before submitting the form',
-    //             'warning'
-    //         )
-    //         return false;
-    //     }
-    //
-    //     if ($("#input[name='primary_topic']").val() === $("#input[name='secondary_topic']").val()) {
-    //         swal.fire(
-    //             'Please note',
-    //             'Primary and Secondary topic should not be same.',
-    //             'warning'
-    //         )
-    //         return false;
-    //     }
-    //     let data = $('#abstractSubmissionForm').serializeArray();
-    //     $.ajax({
-    //         url: $('#abstractSubmissionForm').attr('action'),
-    //         headers: {'X-Requested-With': 'XMLHttpRequest'},
-    //         data: data,
-    //         method: $('#abstractSubmissionForm').attr('method'),
-    //         dataType: "json",
-    //         success: function (response) {
-    //             if (response.status === 200) {
-    //                 Swal.fire({
-    //                     'title': '',
-    //                     'text': response.data.message,
-    //                     'type': 'success',
-    //                     'icon': 'success',
-    //                     'confirmButtonText': 'Please ensure that your abstract title is in title case.'
-    //                 }).then(function () {
-    //                     window.location.href = base_url + '/user/edit_papers_submission/' + response.data.abstract_id
-    //                 });
-    //             } else {
-    //                 Swal.fire(
-    //                     'Please note',
-    //                     response.reason,
-    //                     'warning'
-    //                 )
-    //             }
-    //         }
-    //     });
-    // });
 
 
     //  ############ End  Abstract Submission  # #############
@@ -587,6 +522,7 @@ $(function() {
         $('#formSaveAuthor').attr('update', 1);
         $('#addAuthorModal').find('form')[0].reset();
         $('#addAuthorModal').attr('isEdit', 1);
+
         $.ajax({
             url: base_url + '/user/get_author_info',
             headers: {'X-Requested-With': 'XMLHttpRequest'},
@@ -596,7 +532,7 @@ $(function() {
             method: "POST",
             dataType: "json",
             success: function (response, status) {
-                console.log(response)
+                // console.log(response)
 
                 if(response.status == 200){
 
@@ -624,6 +560,21 @@ $(function() {
                     $('#authorDeg').val(response.data.deg)
                     $('#authorPhone').val(response.data.phone)
 
+                    $('#designations').prepend('<option value=""> -- Select Designation -- </option>')
+
+                    fetchDesignations().then(designations=>{
+                        $.each(designations, function(i, designation){
+                            console.log(designation)
+                            $('.designationDiv').append(`
+                             <input type="checkbox" name="designations[]" title="Designation" id="designation_${designation.designation_id}" class=" required" value="${designation.designation_id}">
+                             <label class="form-label" for="designation_${designation.designation_id}">${designation.name} <span class="text-danger">*</span></label>
+                             <label class="form-label" for="designation_${designation.designation_id}">${designation.name} <span class="text-danger">*</span></label>
+                             <br>
+                            `)
+                        })
+                    });
+
+
                     $('#addAuthorModal #author_id').val(author_id);
 
                 }else{
@@ -638,6 +589,23 @@ $(function() {
             }
         })
     })
+
+    async function fetchDesignations() {
+        try {
+            return await $.ajax({
+                url: base_url + '/user/get_designations',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                method: "POST",
+                dataType: "json"
+            });
+
+        } catch (error) {
+            console.error("Error fetching designations:", error);
+            return []; // Return an empty array if an error occurs
+        }
+    }
+
+
 //
 //     $('.submitNewInstitutionBtn').on('click', function(){
 //         let institution_name = $('#institutionName').val();
@@ -921,7 +889,7 @@ function getPaperAuthors(paper_id = null){
                     '<td class="text-nowrap">'+val.name+' '+val.surname+'</td>'+
                     '<td class="text-nowrap"><input id="correspondent_'+val.author_id+'" type="checkbox" class="correspondent markedCorrespondent" author-id="'+val.author_id+'" '+correspondent+'> <label for="correspondent_'+val.author_id+'"> Correspondent</label></td>'+
                     '<td class="text-nowrap"><input id="presentingAuthor_'+val.author_id+'" type="checkbox" class="presentingAuthor" name="presentingAuthor" author-id="'+val.author_id+'" id="presenting_author_'+val.author_id+'" '+presenting+' author_name="'+val.name+'" author_surname="'+val.surname+'"> <label for="presentingAuthor_'+val.author_id+'"> Presenting Author </label></td>'+
-                    '<td class="text-nowrap"><input id="coAuthor_'+val.author_id+'" type="checkbox" class="co-author" name="co-author" author-id="'+val.author_id+'" id="presenting_author_'+val.author_id+'" '+presenting+' author_name="'+val.name+'" author_surname="'+val.surname+'"> <label  for="coAuthor_'+val.author_id+'"> Co-Author </label></td>'+
+                    '<td class="text-nowrap"><input id="coAuthor_'+val.author_id+'" type="radio" class="co-author" name="co-author" author-id="'+val.author_id+'" id="presenting_author_'+val.author_id+'" '+presenting+' author_name="'+val.name+'" author_surname="'+val.surname+'"> <label  for="coAuthor_'+val.author_id+'"> Senior Author </label></td>'+
                     '<td class="text-nowrap"><a class=" btn btn-sm btn-primary text-white moveUp"><i class="fa-solid fa-arrow-up "></i> </a> </td>'+
                     '<td class="text-nowrap"><a class=" btn btn-sm btn-primary text-white moveDown"><i class="fa-solid fa-arrow-down"></i> </a></td>'+
                     '<td class="text-nowrap"><a class=" btn btn-sm btn-info text-white editAuthorListedBtn"  author_id="'+val.author_id+'"  paper_authors_id="'+val.id+'" paper_id="'+val.paper_id+'"><i class="fa-solid fa-user-pen"></i> </a> </td>'+

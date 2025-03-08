@@ -24,11 +24,10 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12 p-0">
-                <img id="main-banner" style="width:100%" src="<?=$event->main_banner?>" class="img-fluid figure-img" alt="Main Banner"/>
+                <img id="main-banner" style="width:100%" src="<?=base_url().'main_banner.png'?>" class="img-fluid figure-img" alt="Main Banner"/>
             </div>
             <hr />
         </div>
-
 
         <div class="form-signin w-100 m-auto text-center">
             <form id="formLogin" action="<?=base_url()?>/login/validateLogin" method="post" >
@@ -69,7 +68,6 @@
                 {
                     'email': email,
                     'password': password,
-                    'event_uri': "afs",
                     'login_type': "author"
 
                 }, function(response){

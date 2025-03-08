@@ -27,14 +27,12 @@ class Author extends BaseController
 
     public function index(): string
     {
-        $event = (new EventsModel())->first();
+
         $header_data = [
             'title' => "Login"
         ];
 
-        $data = [
-            'event'=> $event
-        ];
+        $data = [];
 
         return
             view('author/common/header', $header_data).
@@ -50,16 +48,14 @@ class Author extends BaseController
             ->join('users', 'paper_authors.author_id = users.id', 'left')
             ->join('users_profile', 'paper_authors.author_id = users_profile.author_id', 'left')
             ->join('papers', 'paper_authors.paper_id = papers.id', 'left')
-            ->where('paper_authors.author_id', session('user_id'))->findAll();
+            ->where('paper_authors.author_id', session('user_id'))
+            ->findAll();
 
-        $event = (new EventsModel())->first();
-
-//        print_r($author_details);exit;
         $header_data = [
-            'title' => "{$event->short_name} Login"
+            'title' => "Author Login"
         ];
+
         $data = [
-            'event'=> $event,
             'author_details'=>$author_details
         ];
 
@@ -117,17 +113,11 @@ class Author extends BaseController
             ->where('paper_id', $paper_id)
             ->first();
 
-        $event = (new EventsModel())->first();
-
-        if(!$event){
-            return (new ErrorHandler($event))->errorPage();
-        }
 
         $header_data = [
-            'title' => "{$event->short_name} Login"
+            'title' => "Author Login"
         ];
         $data = [
-            'event'=> $event,
             'papers'=>$papers,
             'author'=>$author
         ];

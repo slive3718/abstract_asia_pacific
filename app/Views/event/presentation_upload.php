@@ -29,13 +29,22 @@
 <!--                  Fill with ajax-->
                     </tbody>
                 </table>
+
             </div>
             <div class="my-4">
                 <p><strong>Step 1.</strong> Click on "Choose File" and navigate the file you wish to upload.</p>
-                <input type="file" name="uploadFile" class="form-control uploadFile" id=""  >
+                <input type="file" name="uploadFile" accept=".jpg,.png.JPG,.PNG" class="form-control uploadFile" id=""  >
                 <p><strong>Step 2.</strong> Click on "Upload File" to upload the new file to the system server.</p>
-                <button class="btn btn-primary btn-sm uploadFileBtn">Upload File</button>
-                <h6 class="mt-4" hidden>Image Caption</h6>
+                <button class="btn btn-primary btn-sm uploadFileBtn">Upload File</button> <br><br>
+
+
+                <div class="text-center mx-auto my-2 p-4" style="width: 600px; border:4px dotted black">
+                    Total Abstract Body Count: <span id="abstract_body_character_count" >0 characters</span> / 2500 characters
+                </div>
+
+                <label for="image_caption" class="fw-bolder"> Image Caption</label>
+                <textarea name="image_caption" id="image_caption" class="form-control countWords" rows="4" placeholder="Please type here for the caption..."><?= !empty($paper) && $paper['image_caption'] ? $paper['image_caption']: ''?></textarea>
+                <label class="counted_words fw-bolder"></label>
 
                 <p class="mt-4">Step 3. Finished Uploading, continue.</p>
                 <button class="btn btn-success btn-sm presentationContinueBtn">Continue</button>
@@ -70,165 +79,165 @@
         </div>
     </div>
 </div>
-
+<script src="<?=base_url()?>assets/js/helpers.js"></script>
 <script>
     let attrId_array = {};
 
     $(function(){
 
         getPaperUploads();
-    //
-       $('.uploadFileBtn').on('click', function(){
+        //
+        $('.uploadFileBtn').on('click', function(){
 
-           Swal.fire({
-               title: "Info",
-               icon: 'info',
-               html: 'We highly recommend that you use the AFS Congress Powerpoint Template that can be downloaded under the Submitter Instructions icon found above.',
-               showCancelButton: true,
-               confirmButtonText: "Save",
-               denyButtonText: `Don't save`
-           }).then((result) => {
-               /* Read more about isConfirmed, isDenied below */
-               if (result.isConfirmed) {
-                   if(paper_id){
-                       let file = $('.uploadFile')[0].files[0];
-                       let fd = new FormData();
+            Swal.fire({
+                title: "Info",
+                icon: 'info',
+                html: 'We highly recommend that you use the AFS Congress Powerpoint Template that can be downloaded under the Submitter Instructions icon found above.',
+                showCancelButton: true,
+                confirmButtonText: "Save",
+                denyButtonText: `Don't save`
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    if(paper_id){
+                        let file = $('.uploadFile')[0].files[0];
+                        let fd = new FormData();
 
-                       if (!file) {
-                           // Display a SweetAlert message if no file is selected
-                           Swal.fire({
-                               title: "Info",
-                               icon: 'info',
-                               html: 'No file selected!',
-                           });
-                           // Prevent further actions
-                           return false;
-                       }
-                       fd.append('file', file);
-                       fd.append('paper_id', paper_id);
+                        if (!file) {
+                            // Display a SweetAlert message if no file is selected
+                            Swal.fire({
+                                title: "Info",
+                                icon: 'info',
+                                html: 'No file selected!',
+                            });
+                            // Prevent further actions
+                            return false;
+                        }
+                        fd.append('file', file);
+                        fd.append('paper_id', paper_id);
 
-                       $.ajax({
-                           url : base_url+ 'user/presentation_do_upload',
-                           type: 'POST',
-                           data: fd,
-                           contentType: false,
-                           processData: false,
-                           mimeType: "multipart/form-data",
-                           beforeSend: function() {
-                               Swal.fire({
-                                   title: 'Uploading...',
-                                   allowOutsideClick: false,
-                                   didOpen: () => {
-                                       Swal.showLoading();
-                                   }
-                               });
-                           },
-                           success: function(response) {
-                               console.log(response);
-                               response = JSON.parse(response);
-                               Swal.close();
-                               $('.uploadFile').val('');
-                               if(response.status == 200){
-                                   Swal.fire({ icon: 'success', title: 'success', text: 'Presentation file uploaded successfully' });
-                                   getPaperUploads();
-                               } else if(response.status == 401){
-                                   Swal.fire({ icon: 'error', title: 'Warning', text: response.message });
-                               }
-                           }, error: function(e) {
-                               Swal.fire({ icon: 'error', title: 'Oops...', text: 'Something went wrong: ' + e.message, });
-                           }})
-                   }else{
-                       toast.r('no abstract id.')
-                   }
-               }
-           });
+                        $.ajax({
+                            url : base_url+ 'user/presentation_do_upload',
+                            type: 'POST',
+                            data: fd,
+                            contentType: false,
+                            processData: false,
+                            mimeType: "multipart/form-data",
+                            beforeSend: function() {
+                                Swal.fire({
+                                    title: 'Uploading...',
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal.showLoading();
+                                    }
+                                });
+                            },
+                            success: function(response) {
+                                console.log(response);
+                                response = JSON.parse(response);
+                                Swal.close();
+                                $('.uploadFile').val('');
+                                if(response.status == 200){
+                                    Swal.fire({ icon: 'success', title: 'success', text: 'Presentation file uploaded successfully' });
+                                    getPaperUploads();
+                                } else if(response.status == 401){
+                                    Swal.fire({ icon: 'error', title: 'Warning', text: response.message });
+                                }
+                            }, error: function(e) {
+                                Swal.fire({ icon: 'error', title: 'Oops...', text: 'Something went wrong: ' + e.message, });
+                            }})
+                    }else{
+                        toast.r('no abstract id.')
+                    }
+                }
+            });
 
 
-           console.log(paper_id)
-
-       })
-
-        $('.presentationContinueBtn').on('click', function(){
-            window.location.href = base_url+'user/submission_menu/'+paper_id;
         })
 
+        $('.presentationContinueBtn').on('click', function(e){
+            e.preventDefault();
 
-       $('.uploadsTableBody').on('click', '.deleteUploadBtn',function(e) {
-           e.preventDefault();
-           Swal.fire({
-               title: 'Are you sure?',
-               text: "You won't be able to revert this!",
-               icon: 'warning',
-               showCancelButton: true,
-               confirmButtonColor: '#3085d6',
-               cancelButtonColor: '#d33',
-               confirmButtonText: 'Yes, delete it!'
-           }).then((result) => {
-               if (result.isConfirmed) {
-                   $.ajax({
-                       url: base_url + 'user/delete_presentation_upload',
-                       type: 'POST',
-                       data: {
-                           'upload_id': $(this).attr('upload_id')
-                       },
-                       dataType: 'json',
-                       success: function (response) {
-                           console.log(response);
-                           if (response.status == 200) {
-                               getPaperUploads();
-                               Swal.fire(
-                                   'Deleted!',
-                                   'Your file has been deleted.',
-                                   'success'
-                               )
-                           }
+            if($('#abstract_body_character_count').text() > 2500 ){
+                toastr.error('words limit exceeded!')
+                return false;
+            }
+            $.ajax({
+                url: "<?= base_url().'user/update_paper_ajax' ?>",
+                type: "POST", // Use "GET" if your backend expects it
+                data: {
+                    'image_caption': $('#image_caption').val(), // Get the value properly
+                    'paper_id': "<?= $paper_id ?>"
+                },
+                dataType: "json", // Expecting JSON response
+                success: function(response) {
+                    if (response.status === 200) {
+                        window.location.href = "<?= base_url() ?>/user/finalize_paper/<?= $paper_id ?>";
+                    } else {
+                        alert("Error updating paper: " + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                }
+            });
 
-                       }, error: function (e) {
-                           Swal.fire({icon: 'error', title: 'Oops...', text: 'Something went wrong: ' + e.message,});
-                       }
-                   })
+        })
 
-               }
-           })
+        $('.uploadsTableBody').on('click', '.deleteUploadBtn',function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: base_url + 'user/delete_presentation_upload',
+                        type: 'POST',
+                        data: {
+                            'upload_id': $(this).attr('upload_id')
+                        },
+                        dataType: 'json',
+                        success: function (response) {
+                            console.log(response);
+                            if (response.status == 200) {
+                                getPaperUploads();
+                                Swal.fire(
+                                    'Deleted!',
+                                    'Your file has been deleted.',
+                                    'success'
+                                )
+                            }
 
-       })
+                        }, error: function (e) {
+                            Swal.fire({icon: 'error', title: 'Oops...', text: 'Something went wrong: ' + e.message,});
+                        }
+                    })
 
-    //
-       })
-    //
-    //    $('.noUploadBtn').on('click', function(e){
-    //         e.preventDefault();
-    //         Swal.fire({
-    //            title: 'Are you sure?',
-    //            text: "Continue without any uploads?",
-    //            icon: 'warning',
-    //            showCancelButton: true,
-    //            confirmButtonColor: '#3085d6',
-    //            cancelButtonColor: '#d33',
-    //            confirmButtonText: 'Yes, continue!'
-    //        }).then((result) => {
-    //            if (result.isConfirmed) {
-    //                $.ajax({
-    //                    url : base_url+'/'+event_uri+'/image_upload/no_upload',
-    //                    type: 'POST',
-    //                    data: {
-    //                        'abstract_id': abstract_id
-    //                    },
-    //                    dataType:'json',
-    //                    success: function(response) {
-    //
-    //                       if(response.data == true){
-    //                            window.location.href = base_url+'/'+event_uri+'/user/submission_menu/'+abstract_id;
-    //                        }
-    //
-    //                    }, error: function(e) {
-    //                        Swal.fire({ icon: 'error', title: 'Oops...', text: 'Something went wrong: ' + e.message, });
-    //                    }})
-    //            }
-    //        })
-    //    })
-    //})
-    //
+                }
+            })
+
+        })
+
+        WordCounterHelper.init(
+            'textarea.countWords',  // Textarea selector
+            '.counted_words',       // Word count display
+            '#abstract_body_character_count' // Total word count display
+        );
+
+        $('textarea.countWords').trigger('input');
+
+        let total = `${parseInt($('#abstract_body_character_count').text()) + <?=$paper['total_words_count']?>}`;
+        $('#abstract_body_character_count').html(total)
+
+
+    })
+
     function getPaperUploads(){
 
        $.ajax({
@@ -257,21 +266,5 @@
                Swal.fire({ icon: 'error', title: 'Oops...', text: 'Something went wrong: ' + e.message, });
            }})
     }
-    //
-    //function updateCount(attrId, count) {
-    //    attrId_array[attrId] = count
-    //    let sum = 0;
-    //    $.each(attrId_array,function(){sum+=parseFloat(this) || 0;});
-    //    $('#char_counter').html(sum)
-    //    $('#totalCount').val(sum)
-    //    if(sum > 2500){
-    //        swal.fire(
-    //            'warning',
-    //            'You are exceeding the limit of 2500 characters',
-    //            'warning'
-    //        )
-    //        return false;
-    //    }
-    //}
 </script>
 

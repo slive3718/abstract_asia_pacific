@@ -38,10 +38,10 @@
                             If you are the submitter and an author, please click on the Disclose Now link to continue to the copyright agreement. Once you have filled out the copyright agreement, you will be redirected back to the submission pages.
                         </li>
                         <li>
-                            For the co-author(s), the system will automatically email them regarding copyright requirements once this page is completed.
+                            For the senior author(s), the system will automatically email them regarding copyright requirements once this page is completed.
                         </li>
                         <li>
-                            Submitters may return to the abstract submission system to view the copyright statuses.
+                            Submitters may return to the abstract submission system to view the disclosure statuses.
                         </li>
                     </ul>
             <div class="row mt-5">
@@ -70,7 +70,7 @@
                                 <th></th>
                                 <th></th>
                                 <th>Author Info</th>
-                                <th>Copyright Status</th>
+                                <th>Disclosure Status</th>
                                 <th>Email Info</th>
                                 <th>Action</th>
                             </tr>
@@ -167,4 +167,16 @@
     <script  type="text/javascript" src="<?=base_url('assets/js/addressAutoComplete.js')?>"></script>
 <script>
     let current_user_id = "<?=session('user_id')?>"
+</script>
+<script>
+    $(function(){
+        $(document).on('change', '.presentingAuthor', function() {
+            let selectedPresenter = $('.presentingAuthor:checked').length; // Count checked checkboxes
+
+            if (selectedPresenter > 1) {
+                toastr.info('Only one presenter is allowed.');
+                $(this).prop('checked', false); // Uncheck the last clicked checkbox
+            }
+        });
+    })
 </script>

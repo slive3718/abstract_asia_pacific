@@ -39,27 +39,28 @@
                     </a>
                 </li>
 
-                <?php if(session('user_id')): ?>
-                    <li class="nav-item mt-2 me-5">
-                        <div class="dropdown ">
-                            <button class="btn btn-outline-light dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                Submitter Instructions <i class="fa-solid fa-document"></i></button>
-                            <ul class="btn btn-outline-light dropdown-menu dropdown-menu-end mt-3 text-white" aria-labelledby="dropdownMenuButton1" style="background-color:#2aa69c">
-                                <li><a class="dropdown-item text-white" href="<?=base_url()?>/submission_guidelines" target="_blank">Submission Guidelines</a></li>
-                                <li><a class="dropdown-item text-white" href="<?=base_url().'public/assets/documents/submission_references/2025_AFS_Authors_Guide.pdf'?>" target="_blank">AFS Author Guide</a></li>
-                                <li><a class="dropdown-item text-white" href="<?=base_url().'public/assets/documents/submission_references/2025_Authors_Template.docx'?>" target="_blank">AFS Author Template</a></li>
-                                <li><a class="dropdown-item text-white" href="<?=base_url().'public/assets/documents/submission_references/2025_Authors_Sample_Paper.docx'?>" target="_blank">AFS Sample Paper</a></li>
-                                <li><a class="dropdown-item text-white" href="<?=base_url().'public/assets/documents/submission_references/2025_Authors_Style_Palette.docx'?>" target="_blank">AFS Author Style Palette</a></li>
-                                <li><a class="dropdown-item text-white" href="<?=base_url().'public/assets/documents/submission_references/2025_Author-Speaker_Copyright_Publication_Agreement.pdf'?>" target="_blank">AFS Author/ Speaker Copyright & Publication Agreement</a></li>
-                                <li><a class="dropdown-item text-white" href="<?=base_url().'public/assets/documents/submission_references/2025_Author_Copyright_Permission_Form_for_Rightsholders.pdf'?>" target="_blank">AFS Author Copyright Permission Form for Rightsholder</a></li>
-                                <li><a class="dropdown-item text-white" href="<?=base_url().'public/assets/documents/submission_references/AFS_Policy_on_Authorship_Criteria_&_Use_of_AI_Technology.pdf'?>" target="_blank">AFS Policy of Authorship Criteria & Use of AI Technology</a></li>
-                                <li><a class="dropdown-item text-white" href="<?=base_url().'public/assets/documents/submission_references/Commercialism_Guidelines.pdf'?>" target="_blank">Commercialism Guidelines</a></li>
-                                <li><a class="dropdown-item text-white" href="<?=base_url().'public/assets/documents/submission_references/CastExpo_2025_PPT_Template.pptx'?>"target="_blank">PowerPoint Template</a></li>
-                                <li><a class="dropdown-item text-white" href="<?=base_url().'public/assets/documents/submission_references/-SAMPLE-_Author_s_Response_to_Reviewers.pdf'?>" target="_blank">Sample - Authors Response to Reviewers</a></li>
-                            </ul>
-                        </div>
-                    </li>
-                <?php endif ?>
+                <li class="nav-item mt-2 me-5">
+                    <div class="dropdown ">
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            Submitter Instructions <i class="fa-solid fa-document"></i></button>
+                        <ul class="btn btn-outline-light dropdown-menu dropdown-menu-end mt-3 text-white" aria-labelledby="dropdownMenuButton1" style="background-color:#2aa69c">
+                            <li><a class="dropdown-item text-white" href="<?=base_url()?>/public/assets/submission_guidelines" target="_blank">Submission Guidelines</a></li>
+                            <?php if(session('user_id')): ?>
+                            <li><a class="dropdown-item text-white" href="<?=base_url().'public/assets/documents/submission_references/2025_AFS_Authors_Guide.pdf'?>" target="_blank">AFS Author Guide</a></li>
+                            <li><a class="dropdown-item text-white" href="<?=base_url().'public/assets/documents/submission_references/2025_Authors_Template.docx'?>" target="_blank">AFS Author Template</a></li>
+                            <li><a class="dropdown-item text-white" href="<?=base_url().'public/assets/documents/submission_references/2025_Authors_Sample_Paper.docx'?>" target="_blank">AFS Sample Paper</a></li>
+                            <li><a class="dropdown-item text-white" href="<?=base_url().'public/assets/documents/submission_references/2025_Authors_Style_Palette.docx'?>" target="_blank">AFS Author Style Palette</a></li>
+                            <li><a class="dropdown-item text-white" href="<?=base_url().'public/assets/documents/submission_references/2025_Author-Speaker_Copyright_Publication_Agreement.pdf'?>" target="_blank">AFS Author/ Speaker Copyright & Publication Agreement</a></li>
+                            <li><a class="dropdown-item text-white" href="<?=base_url().'public/assets/documents/submission_references/2025_Author_Copyright_Permission_Form_for_Rightsholders.pdf'?>" target="_blank">AFS Author Copyright Permission Form for Rightsholder</a></li>
+                            <li><a class="dropdown-item text-white" href="<?=base_url().'public/assets/documents/submission_references/AFS_Policy_on_Authorship_Criteria_&_Use_of_AI_Technology.pdf'?>" target="_blank">AFS Policy of Authorship Criteria & Use of AI Technology</a></li>
+                            <li><a class="dropdown-item text-white" href="<?=base_url().'public/assets/documents/submission_references/Commercialism_Guidelines.pdf'?>" target="_blank">Commercialism Guidelines</a></li>
+                            <li><a class="dropdown-item text-white" href="<?=base_url().'public/assets/documents/submission_references/CastExpo_2025_PPT_Template.pptx'?>"target="_blank">PowerPoint Template</a></li>
+                            <li><a class="dropdown-item text-white" href="<?=base_url().'public/assets/documents/submission_references/-SAMPLE-_Author_s_Response_to_Reviewers.pdf'?>" target="_blank">Sample - Authors Response to Reviewers</a></li>
+                            <?php endif ?>
+                        </ul>
+                    </div>
+                </li>
+
 
                 <?php if(session('user_id')): ?>
                 <li class="nav-item mt-2 me-5">
@@ -219,7 +220,7 @@
 
 <div class="row mt-5">
     <div class="col-md-12 text-center mt-md-4" style="width: 60% !important; margin:auto">
-        <img id="main-banner" src="<?=$event->main_banner?>" class=" figure-img" alt="Main Banner" style="width: 100% !important;object-fit: cover; mix-blend-mode: multiply;" />
+        <img id="main-banner" src="<?=base_url()?>main_banner.png" class=" figure-img" alt="Main Banner" style="width: 100% !important;object-fit: cover; mix-blend-mode: multiply;" />
     </div>
     <hr />
 </div>

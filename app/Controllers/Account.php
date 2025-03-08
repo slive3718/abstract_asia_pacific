@@ -20,18 +20,10 @@ class Account extends BaseController
 
     public function index($event_uri): string
     {
-        $event = (new AbstractEventsModel())->first();
-
-        if(!$event){
-            return (new ErrorHandler($event))->errorPage();
-        }
-
         $header_data = [
-            'title' => "{$event->short_name} Login"
+            'title' => "Asia Pacific Registration"
         ];
-        $data = [
-            'event'=> $event
-        ];
+        $data = [];
         return
             view('event/common/header', $header_data).
             view('event/register', $data).

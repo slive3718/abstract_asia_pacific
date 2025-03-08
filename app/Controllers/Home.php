@@ -27,22 +27,12 @@ class Home extends BaseController
     public function index(): string
     {
 
-//        print_r('test');exit;
-
-        $event = (new AbstractEventsModel())->first();
-
         $PaperAuthorsModel = (new PaperAuthorsModel());
-
-        if(!$event){
-            return "Missing Even on Database";
-        }
 
         $header_data = [
             'title' => "My Submissions"
         ];
-        $data = [
-            'event'=> $event
-        ];
+
         $user_id = $_SESSION['user_id'];
         $PaperTypeModel = new PaperTypeModel();
         $papersModel =  (new PapersModel());
@@ -90,8 +80,6 @@ class Home extends BaseController
                 ->where(['paper_id' => $paper->id, 'author_type' => 'panelist'])
                 ->findAll();
         }
-//        $reviewer['uploads'] = 'test';
-//        print_r($papers);exit;
         $data['papers'] = $papers;
 
         return

@@ -31,7 +31,7 @@
                                 <span class="float-end"><a href="<?=base_url().'user/submission_menu/'.$paper->id?>" class="btn btn-success btn-sm" paper_id="<?=$paper->id?>">View/Edit</a></span>
                             </div>
                             <div class="card-body" >
-                                Submitted for <?=$paper->acronym?> - Presenter : <?=Ucfirst($paper->name). ' '. Ucfirst($paper->surname)?>
+                                Submitted for <?=$paper->acronym ?? ''?> - Presenter : <?=Ucfirst($paper->name). ' '. Ucfirst($paper->surname)?>
                                 <span class="float-end">Submission Status: <?=isset($paper)?($paper->is_finalized == "1")? '<span class="text-success">Finalized</span>':'<span class="text-danger">Incomplete</span>':''?></span>
 
                                 <div class="mt-2">

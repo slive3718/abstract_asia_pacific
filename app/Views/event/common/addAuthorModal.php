@@ -68,7 +68,7 @@
                             <div class="row mb-3">
                                 <!-- Your affiliation fields here -->
                                 <div class="row">
-                                    <div class="col">
+                                    <div class="col-6">
                                         <div class="mb-3">
                                             <label class="form-label" for="authorInstitution">Institution <span class="text-danger">*</span></label>
                                             <input name="authorInstitution" title="Institution" id="authorInstitution" class="form-control required">
@@ -76,17 +76,24 @@
 
                                         <div class="mb-3">
                                             <label class="form-label" for="authorPhone">Degree </label>
-                                            <input type="text" name="authorDegree" title="Phone" class="form-control shadow-none" id="authorDegree" style="max-width:400px" placeholder="">
+                                            <input type="text" name="authorDegree" title="Phone" class="form-control shadow-none" id="authorDegree"  placeholder="">
                                         </div>
 
                                         <div class="mb-3">
                                             <label class="form-label" for="authorPhone">Work Phone <span class="text-danger">*</span></label>
-                                            <input type="text" name="authorPhone" title="Phone" class="form-control shadow-none" id="authorPhone" style="max-width:400px" placeholder="">
+                                            <input type="text" name="authorPhone" title="Phone" class="form-control shadow-none" id="authorPhone"  placeholder="">
                                         </div>
 
                                         <div class="mb-3">
                                             <label class="form-label" for="authorPhone">Fax </label>
-                                            <input type="text" name="authorFax" title="Phone" class="form-control shadow-none" id="authorFax" style="max-width:400px" placeholder="">
+                                            <input type="text" name="authorFax" title="Phone" class="form-control shadow-none" id="authorFax" placeholder="">
+                                        </div>
+                                    </div>
+
+                                    <!--                                    Designation -->
+                                    <div class="col-6">
+                                        <div class="mb-3 designationDiv">
+                                            Designations <br>
                                         </div>
                                     </div>
 

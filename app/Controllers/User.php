@@ -3,7 +3,9 @@
 namespace App\Controllers;
 
 use App\Libraries\PhpMail;
+use App\Models\AbstractCategoriesModel;
 use App\Models\AbstractReviewModel;
+use App\Models\DesignationsModel;
 use App\Models\EmailLogsModel;
 use App\Models\EmailTemplatesModel;
 use App\Models\PanelistPaperSubModel;
@@ -51,17 +53,13 @@ class User extends BaseController
 
     public function index()
     {
-        $event = (new EventsModel())->first();
-        if(!$event){
-            return 'error';
-        }
-
+        print_r('Index User');exit;
         $header_data = [
-            'title' => $event->short_name
+            'title' => 'Asia Pacific Submission'
         ];
-        $data = [
-            'event'=> $event
-        ];
+
+        $data = [];
+
         return
             view('event/common/header', $header_data).
             view('event/login',$data).
@@ -71,7 +69,7 @@ class User extends BaseController
 
      public function submission_menu($paper_id){
 
-         $event = (new EventsModel())->first();
+
          $PapersModel = (new PapersModel());
          $AuthorsModel = (new PaperAuthorsModel());
          $UsersProfileModel = (new UsersProfileModel());
@@ -86,7 +84,7 @@ class User extends BaseController
              ->where('paper_authors.paper_id', $paper_id)
              ->findAll();
 
-         $paper = $PapersModel->find($paper_id);
+         $paper = $PapersModel->asArray()->find($paper_id);
 
          $authorDetailsRequiredFields = [
              'electronic_signature' => 'Copyright',
@@ -101,13 +99,7 @@ class User extends BaseController
 
          //         print_r($authors);exit;
          $paperUploads = (new PaperUploadsModel())->where('paper_id', $paper_id)->findAll();
-         $paperRequiredFields = [
-             'division_id' => "Division",
-             'type_id' => 'Type',
-             'title' => 'Title',
-             'summary' => 'Summary',
-             'is_ijmc_interested' => 'Is IJMC Interested'
-         ];
+         $paperRequiredFields = [];
 
          $incomplete = [];
          foreach ($authors as $author) {
@@ -131,21 +123,17 @@ class User extends BaseController
              }
          }
 
-         if($paper->is_finalized !== '1'){
+         if($paper['is_finalized'] !== '1'){
              $incomplete['finalized'][] = 1;
          }
 
-        if(!$event){
-            return "error";
-        }
         $header_data = [
             'title' => "Submission Menu"
         ];
 
         $data = [
-            'event'=> $event,
             'paper_id'=>$paper_id,
-            'papers' => ($papers ?? array()),
+            'paper' => $paper ?? [],
             'authors' => $authors,
             'incompleteStatus' => !empty($incomplete)?$incomplete:[]
         ];
@@ -160,20 +148,15 @@ class User extends BaseController
 
     public function papers_submission(){
 
-        $event = (new AbstractEventsModel())->first();
-        $divisions = (new DivisionsModel())->findAll();
+        $categories = (new AbstractCategoriesModel())->findAll();
         $paper_type = (new PaperTypeModel())->findAll();
 
-        if(!$event){
-            return ('error');
-        }
-
         $header_data = [
-            'title' => $event->short_name
+            'title' => "Submission"
         ];
+
         $data = [
-            'event'=> $event,
-            'divisions' => $divisions ?? '',
+            'categories' => $categories ?? '',
             'paper_type' => $paper_type ?? '',
             'notification' => session()->getFlashdata('notification')
         ];
@@ -186,13 +169,9 @@ class User extends BaseController
 
     public function edit_papers_submission($paper_id = null){
 
-        $paper = (new PapersModel())->where('id', $paper_id)->first();
-        $divisions = (new DivisionsModel())->findAll();
+        $paper = (new PapersModel())->where('id', $paper_id)->asArray()->first();
+        $categories = (new AbstractCategoriesModel())->findAll();
         $paper_type = (new PaperTypeModel())->findAll();
-        $event = (new EventsModel())->first();
-        if(!$event){
-            return 'error';
-        }
 
         if(!$paper){
             return 'error';
@@ -202,11 +181,10 @@ class User extends BaseController
             'title' => "Paper Details"
         ];
         $data = [
-            'event'=> $event,
             'paper' => $paper,
             'paper_id'=>$paper_id,
-            'divisions' => $divisions ?? '',
             'paper_type' => $paper_type ?? '',
+            'categories' => $categories ?? '',
             'is_edit' => 1
         ];
         return
@@ -216,78 +194,143 @@ class User extends BaseController
             ;
     }
 
-    public function submit_paper_ajax(){
+    public function submit_paper_ajax()
+    {
         $post = $this->request->getPost();
 
-//        print_r($post);exit;
-//        print_R(session('user_id'));exit;
-        if ($post) {
-            $insert_array = [
-                'division_id' => $post['division'] ?? null,
-                'user_id' => session('user_id'),
-                'type_id' => $post['paper_type'] ?? null,
-                'title' => $post['title'] ?? null,
-                'summary' => $post['summary'] ?? null,
-                'is_ijmc_interested' => $post['is_interested'] ?? null,
-            ];
-
-            if (!empty($insert_array['division_id']) && !empty($insert_array['type_id']) && !empty($insert_array['title'])) {
-                try {
-                    $papersModel = (new PapersModel());
-                    $papersModel->insert($insert_array);
-                    $insert_id = $papersModel->getInsertId();
-
-                    $newCustomId = $this->generateCustomID($insert_id);
-                    $papersModel->set('custom_id', $newCustomId)->where('id', $insert_id)->update();
-                    // Handle successful insertion
-                    if($insert_id) {
-                        session()->setFlashdata('status', 'success');
-                        session()->setFlashdata(['notification' => 'Data Inserted Successfully.']);
-                        echo json_encode(['status' => '200', 'msg' => "Data Inserted Successfully", 'data' => ['insert_id'=>$insert_id]]);
-                    }
-                } catch (\Exception $e) {
-                    // Handle insertion failure
-                    session()->setFlashdata('status', 'warning');
-                    session()->setFlashdata(['notification' => $e->getMessage()]);
-                    echo json_encode(['status'=>'404', 'msg'=> $e->getMessage()]);
-                }
-            }
-        } else {
-            echo json_encode(['status'=>'400', 'msg'=> 'No post data received']);
+        if (!$post) {
+            return $this->response->setJSON(['status' => 400, 'msg' => 'No post data received']);
         }
 
+        // Define validation rules
+        $validationRules = [
+            'previous_presentation'  => 'required',
+            'basic_science_format'  => 'required',
+            'abstract_category'      => 'required',
+            'abstract_title'         => 'required',
+            'hypothesis'             => 'required',
+            'study_design'           => 'required',
+            'introduction'           => 'required',
+            'methods'                => 'required',
+            'results'                => 'required',
+            'conclusions'            => 'required',
+            'additional_notes'       => 'required',
+        ];
+
+        if (!$this->validate($validationRules)) {
+            return $this->response->setJSON(['status' => 'failed', 'msg' => $this->validator->getErrors()]);
+        }
+
+        // Prepare data for insertion
+        $insert_array = [
+            'user_id'               => session('user_id'),
+            'previous_presentation' => $post['previous_presentation'] ?? null,
+            'basic_science_format'   => $post['basic_science_format'] ?? null,
+            'abstract_category'      => $post['abstract_category'] ?? null,
+            'title'                  => $post['abstract_title'] ?? null,
+            'hypothesis'             => $post['hypothesis'] ?? null,
+            'study_design'           => $post['study_design'] ?? null,
+            'introduction'           => $post['introduction'] ?? null,
+            'methods'                => $post['methods'] ?? null,
+            'results'                => $post['results'] ?? null,
+            'conclusions'            => $post['conclusions'] ?? null,
+            'additional_notes'       => $post['additional_notes'] ?? null,
+            'total_words_count'       => $post['total_words_count'] ?? null,
+        ];
+
+        try {
+            $papersModel = new PapersModel();
+            $papersModel->insert($insert_array);
+            $insert_id = $papersModel->getInsertID();
+
+            // Generate and update custom ID
+            $newCustomId = $this->generateCustomID($insert_id);
+            $papersModel->update($insert_id, ['custom_id' => $newCustomId]);
+
+            return $this->response->setJSON([
+                'status' => 200,
+                'msg' => 'Data Inserted Successfully',
+                'data' => ['insert_id' => $insert_id]
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'status' => 500,
+                'msg' => 'Database Insertion Failed',
+                'error' => $e->getMessage()
+            ]);
+        }
     }
+
 
     public function update_paper_ajax()
     {
-        // Get the POST data
         $post = $this->request->getPost();
-        $papersModel = (new PapersModel());
-        $update_array = array(
-            'division_id' => intVal($post['division']) ?? null,
-            'type_id' => isset($post['paper_type']) ? intVal($post['paper_type']) ?? null: null,
-            'title' => $post['title'] ?? null,
-            'summary' => $post['summary'] ?? null,
-            'is_ijmc_interested' => intVal($post['is_interested']) ?? null,
-            'custom_id'=>$this->generateCustomID($post['paper_id'])
-        );
 
-        // Perform the update operation using the PapersModel
-        try {
-            $affectedRows = $papersModel->where(['id' => $post['paper_id']])->set($update_array)->update();
-        }catch (\Exception $e){
-            session()->setFlashdata('status', 'error');
-            session()->setFlashdata(['notification' => $e->getMessage()]);
-            return json_encode(['status' => '500', 'msg' => "Paper Updated Failed", 'data' =>'']);
+        // Ensure paper_id is provided
+        if (empty($post['paper_id'])) {
+            return $this->response->setJSON(['status' => 400, 'msg' => "Paper ID is required", 'data' => '']);
         }
-        // Check if update was successful
-        if ($affectedRows > 0) {
-            // Update was successful
-            session()->setFlashdata('status', 'success');
-            session()->setFlashdata(['notification' => 'Submission Updated Successfully.']);
-            return json_encode(['status' => '200', 'msg' => "Paper Updated Successfully", 'data' => ['insert_id'=>$post['paper_id']]]);
+
+        $papersModel = new PapersModel();
+
+        // Fetch existing data to prevent overwriting with null
+        $existingPaper = $papersModel->asArray()->find($post['paper_id']);
+        if (!$existingPaper) {
+            return $this->response->setJSON(['status' => 404, 'msg' => "Paper not found", 'data' => '']);
+        }
+
+        // Prepare the update array
+        $update_array = [
+            'previous_presentation'  => isset($post['previous_presentation']) ? trim($post['previous_presentation']) : $existingPaper['previous_presentation'],
+            'basic_science_format'   => isset($post['basic_science_format']) ? trim($post['basic_science_format']) : $existingPaper['basic_science_format'],
+            'abstract_category'      => isset($post['abstract_category']) ? trim($post['abstract_category']) : $existingPaper['abstract_category'],
+            'title'                  => isset($post['abstract_title']) ? trim($post['abstract_title']) : $existingPaper['title'],
+            'hypothesis'             => isset($post['hypothesis']) ? trim($post['hypothesis']) : $existingPaper['hypothesis'],
+            'study_design'           => isset($post['study_design']) ? trim($post['study_design']) : $existingPaper['study_design'],
+            'introduction'           => isset($post['introduction']) ? trim($post['introduction']) : $existingPaper['introduction'],
+            'methods'                => isset($post['methods']) ? trim($post['methods']) : $existingPaper['methods'],
+            'results'                => isset($post['results']) ? trim($post['results']) : $existingPaper['results'],
+            'conclusions'            => isset($post['conclusions']) ? trim($post['conclusions']) : $existingPaper['conclusions'],
+            'additional_notes'       => isset($post['additional_notes']) ? trim($post['additional_notes']) : $existingPaper['additional_notes'],
+            'total_words_count'      => isset($post['total_words_count']) ? trim($post['total_words_count']) : $existingPaper['total_words_count'],
+            'min_follow_up_period'   => isset($post['min_follow_up_period']) ? trim($post['min_follow_up_period']) : $existingPaper['min_follow_up_period'],
+            'is_srs_funded'          => isset($post['is_srs_funded']) ? trim($post['is_srs_funded']) : $existingPaper['is_srs_funded'],
+            'primary_investigator'   => isset($post['primary_investigator']) ? trim($post['primary_investigator']) : $existingPaper['primary_investigator'],
+            'grant_year'             => isset($post['grant_year']) ? trim($post['grant_year']) : $existingPaper['grant_year'],
+            'image_caption'          => isset($post['image_caption']) ? trim($post['image_caption']) : $existingPaper['image_caption'],
+        ];
+
+
+        // Remove fields that haven't changed
+        $update_array = array_diff_assoc($update_array, $existingPaper);
+
+        // If no changes, return a message
+        if (empty($update_array)) {
+            return $this->response->setJSON(['status' => 200, 'msg' => "No changes made", 'data' => '']);
+        }
+
+        // Perform the update operation
+        try {
+            $updated = $papersModel->update($post['paper_id'], $update_array);
+
+            if ($updated) {
+                return $this->response->setJSON([
+                    'status' => 200,
+                    'msg' => "Paper updated successfully",
+                    'data' => ['update_id' => $post['paper_id']]
+                ]);
+            } else {
+                return $this->response->setJSON(['status' => 500, 'msg' => "Update failed", 'data' => '']);
+            }
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'status' => 500,
+                'msg' => "Paper update failed: " . $e->getMessage(),
+                'data' => ''
+            ]);
         }
     }
+
 
     function generateCustomID($paper_id){
         $nextYear = date('Y');
@@ -302,58 +345,10 @@ class User extends BaseController
     }
 
 
-    public function author_copyright(){
-
-    }
-
-//    public function update_abstract_permission(){
-//        $_POST['user_id'] = session()->get('user_id');
-//        $_POST['event_uri'] = $this->event_uri;
-//        $result = $this->api->post("user/update_abstract_permission/{$this->event_uri}", $_POST);
-//
-//        if(!$result->status){
-//            return (new ErrorHandler($result->data))->errorPage();
-//        }
-//        echo json_encode($result);
-//     }
-
-//    public function view_permissions($event_uri = null, $abstract_id=null)
-//    {
-//        $_POST['abstract_id'] = $abstract_id;
-//        $_POST['user_id'] = session('user_id');
-//
-//        $abstract_details = (new Api())->post("user/get_abstract_by_id/{$this->event_uri}", $_POST);
-////        print_r($abstract_details);exit;
-//        if (!$this->event) {
-//            return (new ErrorHandler($this->event))->errorPage();
-//        }
-//        if (!$abstract_details || $abstract_details->data =='' ) {
-//           exit;
-//        }
-//
-//        $header_data = [
-//            'title' => "Permissions"
-//        ];
-//        $data = [
-//            'event'=> $this->event,
-//            'abstract_id'=> $abstract_id,
-//            'abstract_details'=> $abstract_details->data[0],
-//        ];
-//        return
-//            view('event/common/header', $header_data).
-//            view('event/permissions',$data).
-//            view('event/common/footer')
-//            ;
-//
-//    }
-
-
-
     public function authors_and_copyright($paper_id){
         $post = $this->request->getPost();
 
         $UsersModel = (new UserModel());
-        $event = (new AbstractEventsModel())->first();
         $papersModel = (new PapersModel());
         $papers = $papersModel->find($paper_id);
         $UsersProfileModel = (new UsersProfileModel());
@@ -368,9 +363,7 @@ class User extends BaseController
         ];
         $data = [
             'id' => $this->request->uri->getSegment(4),
-            'event'=> $event,
             'paper_id' => $paper_id,
-//            'disclosure_data' => $papers,
             'abstract_details'=>($papers)?:'',
             'recentAuthors'=>$recentAuthors
         ];
@@ -380,16 +373,27 @@ class User extends BaseController
             view('event/common/footer')
             ;
     }
-//
-//    public function getDisclosureAjax(){
-//        $event = (new AbstractEventsModel())->first();
-//        if(!$event){
-//            return (new ErrorHandler($event))->errorPage();
-//        }
-//        echo json_encode(array('status'=>200, 'data'=>$event));
-//    }
-//
-//
+
+    public function level_of_evidence($paper_id){
+
+        $paper = (new PapersModel())->asArray()->find($paper_id);
+
+        $header_data = [
+            'title' => "Level of Evidence"
+        ];
+
+        $data = [
+            'paper_id' => $paper_id,
+            'paper'=> $paper ?:'',
+        ];
+//        print_r($paper);exit;
+        return
+            view('event/common/header', $header_data).
+            view('event/level_of_evidence',$data).
+            view('event/common/footer')
+            ;
+    }
+
     public function search_author_ajax(){
         $post = $this->request->getpost();
         $UsersModel = (new UserModel());
@@ -686,6 +690,9 @@ class User extends BaseController
 
     }
 
+    public function get_designations(){
+        return $this->response->setJSON((new DesignationsModel())->findAll());
+    }
 //
     public function update_author_details(){
 
@@ -1051,18 +1058,15 @@ class User extends BaseController
 
     public function presentation_upload($paper_id){
 
-
-        $event = (new AbstractEventsModel())->first();
-        if(!$event){
-            return (new ErrorHandler($event))->errorPage();
-        }
-
+        $paper = (new PapersModel())->asArray()->find($paper_id);
+        if(!$paper)
+            exit;
         $header_data = [
             'title' => "Presentation Upload"
         ];
         $data = [
-            'event'=> $event,
-            'paper_id'=> $paper_id
+            'paper_id'=> $paper_id,
+            'paper' => $paper
         ];
         return
             view('event/common/header', $header_data).
@@ -1261,7 +1265,6 @@ class User extends BaseController
 
         $user_id = session('user_id');
         $post = $this->request->getPost();
-        $event = (new AbstractEventsModel())->first();
 
         $UsersProfileModel = (new UsersProfileModel());
         $PapersModel = (new PapersModel());
@@ -1269,8 +1272,8 @@ class User extends BaseController
         $PaperUploadsModel = (new PaperUploadsModel());
         $UsersModel = (new UserModel());
         $papers = $PapersModel
-            ->select('papers.*, divisions.name as division_name, paper_type.name as paper_type_name')
-            ->join('divisions', 'papers.division_id = divisions.division_id', 'left')
+            ->select('papers.*,  paper_type.name as paper_type_name')
+//            ->join('divisions', 'papers.division_id = divisions.division_id', 'left')
             ->join('paper_type', 'papers.type_id = paper_type.type', 'left')
             ->where(['user_id'=> session('user_id'), 'papers.id'=>$paper_id])->first();
 
@@ -1310,19 +1313,11 @@ class User extends BaseController
             'deg' => 'Degree'
         ];
 
-        //         print_r($authors);exit;
         $paperUploads = (new PaperUploadsModel())->where('paper_id', $paper_id)->findAll();
-        $paperRequiredFields = [
-            'division_id' => "Division",
-            'type_id' => 'Type',
-            'title' => 'Title',
-            'summary' => 'Summary',
-            'is_ijmc_interested' => 'Is IJMC Interested'
-        ];
+        $paperRequiredFields = [];
 
         $incomplete = [];
         foreach ($authors as $author) {
-//            print_r($author);exit;
             foreach ($authorDetailsRequiredFields as $index => $required) {
                 if($author[$index] == '' ||$author[$index] == null ){
                     $incomplete['author'][]= ['required' => $required . ' for Author: ' . Ucfirst($author['name']).' '. Ucfirst($author['surname'])];
@@ -1330,13 +1325,6 @@ class User extends BaseController
                 }
             }
         }
-
-//        if(!$paperUploads){
-//            $incomplete['paperUpload'][] = ['required' => "Presentation Uploads" . ' for Paper: ' .$paper_id];
-//            $incomplete['paperUpload'][] = 'message' . 'Uploads' . ' for Paper Uploads: ' . $paper_id;
-//        }
-
-//        print_r($papers)
 
         if($paper){
             foreach ($paperRequiredFields as $index => $required) {
@@ -1347,15 +1335,11 @@ class User extends BaseController
             }
         }
 
-//        print_r($incomplete)
-
-
         $header_data = [
             'title' => "Preview"
         ];
 
         $data = [
-            'event'=> $event,
             'papers'=> $papers,
             'authorInfo'=> $authorInfo,
             'paper_id'=> $paper_id,
@@ -1698,7 +1682,7 @@ class User extends BaseController
         $data = [
             'event'=> $event,
             'paper_id'=>$paper_id,
-            'papers' => ($papers ?? array()),
+            'papers' => $paper ?? [],
             'incompleteStatus' => $incomplete
         ];
         return

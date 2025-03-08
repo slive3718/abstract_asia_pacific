@@ -23,16 +23,12 @@ class Login extends BaseController
     public function index(): string
     {
 
-        $event = (new AbstractEventsModel())->first();
-        if(!$event){
-            return ("error");
-        }
-
         $header_data = [
-            'title' => "{$event->short_name} Login"
+            'title' => "Login"
         ];
+
         $data = [
-            'event'=> $event
+            'event'=> 'Asia Pacific'
         ];
         return
             view('event/common/header', $header_data).
@@ -51,7 +47,6 @@ class Login extends BaseController
                 'email'=>$result['data']['credentials']->email,
                 'token'=>$result['data'],
                 'user_id'=>$result['data']['credentials']->id,
-                'event_uri'=>$_POST['event_uri'],
                 'user_type'=>$_POST['login_type'],
                 'name'=>$result['data']['credentials']->name,
                 'surname'=>$result['data']['credentials']->surname,

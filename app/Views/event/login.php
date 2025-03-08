@@ -77,7 +77,6 @@
                 {
                     'email': email,
                     'password': password,
-                    'event_uri': 'afs',
                     'login_type': "user"
 
                 }, function(response){

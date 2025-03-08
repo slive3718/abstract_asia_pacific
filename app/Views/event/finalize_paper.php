@@ -100,41 +100,76 @@
             <div class="card-body">
                 <table class="table" style="border-bottom-width:4px !important">
                     <tbody>
-                        <?php if($papers):
-                             ?>
-                            <tr>
-                                <td class="text-end">Division : </td>
-                                <td><?=$papers->division_name?></td>
-                            </tr>
-                            <tr>
-                                <td class="text-end">Paper Type : </td>
-                                <td><?=$papers->paper_type_name?></td>
-                            </tr>
-                            <tr>
-                                <td class="text-end">Paper Title : </td>
-                                <td><?=$papers->title?></td>
-                            </tr>
-                            <tr>
-                                <td class="text-end">Paper Summary : </td>
-                            <td><?=$papers->summary?></td>
-                            </tr>
-                            <tr>
-                                <td class="text-end">Are you interested in submitting this paper to IJMC as well ? </td>
-                                <td>
-                                    <?php
-                                    echo $papers->is_ijmc_interested == 0
-                                        ? 'I am NOT interested in submitting this paper to IJMC'
-                                        : ($papers->is_ijmc_interested == 1
-                                            ? 'I am interested in submitting this paper to IJMC'
-                                            : 'I have already submitted this paper to IJMC');
-                                    ?>
-                                </td>
-
-
-                            </tr>
-                    <?php endif;?>
+                    <?php if ($papers): ?>
+                        <tr>
+                            <td class="text-end">Session Types :</td>
+                            <td><a class="float-end"> Edit </a></td>
+                        </tr>
+                        <tr>
+                            <td class="text-end">Basic Science Proposal Format :</td>
+                            <td><?= htmlspecialchars($papers->basic_science_format) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end"> Edit </a></td>
+                        </tr>
+                        <tr>
+                            <td class="text-end">Previous Publication :</td>
+                            <td><?= htmlspecialchars($papers->previous_presentation) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end"> Edit </a></td>
+                        </tr>
+                        <tr>
+                            <td class="text-end">Abstract Category :</td>
+                            <td><?= htmlspecialchars($papers->abstract_category) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end"> Edit </a></td>
+                        </tr>
+                        <tr>
+                            <td class="text-end">Abstract Title :</td>
+                            <td><?= htmlspecialchars($papers->title) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end"> Edit </a></td>
+                        </tr>
+                        <tr>
+                            <td class="text-end">Hypothesis :</td>
+                            <td><?= htmlspecialchars($papers->hypothesis) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end"> Edit </a></td>
+                        </tr>
+                        <tr>
+                            <td class="text-end">Study Design :</td>
+                            <td><?= htmlspecialchars($papers->study_design) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end"> Edit </a></td>
+                        </tr>
+                        <tr>
+                            <td class="text-end">Introduction :</td>
+                            <td><?= htmlspecialchars($papers->introduction) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end"> Edit </a></td>
+                        </tr>
+                        <tr>
+                            <td class="text-end">Methods :</td>
+                            <td><?= htmlspecialchars($papers->methods) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end"> Edit </a></td>
+                        </tr>
+                        <tr>
+                            <td class="text-end">Results :</td>
+                            <td><?= htmlspecialchars($papers->results) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end"> Edit </a></td>
+                        </tr>
+                        <tr>
+                            <td class="text-end">Conclusion :</td>
+                            <td><?= htmlspecialchars($papers->conclusions) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end"> Edit </a></td>
+                        </tr>
+                        <tr>
+                            <td class="text-end">What was the minimum time period of follow-up? :</td>
+                            <td><?= htmlspecialchars($papers->min_follow_up_period) ?> <a href="<?=base_url().'user/level_of_evidence/'.$paper_id?>" class="float-end"> Edit </a></td>
+                        </tr>
+                        <tr>
+                            <td class="text-end">Was this study funded by an SRS Grant? :</td>
+                            <td><?= htmlspecialchars($papers->is_srs_funded) ?> <a href="<?=base_url().'user/level_of_evidence/'.$paper_id?>" class="float-end"> Edit </a></td>
+                        </tr>
+                        <tr>
+                            <td class="text-end">Who is the Primary Investigator? :</td>
+                            <td><?= htmlspecialchars($papers->primary_investigator) ?> <a href="<?=base_url().'user/level_of_evidence/'.$paper_id?>" class="float-end"> Edit </a></td>
+                        </tr>
+                        <tr>
+                            <td class="text-end">What is the grant year? :</td>
+                            <td><?= htmlspecialchars($papers->grant_year) ?> <a href="<?=base_url().'user/level_of_evidence/'.$paper_id?>" class="float-end"> Edit </a></td>
+                        </tr>
+                        <tr>
+                            <td class="text-end">Image Caption :</td>
+                            <td><?= htmlspecialchars($papers->image_caption) ?> <a href="<?=base_url().'user/presentation_upload/'.$paper_id?>" class="float-end"> Edit </a></td>
+                        </tr>
+                    <?php endif; ?>
                     </tbody>
                 </table>
+
+
             </div>
         </div>
 
