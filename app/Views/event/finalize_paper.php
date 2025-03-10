@@ -15,7 +15,7 @@
     <div class="container pb-5">
         <?php echo view('event/common/shortcut_link'); ?>
         <div class="card shadow">
-            <div class="card-header fw-bold"> General Information  <a href="<?=base_url()?>/user/edit_papers_submission/<?=$paper_id?>" class="btn btn-sm btn-primary float-end"><i class="fas fa-edit"></i> Edit</a></div>
+            <div class="card-header fw-bold"> General Information  <a href="<?=base_url()?>/user/edit_papers_submission/<?=$paper_id?>" class="btn btn-sm btn-primary float-end btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a></div>
             <div class="card-body">
                 <table class="table">
                     <tbody>
@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="card shadow">
-            <div class="card-header fw-bold"> Uploaded File(s)<?=(!isset($authorInfo)? '<span class="text-danger text-sm badge " title="Please complete requirements before finalizing abstract."><i class="fas fa-exclamation-circle" > INCOMPLETE </i></span>' :'')?>  <a href="<?=base_url()?>/user/presentation_upload/<?=$paper_id?>" class="btn btn-sm btn-primary float-end"><i class="fas fa-edit"></i> Edit</a></div>
+            <div class="card-header fw-bold"> Uploaded File(s)<?=(!isset($authorInfo)? '<span class="text-danger text-sm badge " title="Please complete requirements before finalizing abstract."><i class="fas fa-exclamation-circle" > INCOMPLETE </i></span>' :'')?>  <a href="<?=base_url()?>/user/presentation_upload/<?=$paper_id?>" class="btn btn-sm btn-primary float-end btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a></div>
             <div class="card-body">
                 <p> (The most recent uploaded file will appear at the top of the list) </p>
                 <table class="table" style="margin-bottom:0px !important">
@@ -44,12 +44,12 @@
             </div>
         </div>
         <div class="card shadow">
-            <div class="card-header fw-bold"> Author Information <?=(!isset($authorInfo)? '<span class="text-danger text-sm badge " title="Please complete requirements before finalizing abstract."><i class="fas fa-exclamation-circle" > INCOMPLETE </i></span>' :'')?>  <a href="<?=base_url()?>/user/authors_and_copyright/<?=$paper_id?>" class="btn btn-sm btn-primary float-end"><i class="fas fa-edit"></i> Edit</a></div>
+            <div class="card-header fw-bold"> Author Information <?=(!isset($authorInfo)? '<span class="text-danger text-sm badge " title="Please complete requirements before finalizing abstract."><i class="fas fa-exclamation-circle" > INCOMPLETE </i></span>' :'')?>  <a href="<?=base_url()?>/user/authors_and_copyright/<?=$paper_id?>" class="btn btn-sm btn-primary float-end btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a></div>
             <div class="card-body">
                 <table class="table" style="margin-bottom:0px !important">
                     <tbody>
                         <tr>
-                            <td class="text-end" style="width:250px">
+                            <td class="text-end" style="width:250px;">
                                 Author List:
                             </td>
                             <td>
@@ -70,7 +70,7 @@
                             <td><strong><?=UcFirst($author['name']).' '.UcFirst($author['surname']) ?></strong></td>
                         </tr>
                             <tr>
-                                <td class="text-end">Author Info: </td>
+                                <td class="text-end" style="vertical-align: top">Author Info: </td>
                                 <td >
                                 Address: <?=$author['address']?>
                                 <?=$author['city'], $author['province'], $author['zipcode'], $author['country'] ?><br>
@@ -96,74 +96,74 @@
         </div>
 
         <div class="card shadow">
-            <div class="card-header fw-bold"> Paper Information <?=(!isset($papers)? '<span class="text-danger text-sm badge " title="Please complete requirements before finalizing abstract."><i class="fas fa-exclamation-circle" > INCOMPLETE </i></span>' :'')?> <a href="<?=base_url()?>/user/edit_papers_submission/<?=$paper_id?>" class="btn btn-sm btn-primary float-end"><i class="fas fa-edit"></i> Edit</a></div>
+            <div class="card-header fw-bold"> Paper Information <?=(!isset($papers)? '<span class="text-danger text-sm badge " title="Please complete requirements before finalizing abstract."><i class="fas fa-exclamation-circle" > INCOMPLETE </i></span>' :'')?> <a href="<?=base_url()?>/user/edit_papers_submission/<?=$paper_id?>" class="btn btn-sm btn-primary float-end btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a></div>
             <div class="card-body">
                 <table class="table" style="border-bottom-width:4px !important">
                     <tbody>
                     <?php if ($papers): ?>
                         <tr>
                             <td class="text-end">Session Types :</td>
-                            <td><a class="float-end"> Edit </a></td>
+                            <td><a class="float-end btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit </a></td>
                         </tr>
                         <tr>
                             <td class="text-end">Basic Science Proposal Format :</td>
-                            <td><?= htmlspecialchars($papers->basic_science_format) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end"> Edit </a></td>
+                            <td><?= htmlspecialchars($papers->basic_science_format) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit </a></td>
                         </tr>
                         <tr>
                             <td class="text-end">Previous Publication :</td>
-                            <td><?= htmlspecialchars($papers->previous_presentation) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end"> Edit </a></td>
+                            <td><?= htmlspecialchars($papers->previous_presentation) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit </a></td>
                         </tr>
                         <tr>
                             <td class="text-end">Abstract Category :</td>
-                            <td><?= htmlspecialchars($papers->abstract_category) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end"> Edit </a></td>
+                            <td><?= htmlspecialchars($papers->abstract_category) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit </a></td>
                         </tr>
                         <tr>
                             <td class="text-end">Abstract Title :</td>
-                            <td><?= htmlspecialchars($papers->title) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end"> Edit </a></td>
+                            <td><?= htmlspecialchars($papers->title) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit </a></td>
                         </tr>
                         <tr>
                             <td class="text-end">Hypothesis :</td>
-                            <td><?= htmlspecialchars($papers->hypothesis) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end"> Edit </a></td>
+                            <td><?= htmlspecialchars($papers->hypothesis) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit </a></td>
                         </tr>
                         <tr>
                             <td class="text-end">Study Design :</td>
-                            <td><?= htmlspecialchars($papers->study_design) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end"> Edit </a></td>
+                            <td><?= htmlspecialchars($papers->study_design) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit </a></td>
                         </tr>
                         <tr>
                             <td class="text-end">Introduction :</td>
-                            <td><?= htmlspecialchars($papers->introduction) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end"> Edit </a></td>
+                            <td><?= htmlspecialchars($papers->introduction) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit </a></td>
                         </tr>
                         <tr>
                             <td class="text-end">Methods :</td>
-                            <td><?= htmlspecialchars($papers->methods) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end"> Edit </a></td>
+                            <td><?= htmlspecialchars($papers->methods) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit </a></td>
                         </tr>
                         <tr>
                             <td class="text-end">Results :</td>
-                            <td><?= htmlspecialchars($papers->results) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end"> Edit </a></td>
+                            <td><?= htmlspecialchars($papers->results) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit </a></td>
                         </tr>
                         <tr>
                             <td class="text-end">Conclusion :</td>
-                            <td><?= htmlspecialchars($papers->conclusions) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end"> Edit </a></td>
+                            <td><?= htmlspecialchars($papers->conclusions) ?> <a href="<?=base_url().'user/edit_papers_submission/'.$paper_id?>" class="float-end btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit </a></td>
                         </tr>
                         <tr>
                             <td class="text-end">What was the minimum time period of follow-up? :</td>
-                            <td><?= htmlspecialchars($papers->min_follow_up_period) ?> <a href="<?=base_url().'user/level_of_evidence/'.$paper_id?>" class="float-end"> Edit </a></td>
+                            <td><?= htmlspecialchars($papers->min_follow_up_period) ?> <a href="<?=base_url().'user/level_of_evidence/'.$paper_id?>" class="float-end btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit </a></td>
                         </tr>
                         <tr>
                             <td class="text-end">Was this study funded by an SRS Grant? :</td>
-                            <td><?= htmlspecialchars($papers->is_srs_funded) ?> <a href="<?=base_url().'user/level_of_evidence/'.$paper_id?>" class="float-end"> Edit </a></td>
+                            <td><?= htmlspecialchars($papers->is_srs_funded) ?> <a href="<?=base_url().'user/level_of_evidence/'.$paper_id?>" class="float-end btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit </a></td>
                         </tr>
                         <tr>
                             <td class="text-end">Who is the Primary Investigator? :</td>
-                            <td><?= htmlspecialchars($papers->primary_investigator) ?> <a href="<?=base_url().'user/level_of_evidence/'.$paper_id?>" class="float-end"> Edit </a></td>
+                            <td><?= htmlspecialchars($papers->primary_investigator) ?> <a href="<?=base_url().'user/level_of_evidence/'.$paper_id?>" class="float-end btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit </a></td>
                         </tr>
                         <tr>
                             <td class="text-end">What is the grant year? :</td>
-                            <td><?= htmlspecialchars($papers->grant_year) ?> <a href="<?=base_url().'user/level_of_evidence/'.$paper_id?>" class="float-end"> Edit </a></td>
+                            <td><?= htmlspecialchars($papers->grant_year) ?> <a href="<?=base_url().'user/level_of_evidence/'.$paper_id?>" class="float-end btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit </a></td>
                         </tr>
                         <tr>
-                            <td class="text-end">Image Caption :</td>
-                            <td><?= htmlspecialchars($papers->image_caption) ?> <a href="<?=base_url().'user/presentation_upload/'.$paper_id?>" class="float-end"> Edit </a></td>
+                            <td class="text-end" style="vertical-align:top">Image Caption :</td>
+                            <td><?= htmlspecialchars($papers->image_caption) ?> <a href="<?=base_url().'user/presentation_upload/'.$paper_id?>" class="float-end btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit </a></td>
                         </tr>
                     <?php endif; ?>
                     </tbody>

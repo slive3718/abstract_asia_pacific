@@ -39,7 +39,8 @@
 
 
                 <div class="text-center mx-auto my-2 p-4" style="width: 600px; border:4px dotted black">
-                    Total Abstract Body Count: <span id="abstract_body_character_count" >0 characters</span> / 2500 characters
+                    Total Abstract Body Count: <span id="abstract_body_character_count" >0 characters</span> <br>
+                    Total Image Caption Count: <span id="image_caption_words_count" >0 characters</span>
                 </div>
 
                 <label for="image_caption" class="fw-bolder"> Image Caption</label>
@@ -158,10 +159,16 @@
         $('.presentationContinueBtn').on('click', function(e){
             e.preventDefault();
 
-            if($('#abstract_body_character_count').text() > 2500 ){
-                toastr.error('words limit exceeded!')
+
+            let total_words_count = `<?= intVal($paper['total_words_count']) ?>`;
+            let image_caption_words_count = parseInt($('#image_caption_words_count').text());
+
+
+            if (image_caption_words_count + parseInt($('#abstract_body_character_count').text()) > 2500) {
+                toastr.error('Total Words Count Exceed!')
                 return false;
             }
+
             $.ajax({
                 url: "<?= base_url().'user/update_paper_ajax' ?>",
                 type: "POST", // Use "GET" if your backend expects it
@@ -227,20 +234,19 @@
         WordCounterHelper.init(
             'textarea.countWords',  // Textarea selector
             '.counted_words',       // Word count display
-            '#abstract_body_character_count' // Total word count display
+            '#image_caption_words_count' // Total word count display
         );
 
+
         $('textarea.countWords').trigger('input');
-
-        let total = `${parseInt($('#abstract_body_character_count').text()) + <?=$paper['total_words_count']?>}`;
-        $('#abstract_body_character_count').html(total)
-
+        let abstract_body_character_count = `<?=$paper['total_words_count']?>`;
+        $('#abstract_body_character_count').html(abstract_body_character_count)
 
     })
 
     function getPaperUploads(){
 
-       $.ajax({
+        $.ajax({
            url : base_url+'user/getPaperUploads',
            type: 'POST',
            data: {

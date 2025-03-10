@@ -69,6 +69,7 @@ class User extends BaseController
 
      public function submission_menu($paper_id){
 
+         $this->validate_user_access($paper_id);
 
          $PapersModel = (new PapersModel());
          $AuthorsModel = (new PaperAuthorsModel());
@@ -168,6 +169,7 @@ class User extends BaseController
     }
 
     public function edit_papers_submission($paper_id = null){
+        $this->validate_user_access($paper_id);
 
         $paper = (new PapersModel())->where('id', $paper_id)->asArray()->first();
         $categories = (new AbstractCategoriesModel())->findAll();
@@ -250,7 +252,7 @@ class User extends BaseController
             return $this->response->setJSON([
                 'status' => 200,
                 'msg' => 'Data Inserted Successfully',
-                'data' => ['insert_id' => $insert_id]
+                'data' => ['abstract_id' => $insert_id]
             ]);
         } catch (\Exception $e) {
             return $this->response->setJSON([
@@ -306,7 +308,7 @@ class User extends BaseController
 
         // If no changes, return a message
         if (empty($update_array)) {
-            return $this->response->setJSON(['status' => 200, 'msg' => "No changes made", 'data' => '']);
+            return $this->response->setJSON(['status' => 200, 'msg' => "No changes made", 'data' => ['abstract_id' => $post['paper_id']]]);
         }
 
         // Perform the update operation
@@ -317,7 +319,7 @@ class User extends BaseController
                 return $this->response->setJSON([
                     'status' => 200,
                     'msg' => "Paper updated successfully",
-                    'data' => ['update_id' => $post['paper_id']]
+                    'data' => ['abstract_id' => $post['paper_id']]
                 ]);
             } else {
                 return $this->response->setJSON(['status' => 500, 'msg' => "Update failed", 'data' => '']);
@@ -348,6 +350,8 @@ class User extends BaseController
     public function authors_and_copyright($paper_id){
         $post = $this->request->getPost();
 
+        $this->validate_user_access($paper_id);
+
         $UsersModel = (new UserModel());
         $papersModel = (new PapersModel());
         $papers = $papersModel->find($paper_id);
@@ -375,7 +379,7 @@ class User extends BaseController
     }
 
     public function level_of_evidence($paper_id){
-
+        $this->validate_user_access($paper_id);
         $paper = (new PapersModel())->asArray()->find($paper_id);
 
         $header_data = [
@@ -472,6 +476,8 @@ class User extends BaseController
         if($post == null){
             $post = $this->request->getPost();
         }
+
+        $this->validate_user_access($post['paper_id']);
 
         $PaperAuthorModel = new PaperAuthorsModel();
         $message = array();
@@ -632,7 +638,9 @@ class User extends BaseController
                         'country' => $post['authorCountry']?:'',
                         'province' => $post['authorProvince']?:'',
                         'zipcode' => $post['authorZipcode']?:'',
-                        'author_id' => $userResult
+                        'author_id' => $userResult,
+                        'designations' => !empty($post['designations']) ? json_encode($post['designations']) : '',
+                        'other_designation' => $post['other_designation'] ?? ''
                     ];
 
                     $UsersProfileModel->set($insertAuthorDetailsArray)->insert();
@@ -726,7 +734,9 @@ class User extends BaseController
             'city' => $post['authorCity']?:'',
             'country' => $post['authorCountry']?:'',
             'province' => $post['authorProvince']?:'',
-            'zipcode' => $post['authorZipcode']?:''
+            'zipcode' => $post['authorZipcode']?:'',
+            'designations' => !empty($post['designations']) ? json_encode($post['designations']): '',
+            'other_designation' => $post['other_designation'] ?? ''
         ];
 
 
@@ -806,7 +816,11 @@ class User extends BaseController
 //    }
 
     public function update_paper_authors(){
+
         $post = $this->request->getPost();
+
+        $this->validate_user_access($post['paper_id']);
+
         $PaperAuthorsModel = new PaperAuthorsModel();
         $LogsModel = new LogsModel();
 
@@ -1057,7 +1071,7 @@ class User extends BaseController
     }
 
     public function presentation_upload($paper_id){
-
+        $this->validate_user_access($paper_id);
         $paper = (new PapersModel())->asArray()->find($paper_id);
         if(!$paper)
             exit;
@@ -1262,6 +1276,7 @@ class User extends BaseController
 //
     public function finalize_paper($paper_id){
 
+        $this->validate_user_access($paper_id);
 
         $user_id = session('user_id');
         $post = $this->request->getPost();
@@ -2470,6 +2485,8 @@ class User extends BaseController
 
         $AbstractReviewModel = (new AbstractReviewModel());
 
+        $this->validate_user_access($post['paper_id']);
+
         $papers = (new PapersModel())->find($post['paper_id']);
         $MailTemplates = (new EmailTemplatesModel())->find(10);
         $email_body = $MailTemplates['email_body'];
@@ -2525,6 +2542,19 @@ class User extends BaseController
         }
 
     }
+
+    function validate_user_access($paper_id)
+    {
+        $user_paper = (new PapersModel())->where('user_id', session('user_id'))->findAll();
+
+        if (!$paper_id || !in_array($paper_id, array_column($user_paper, 'id'))) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound('Invalid ID');
+        }
+
+        return true;
+    }
+
+
 
     public function testMail(){
         $mail = new PhpMail();

@@ -98,9 +98,8 @@ $(function() {
                             processData: false,
                             contentType: false,
                             success: function(response) {
-                                console.log(response)
                                 if (response.status === 200) {
-                                    window.location.href = base_url + '/user/authors_and_copyright/' + response.data.insert_id;
+                                    window.location.href = base_url + '/user/authors_and_copyright/' + response.data.abstract_id;
                                 } else {
                                     $.each(response.msg, function(i, val){
                                         toastr.error(val);
@@ -562,18 +561,27 @@ $(function() {
 
                     $('#designations').prepend('<option value=""> -- Select Designation -- </option>')
 
-                    fetchDesignations().then(designations=>{
-                        $.each(designations, function(i, designation){
-                            console.log(designation)
-                            $('.designationDiv').append(`
-                             <input type="checkbox" name="designations[]" title="Designation" id="designation_${designation.designation_id}" class=" required" value="${designation.designation_id}">
-                             <label class="form-label" for="designation_${designation.designation_id}">${designation.name} <span class="text-danger">*</span></label>
-                             <label class="form-label" for="designation_${designation.designation_id}">${designation.name} <span class="text-danger">*</span></label>
-                             <br>
-                            `)
-                        })
-                    });
+                    fetchDesignations().then(designations => {
+                        let designationHTML = `<div class="d-flex flex-wrap gap-3">`;
+                        let selectedDesignations = response.data.designations || []; // Ensure it's an array
 
+                        $.each(designations, function(i, designation) {
+                            let isChecked = selectedDesignations.includes(designation.designation_id.toString()) ? 'checked' : '';
+                            designationHTML += `
+                                <div class="form-check">
+                                    <input class="form-check-input required" type="checkbox" name="designations[]" 
+                                        id="designation_${designation.designation_id}" value="${designation.designation_id}" ${isChecked}>
+                                    <label class="form-check-label fw-bold" for="designation_${designation.designation_id}">
+                                        ${designation.name}
+                                    </label>
+                                </div>
+                            `;
+                        });
+
+                        designationHTML += `</div>`;
+                        $('.designationDiv').html(designationHTML);
+                    });
+                    $('#other_designation').val(response.data.other_designation)
 
                     $('#addAuthorModal #author_id').val(author_id);
 

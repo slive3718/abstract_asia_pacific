@@ -29,8 +29,10 @@ var WordCounterHelper = (function () {
 
         if (totalWordsSum > 2500) {
             totalDisplay.closest('div').addClass('text-danger');
+            totalDisplay.closest('div').removeClass('text-success');
         } else {
             totalDisplay.closest('div').removeClass('text-danger');
+            totalDisplay.closest('div').addClass('text-success');
         }
     }
 

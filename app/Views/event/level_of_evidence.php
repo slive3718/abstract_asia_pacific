@@ -20,11 +20,13 @@
                 <input type="radio" name="is_srs_funded" id="is_srs_funded_no" value="No" class="" required <?=!empty($paper) && $paper['is_srs_funded'] == 'No' ? 'checked' : '' ?>>
                 <label for="is_srs_funded_no"  class="fw-bolder h6 mt-2"> No </label> <br>
 
+                <div id="is_srs_funded_yes_extended_info">
                 <label for="primary_investigator"  class="fw-bolder h6 mt-2"> <span class="text-danger">*</span> Who is the Primary Investigator?</label>
                 <input type="text" name="primary_investigator" id="primary_investigator" class="form-control" required value="<?=!empty($paper) && $paper['primary_investigator'] ? $paper['primary_investigator'] : ''?>">
 
                 <label for="grant_year"  class="fw-bolder h6 mt-2"> <span class="text-danger">*</span> What is the grant year? </label>
                 <input type="text" name="grant_year" id="grant_year" class="form-control" required value="<?=!empty($paper) && $paper['grant_year'] ? $paper['grant_year'] : ''?>">
+                </div>
 
                 <input type="submit" class="btn btn-success btn-sm mt-4" value="Submit">
             </form>
@@ -68,35 +70,63 @@
         })
 
 
-        function validateRequired() {
-            let isValid = true;
-            let errorMessage = "";
 
-            // Check text inputs
-            $('#level_of_evidence_form input[type="text"]').each(function() {
-                if ($(this).prop('required') && $(this).val().trim() === "") {
-                    isValid = false;
-                    errorMessage += `- ${$(this).prev('label').text().trim()} is required.\n`;
-                }
-            });
 
-            // Check radio buttons
-            let radioGroups = ['is_srs_funded']; // List of required radio name attributes
-            radioGroups.forEach(function(name) {
-                if (!$(`input[name="${name}"]:checked`).length) {
-                    isValid = false;
-                    errorMessage += `- Please select an option for ${name.replace('_', ' ')}.\n`;
-                }
-            });
 
-            if (!isValid) {
-                alert("Please fix the following errors:\n" + errorMessage);
+
+        $("input[name='is_srs_funded']").on("change", toggleFields);
+
+        // Initial check on page load
+        toggleFields();
+    })
+
+
+    function validateRequired() {
+        let isValid = true;
+        let errorMessage = "";
+
+        // Check text inputs
+        $('#level_of_evidence_form input[type="text"]').each(function() {
+            if ($(this).prop('required') && $(this).val().trim() === "") {
+                isValid = false;
+                errorMessage += `- ${$(this).prev('label').text().trim()} is required.\n`;
             }
+        });
 
-            return isValid;
+        // Check radio buttons
+        let radioGroups = ['is_srs_funded']; // List of required radio name attributes
+        radioGroups.forEach(function(name) {
+            if (!$(`input[name="${name}"]:checked`).length) {
+                isValid = false;
+                errorMessage += `- Please select an option for ${name.replace('_', ' ')}.\n`;
+            }
+        });
+
+        if (!isValid) {
+            alert("Please fix the following errors:\n" + errorMessage);
         }
 
+        return isValid;
+    }
 
-    })
+    function toggleFields() {
+
+        const srsGrantYes = $("#is_srs_funded_yes");
+        const srsGrantNo = $("#is_srs_funded_no");
+        // const primaryInvestigator = $("#primary_investigator").closest("label");
+        // const grantYear = $("#grant_year").closest("label");
+        const is_srs_funded_yes_extended_info = $('#is_srs_funded_yes_extended_info')
+
+        if (srsGrantYes.is(":checked")) {
+            is_srs_funded_yes_extended_info.show();
+            $('#primary_investigator').attr('required', true)
+            $('#grant_year').attr('required', false)
+        } else {
+            is_srs_funded_yes_extended_info.hide();
+            $('#primary_investigator').attr('required', false)
+            $('#grant_year').attr('required', false)
+        }
+    }
+
 </script>
 
