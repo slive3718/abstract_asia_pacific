@@ -354,7 +354,7 @@ class User extends BaseController
 
         $UsersModel = (new UserModel());
         $papersModel = (new PapersModel());
-        $papers = $papersModel->find($paper_id);
+        $paper = $papersModel->asArray()->find($paper_id);
         $UsersProfileModel = (new UsersProfileModel());
         $recentAuthors = (new PaperAuthorsModel())
             ->join($UsersModel->table, 'paper_authors.author_id = users.id')
@@ -368,8 +368,8 @@ class User extends BaseController
         $data = [
             'id' => $this->request->uri->getSegment(4),
             'paper_id' => $paper_id,
-            'abstract_details'=>($papers)?:'',
-            'recentAuthors'=>$recentAuthors
+            'paper'=> $paper ? :'',
+            'recentAuthors'=>$recentAuthors,
         ];
         return
             view('event/common/header', $header_data).
@@ -1076,7 +1076,7 @@ class User extends BaseController
         if(!$paper)
             exit;
         $header_data = [
-            'title' => "Presentation Upload"
+            'title' => "Image Upload"
         ];
         $data = [
             'paper_id'=> $paper_id,
@@ -1089,118 +1089,135 @@ class User extends BaseController
             ;
     }
 
-    public function presentation_do_upload(){
-
-        $PaperUploadsModel = (new PaperUploadsModel());
-        $PapersModel = (new PapersModel());
+    public function presentation_do_upload() {
+        $PaperUploadsModel = new PaperUploadsModel();
+        $PapersModel = new PapersModel();
         $post = $this->request->getPost();
 
         $sendMail = new PhpMail();
 
-        $siteSettings = (new SiteSettingModel())->first();
-        $allowed = explode(",", $siteSettings['value']);
+        // ✅ Get site settings
+        $siteSettings = (new SiteSettingModel())->findAll();
+
+        // ✅ Get allowed file types and upload limit from settings
+        $allowedTypes = [];
+        $uploadLimit = 0;
+        foreach ($siteSettings as $setting) {
+            if ($setting['name'] === 'presentation_upload') {
+                $allowedTypes = explode(',', $setting['value']);
+            }
+            if ($setting['name'] === 'presentation_upload_count') {
+                $uploadLimit = intval($setting['value']);
+            }
+        }
+
         $filename = $_FILES['file']['name'];
         $file_type = $_FILES['file']['type'];
-        $file_size = $_FILES['file']['size']; // Corrected: Used 'size' instead of 'type'
+        $file_size = $_FILES['file']['size'];
         $file_extension = pathinfo($filename, PATHINFO_EXTENSION);
-        // Get the file extension
 
-
-        if (!in_array($file_extension, $allowed)) {
+        // ✅ Check if file type is allowed
+        if (!in_array($file_extension, $allowedTypes)) {
             return json_encode(['status' => 401, 'message' => 'File type not allowed!']);
         }
 
-        $customName = $post['paper_id'].'_'.date('mdY').'_'.$filename;
+        // ✅ Check current upload count for this paper
+        $currentUploadCount = $PaperUploadsModel->where('paper_id', $post['paper_id'])->countAllResults();
+        if ($currentUploadCount >= $uploadLimit) {
+            return json_encode(['status' => 401, 'message' => 'Upload limit reached!']);
+        }
 
-        $filePath = "/uploads/presentation/".$post['paper_id']."/";
+        $papers = $PapersModel->find($post['paper_id']);
+        if (!$papers) {
+            return json_encode(['status' => 404, 'message' => 'Paper not found!']);
+        }
+
+        $customName = $papers->custom_id . '_' . $filename;
+        $filePath = "/uploads/presentation/" . $post['paper_id'] . "/";
         $savePath = FCPATH . $filePath;
+
         $files = $this->request->getFiles('file');
         $uploadResult = $this->doUpload($files, $filePath, $savePath, $customName);
-//        $uploadResult = 1;
-        if(!empty($uploadResult)) {
+
+        // ✅ Ensure upload result is valid
+        if (!empty($uploadResult) && isset($uploadResult['new_name'])) {
             try {
+                $reviews = (new AbstractReviewModel())->where('abstract_id', $papers->id)->findAll();
+                $MailTemplates = (new EmailTemplatesModel())->find($reviews ? 16 : 7);
 
-                $papers = $PapersModel->find($post['paper_id']);
-                if($papers){
-                    $reviews = (new AbstractReviewModel())->where('abstract_id', $papers->id)->findAll();
-                    if(!$reviews)
-                        $MailTemplates = (new EmailTemplatesModel())->find(7);
-                    else
-                        $MailTemplates = (new EmailTemplatesModel())->find(16);
+                $email_body = $MailTemplates['email_body'];
 
-                    $email_body = $MailTemplates['email_body'];
+                $assignedUsers = (new PaperAssignedReviewerModel())
+                    ->join('users', 'reviewer_id = users.id')
+                    ->join('users_profile', 'users.id = users_profile.author_id')
+                    ->where([
+                        'reviewer_type' => 'regular',
+                        'paper_id' => $post['paper_id'],
+                        'is_declined' => 0,
+                        'is_deleted' => 0
+                    ])
+                    ->findAll();
 
-//                    $deputy_users = (new UserModel())->join('users_profile', 'users.id = users_profile.author_id')->where('is_deputy_reviewer', 1)->findAll();
-                    $assignedUsers = (new PaperAssignedReviewerModel())
-                        ->join('users', 'reviewer_id = users.id')
-                        ->join('users_profile', 'users.id = users_profile.author_id')
-                        ->where(['reviewer_type'=>'regular', 'paper_id'=>$post['paper_id'], 'is_declined'=>0, 'is_deleted'=>0])
-                        ->findAll();
+                foreach ($assignedUsers as $user) {
+                    $user_divisions = json_decode($user['division_id']);
+                    if (!empty($user_divisions) && in_array($papers->division_id, $user_divisions)) {
+                        $PaperTemplates = str_replace(
+                            ['##ABSTRACT_ID##', '##RECIPIENTS_FULL_NAME##', '##REVIEW_USERNAME##', '##REVIEW_PASSWORD##'],
+                            [
+                                $post['paper_id'],
+                                ucFirst($user['name']) . ' ' . ucFirst($user['surname']),
+                                $user['email'],
+                                'Please reset your password in case forgotten. Thank you!'
+                            ],
+                            $email_body
+                        );
 
-//                    print_R($assignedUsers);exit;
-                    foreach ($assignedUsers as $user){
-                        $user_divisions = json_decode($user['division_id']);
-                        if(!empty($user_divisions)) {
-                            if (in_array($papers->division_id, $user_divisions)) {
-//                                print_r($user['email']);exit;
-                                    $PaperTemplates = $email_body;
-                                    $PaperTemplates = str_replace('##ABSTRACT_ID##', $post['paper_id'], $PaperTemplates);
-                                    $PaperTemplates = str_replace('##RECIPIENTS_FULL_NAME##', ucFirst($user['name']).' '.ucFirst($user['surname']), $PaperTemplates);
-                                    $PaperTemplates = str_replace('##REVIEW_USERNAME##', $user['email'], $PaperTemplates);
-                                    $PaperTemplates = str_replace('##REVIEW_PASSWORD##', 'Please reset your password in case forgotten. Thank you!', $PaperTemplates);
-                                    $from = ['name'=>'AFS', 'email'=>'afs@owpm2.com'];
-                                    $addTo = $user['email'];
-                                    $subject = $MailTemplates['email_subject'];
-                                    $addContent = $PaperTemplates;
-                                    $result = $sendMail->send($from, $addTo, $subject, $addContent );
+                        $from = ['name' => 'AFS', 'email' => 'afs@owpm2.com'];
+                        $addTo = $user['email'];
+                        $subject = $MailTemplates['email_subject'];
 
-                            // ###################  Save to Email logs #####################
-                                $email_logs_array = [
-                                    'user_id' => session('user_id'),
-                                    'add_to' => ($addTo),
-                                    'subject' => $subject,
-                                    'ref_1' => 'presentation_upload',
-                                    'add_content' => $addContent,
-                                    'send_from' => "Submitter",
-                                    'send_to' => "Reviewers",
-                                    'level' => "Info",
-                                    'template_id' => $MailTemplates['id'],
-                                    'paper_id' => $post['paper_id'],
-                                    'user_agent' => $this->request->getUserAgent()->getBrowser(),
-                                    'ip_address' => $this->request->getIPAddress(),
-                                ];
-                                    if($result->statusCode == 200){
-                                        $email_logs_array['status'] = 'Success';
-                                        $emailLogsModel = (new EmailLogsModel())->saveToMailLogs($email_logs_array);
-                                    }else{
-                                        $email_logs_array['status'] = 'Failed';
-                                        $emailLogsModel = (new EmailLogsModel())->saveToMailLogs($email_logs_array);
-                                    }
-                            // End Save to Email Logs        #####################################
-                            }
-                        }
-                    }
-                    $result = $PaperUploadsModel
-                        ->insert([
+                        $result = $sendMail->send($from, $addTo, $subject, $PaperTemplates);
+
+                        // ✅ Save to email logs
+                        $email_logs_array = [
+                            'user_id' => session('user_id'),
+                            'add_to' => $addTo,
+                            'subject' => $subject,
+                            'ref_1' => 'presentation_upload',
+                            'add_content' => $PaperTemplates,
+                            'send_from' => "Submitter",
+                            'send_to' => "Reviewers",
+                            'level' => "Info",
+                            'template_id' => $MailTemplates['id'],
                             'paper_id' => $post['paper_id'],
-                            'file_preview_name' => $customName,
-                            'file_format' => $file_type,
-                            'file_size' => $file_size,
-                            'file_path' => $filePath,
-                            'file_extension' => $file_extension,
-                            'file_name' => $uploadResult['new_name'],
-                            'created_at' => date('Y-m-d H:i:s')
-                        ]);
+                            'user_agent' => $this->request->getUserAgent()->getBrowser(),
+                            'ip_address' => $this->request->getIPAddress(),
+                            'status' => ($result->statusCode == 200) ? 'Success' : 'Failed'
+                        ];
 
-                    return json_encode(['status' => 200, 'message' => 'success', 'data' => '']);
+                        (new EmailLogsModel())->saveToMailLogs($email_logs_array);
+                    }
                 }
 
+                // ✅ Insert upload record into the database
+                $PaperUploadsModel->insert([
+                    'paper_id' => $post['paper_id'],
+                    'file_preview_name' => $customName,
+                    'file_format' => $file_type,
+                    'file_size' => $file_size,
+                    'file_path' => $filePath,
+                    'file_extension' => $file_extension,
+                    'file_name' => $uploadResult['new_name'],
+                    'created_at' => date('Y-m-d H:i:s')
+                ]);
+
+                return json_encode(['status' => 200, 'message' => 'Upload successful!', 'data' => '']);
             } catch (\Exception $e) {
-                $this->response->setStatusCode(401);
                 return json_encode(['status' => 500, 'message' => $e->getMessage(), 'data' => '']);
             }
         }
-        return json_encode(['status' => 500, 'message' => 'error', 'data' => '']);
+
+        return json_encode(['status' => 500, 'message' => 'Upload failed!', 'data' => '']);
     }
 
     function templateReplaceKewords(){

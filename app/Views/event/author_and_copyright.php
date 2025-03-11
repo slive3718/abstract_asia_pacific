@@ -167,6 +167,7 @@
     <script  type="text/javascript" src="<?=base_url('assets/js/addressAutoComplete.js')?>"></script>
 <script>
     let current_user_id = "<?=session('user_id')?>"
+    let basic_science_format_status = "<?= !empty($paper) && $paper['basic_science_format'] == 'Yes' ? 1 : 0?>"
 </script>
 <script>
     $(function(){

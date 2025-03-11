@@ -239,9 +239,23 @@
 
 
         $('textarea.countWords').trigger('input');
+
         let abstract_body_character_count = `<?=$paper['total_words_count']?>`;
         $('#abstract_body_character_count').html(abstract_body_character_count)
 
+        $('textarea.countWords').on('input', function(){
+            let total_words_count = $('#abstract_body_character_count').text();
+            let image_caption_words_count = $('#image_caption_words_count').text();
+
+            if(parseInt(total_words_count) + parseInt(image_caption_words_count) > 2500){
+                toastr.error('Total of description already exceed 2500 words!')
+                $('#image_caption_words_count').closest('div').addClass('text-danger')
+                $('#image_caption_words_count').closest('div').removeClass('text-success')
+            }else{
+                $('#image_caption_words_count').closest('div').addClass('text-success')
+                $('#image_caption_words_count').closest('div').removeClass('text-danger')
+            }
+        })
     })
 
     function getPaperUploads(){

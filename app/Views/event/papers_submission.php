@@ -222,11 +222,20 @@
                     </div>
                 </div>
 
+                <!-- ##########   Question 11: Image Caption : for counting purposes only ############### -->
+                <div class="row image_caption" style="display: none">
+                    <div class="col mt-4">
+                        <div id="image_caption">
+                            <textarea name="" id="" class="form-control countWords" rows="4" placeholder="Enter any additional notes..."><?=(!empty($paper) ? $paper['image_caption'] : '')?></textarea>
+                            <label class="counted_words fw-bolder"></label>
+                        </div>
+                    </div>
+                </div>
+
 
                 <div>
                     <label class="title mt-4">Image/Table Caption</label>
-                    <p>If you are adding an image Or table to your abstract submission, the caption for this will count to your total 2500 characters. Please add your caption on tne upload page
-                        ou have 2500/2500 characters left for your caption.</p>
+                    <p>If you are adding an image Or table to your abstract submission, the caption for this will count to your total 2500 characters. Please add your caption on the upload page you have <span id="remaining_caption_count" class="fw-bolder">0</span>/2500 characters left for your caption.</p>
                 </div>
 
 
@@ -280,60 +289,17 @@
             '.counted_words',       // Word count display
             '#abstract_body_character_count' // Total word count display
         );
+
+        $('textarea.countWords').on('input', function(){
+            let total_body_count = parseInt($('#abstract_body_character_count').text())
+            let remaining = 2500 - total_body_count;
+            $('#remaining_caption_count').text(remaining)
+        })
+
         $('textarea.countWords').trigger('input');
-
-
-
     })
 
-    $(document).ready(function () {
-        WordCounterHelper.init(
-            'textarea.countWords',  // Textarea selector
-            '.counted_words',       // Word count display
-            '#abstract_body_character_count' // Total word count display
-        );
-    });
 
 
-
-    // function runCounter() {
-    //     $('textarea.countWords').off('input').on('input', function() {
-    //         let text = $(this).val().trim();
-    //
-    //         // Count words including spaces (excluding multiple spaces)
-    //         let wordCount = text.length > 0 ? text.split(/\s+/).length : 0;
-    //
-    //         // Find the correct `.counted_words` element even if validation adds an error label
-    //         let wordCounterElement = $(this).siblings('.counted_words');
-    //
-    //         wordCounterElement.text('Word count: ' + wordCount);
-    //
-    //         if (wordCount > 2500) {
-    //             wordCounterElement.addClass('text-danger');
-    //         } else {
-    //             wordCounterElement.removeClass('text-danger');
-    //         }
-    //
-    //         countTotalWords(); // If you have a function to count total words
-    //     });
-    //
-    //
-    //     function countTotalWords() {
-    //         let totalWordsSum = 0;
-    //
-    //         $(".counted_words").each(function () {
-    //             let wordCount = parseInt($(this).text().replace(/\D+/g, ''), 10) || 0;
-    //             totalWordsSum += wordCount;
-    //         });
-    //
-    //         $('#abstract_body_character_count').html(totalWordsSum);
-    //
-    //         if (totalWordsSum > 2500) {
-    //             $('#abstract_body_character_count').closest('div').addClass('text-danger');
-    //         } else {
-    //             $('#abstract_body_character_count').closest('div').removeClass('text-danger');
-    //         }
-    //     }
-    // }
 
 </script>

@@ -438,6 +438,7 @@ $(function() {
                 method: "POST",
                 dataType: "json",
                 success: function (response, status) {
+                    console.log(basic_science_format_status)
                     if (response.status == "200") {
                         $('#authorResultModal').modal('hide');
                         swal.fire({
@@ -448,7 +449,10 @@ $(function() {
                             confirmButtonText: 'Ok, Next step',
                         }).then((result)=> {
                             if(result.isConfirmed){
-                                window.location.href = base_url+'/user/submission_menu/'+paper_id;
+                                if(basic_science_format_status === '1')
+                                    window.location.href = base_url+'/user/level_of_evidence/'+paper_id;
+                                else
+                                    window.location.href = base_url+'/user/presentation_upload/'+paper_id;
                             }
                         });
                     }
