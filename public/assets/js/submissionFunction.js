@@ -66,9 +66,11 @@ $(function() {
             },
             submitHandler: function(form) {
 
-                let totalWordsCount = parseInt($('#abstract_body_character_count').text());
+                let abstract_body_count = parseInt($('#abstract_body_count').text());
+                let totalWordsCount = abstract_body_count + + parseInt($('#image_caption_body_count').text())
+
                 let formData = new FormData(form);
-                formData.append('total_words_count', totalWordsCount)
+                formData.append('abstract_body_count', abstract_body_count)
                 let abstractTitle = $('#q1').val();
 
                 if (typeof userID === 'undefined') {
@@ -440,21 +442,24 @@ $(function() {
                 success: function (response, status) {
                     console.log(basic_science_format_status)
                     if (response.status == "200") {
-                        $('#authorResultModal').modal('hide');
-                        swal.fire({
-                            title:"Updated",
-                            text: "Author(s) Saved",
-                            type: "success",
-                            icon: "success",
-                            confirmButtonText: 'Ok, Next step',
-                        }).then((result)=> {
-                            if(result.isConfirmed){
-                                if(basic_science_format_status === '1')
-                                    window.location.href = base_url+'/user/level_of_evidence/'+paper_id;
-                                else
-                                    window.location.href = base_url+'/user/presentation_upload/'+paper_id;
-                            }
-                        });
+
+                        if(basic_science_format_status === '1')
+                            window.location.href = base_url+'/user/level_of_evidence/'+paper_id;
+                        else
+                            window.location.href = base_url+'/user/presentation_upload/'+paper_id;
+
+                        // $('#authorResultModal').modal('hide');
+                        // swal.fire({
+                        //     title:"Updated",
+                        //     text: "Author(s) Saved",
+                        //     type: "success",
+                        //     icon: "success",
+                        //     confirmButtonText: 'Ok, Next step',
+                        // }).then((result)=> {
+                        //     if(result.isConfirmed){
+                        //
+                        //     }
+                        // });
                     }
                     else if(response.status == 500){
                         Swal.fire(

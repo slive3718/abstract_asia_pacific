@@ -38,9 +38,12 @@
                 <button class="btn btn-primary btn-sm uploadFileBtn">Upload File</button> <br><br>
 
 
-                <div class="text-center mx-auto my-2 p-4" style="width: 600px; border:4px dotted black">
-                    Total Abstract Body Count: <span id="abstract_body_character_count" >0 characters</span> <br>
-                    Total Image Caption Count: <span id="image_caption_words_count" >0 characters</span>
+                <div class="text-center m-auto p-4" style="width: 600px; border:4px dotted black">
+                    Total Abstract Body Count: <span id="abstract_body_count">0 characters</span> <br>
+                    <?php if(!empty($paper) && trim($paper['image_caption']) !== ''): ?>
+                        Image Caption Body Count: <span id="image_caption_body_count" >0 characters</span><br>
+                    <?php endif ?>
+                    Limit: 2500
                 </div>
 
                 <label for="image_caption" class="fw-bolder"> Image Caption</label>
@@ -160,11 +163,11 @@
             e.preventDefault();
 
 
-            let total_words_count = `<?= intVal($paper['total_words_count']) ?>`;
+            let abstract_body_count = `<?= intVal($paper['abstract_body_count']) ?>`;
             let image_caption_words_count = parseInt($('#image_caption_words_count').text());
 
 
-            if (image_caption_words_count + parseInt($('#abstract_body_character_count').text()) > 2500) {
+            if (image_caption_words_count + parseInt($('#abstract_body_count').text()) > 2500) {
                 toastr.error('Total Words Count Exceed!')
                 return false;
             }
@@ -231,32 +234,35 @@
 
         })
 
+        image_caption_counter();
+    })
+
+    function image_caption_counter(){
         WordCounterHelper.init(
             'textarea.countWords',  // Textarea selector
             '.counted_words',       // Word count display
-            '#image_caption_words_count' // Total word count display
+            '#image_caption_body_count' // Total word count display
         );
 
-
-        $('textarea.countWords').trigger('input');
-
-        let abstract_body_character_count = `<?=$paper['total_words_count']?>`;
-        $('#abstract_body_character_count').html(abstract_body_character_count)
+        let abstract_body_character_count = `<?=$paper['abstract_body_count']?>`;
+        $('#abstract_body_count').html(abstract_body_character_count)
 
         $('textarea.countWords').on('input', function(){
-            let total_words_count = $('#abstract_body_character_count').text();
-            let image_caption_words_count = $('#image_caption_words_count').text();
+            let abstract_body_count = $('#abstract_body_count').text();
+            let image_caption_body_count = $('#image_caption_body_count').text();
 
-            if(parseInt(total_words_count) + parseInt(image_caption_words_count) > 2500){
+            if(parseInt(abstract_body_count) + parseInt(image_caption_body_count) > 2500){
                 toastr.error('Total of description already exceed 2500 words!')
-                $('#image_caption_words_count').closest('div').addClass('text-danger')
-                $('#image_caption_words_count').closest('div').removeClass('text-success')
+                $('#abstract_body_count').closest('div').addClass('text-danger')
+                $('#abstract_body_count').closest('div').removeClass('text-success')
             }else{
-                $('#image_caption_words_count').closest('div').addClass('text-success')
-                $('#image_caption_words_count').closest('div').removeClass('text-danger')
+                $('#abstract_body_count').closest('div').addClass('text-success')
+                $('#abstract_body_count').closest('div').removeClass('text-danger')
             }
         })
-    })
+
+        $('textarea.countWords').trigger('input');
+    }
 
     function getPaperUploads(){
 

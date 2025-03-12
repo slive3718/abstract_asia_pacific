@@ -237,7 +237,7 @@ class User extends BaseController
             'results'                => $post['results'] ?? null,
             'conclusions'            => $post['conclusions'] ?? null,
             'additional_notes'       => $post['additional_notes'] ?? null,
-            'total_words_count'       => $post['total_words_count'] ?? null,
+            'abstract_body_count'       => $post['abstract_body_count'] ?? null,
         ];
 
         try {
@@ -294,7 +294,7 @@ class User extends BaseController
             'results'                => isset($post['results']) ? trim($post['results']) : $existingPaper['results'],
             'conclusions'            => isset($post['conclusions']) ? trim($post['conclusions']) : $existingPaper['conclusions'],
             'additional_notes'       => isset($post['additional_notes']) ? trim($post['additional_notes']) : $existingPaper['additional_notes'],
-            'total_words_count'      => isset($post['total_words_count']) ? trim($post['total_words_count']) : $existingPaper['total_words_count'],
+            'abstract_body_count'      => isset($post['abstract_body_count']) ? trim($post['abstract_body_count']) : $existingPaper['abstract_body_count'],
             'min_follow_up_period'   => isset($post['min_follow_up_period']) ? trim($post['min_follow_up_period']) : $existingPaper['min_follow_up_period'],
             'is_srs_funded'          => isset($post['is_srs_funded']) ? trim($post['is_srs_funded']) : $existingPaper['is_srs_funded'],
             'primary_investigator'   => isset($post['primary_investigator']) ? trim($post['primary_investigator']) : $existingPaper['primary_investigator'],

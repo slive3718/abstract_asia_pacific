@@ -103,7 +103,11 @@
                             <p>To maintain an unbiased, blinded review of all abstracts, please do NOT include any identifying information such as researcher, institution, or study group names in your abstract. Inclusion of any identifying information will disqualify your abstract from review.</p>
                             <p>Please note: this text is what will be printed in the Final Program if it is accepted. You WILL NOT BE ABLE TO EDIT IT AFTER THE SUBMISSION DEADLINE.</p>
                             <div class="text-center m-auto p-4" style="width: 600px; border:4px dotted black">
-                                Total Abstract Body Count: <span id="abstract_body_character_count" >0 characters</span> / 2500 characters
+                                Total Abstract Body Count: <span id="abstract_body_count">0 characters</span> <br>
+                                <?php if(!empty($paper) && trim($paper['image_caption']) !== ''): ?>
+                                Image Caption Body Count: <span id="image_caption_body_count" >0 characters</span><br>
+                                <?php endif ?>
+                                Limit: 2500
                             </div>
                         </div>
                     </div>
@@ -225,9 +229,9 @@
                 <!-- ##########   Question 11: Image Caption : for counting purposes only ############### -->
                 <div class="row image_caption" style="display: none">
                     <div class="col mt-4">
-                        <div id="image_caption">
-                            <textarea name="" id="" class="form-control countWords" rows="4" placeholder="Enter any additional notes..."><?=(!empty($paper) ? $paper['image_caption'] : '')?></textarea>
-                            <label class="counted_words fw-bolder"></label>
+                        <div id="image-caption-container">
+                            <textarea name="image_caption" id="image_caption" class="form-control countWordsCaption" rows="4" placeholder="Enter any additional notes..."><?=(!empty($paper) ? $paper['image_caption'] : '')?></textarea>
+                            <label class="counted_words_caption fw-bolder"></label>
                         </div>
                     </div>
                 </div>
@@ -261,45 +265,71 @@
     let userID = `<?=session('user_id')??''?>`;
 
     $(function(){
-        $('.summernote').summernote({
-            tabsize: 2,
-            height: 120,
-            toolbar: [
-                ['font', ['bold', 'italic', 'underline', 'clear', 'superscript', 'subscript']],
-            ]
-            ,callbacks: {
-                onKeyup: function(e) {
-                    let idProp = $(this).attr('id');
-                    let limit =  $(this).attr('limit');
-                    if( parseInt(countWords($(this).val())) > parseInt(limit) ){
-                        $('#'+idProp+'WordsCountExceeded').removeClass('d-none').html(limit+' words limit exceeded!!')
-                    }else{
-                        $('#'+idProp+'WordsCountExceeded').addClass('d-none').html('')
-                    }
-                    $('#'+idProp+'WordsCount').html(countWords($(this).val()))
-                    $('#totalWordsCount').html(countTotalWords())
-                }
-            },
-            disableEnter: true,
-            enterHtml: '',
-        });
+        // $('.summernote').summernote({
+        //     tabsize: 2,
+        //     height: 120,
+        //     toolbar: [
+        //         ['font', ['bold', 'italic', 'underline', 'clear', 'superscript', 'subscript']],
+        //     ]
+        //     ,callbacks: {
+        //         onKeyup: function(e) {
+        //             let idProp = $(this).attr('id');
+        //             let limit =  $(this).attr('limit');
+        //             if( parseInt(countWords($(this).val())) > parseInt(limit) ){
+        //                 $('#'+idProp+'WordsCountExceeded').removeClass('d-none').html(limit+' words limit exceeded!!')
+        //             }else{
+        //                 $('#'+idProp+'WordsCountExceeded').addClass('d-none').html('')
+        //             }
+        //             $('#'+idProp+'WordsCount').html(countWords($(this).val()))
+        //             $('#totalWordsCount').html(countTotalWords())
+        //         }
+        //     },
+        //     disableEnter: true,
+        //     enterHtml: '',
+        // });
 
+        abstract_body_counter();
+    })
+
+
+    function abstract_body_counter(){
         WordCounterHelper.init(
             'textarea.countWords',  // Textarea selector
             '.counted_words',       // Word count display
-            '#abstract_body_character_count' // Total word count display
+            '#abstract_body_count' // Total word count display
         );
 
+        WordCounterHelper.init(
+            'textarea.countWordsCaption',  // Textarea selector
+            '.counted_words_caption',       // Word count display
+            '#image_caption_body_count' // Total word count display
+        );
+
+
         $('textarea.countWords').on('input', function(){
-            let total_body_count = parseInt($('#abstract_body_character_count').text())
+            let total_body_count = parseInt($('#abstract_body_count').text())
             let remaining = 2500 - total_body_count;
             $('#remaining_caption_count').text(remaining)
         })
 
+
+        $('textarea.countWords').on('input', function(){
+            let abstract_body_count = $('#abstract_body_count').text();
+            let image_caption_body_count = $('#image_caption_body_count').text();
+
+            if(parseInt(abstract_body_count) + parseInt(image_caption_body_count) > 2500){
+                toastr.error('Total of description already exceed 2500 words!')
+                $('#abstract_body_count').closest('div').addClass('text-danger')
+                $('#abstract_body_count').closest('div').removeClass('text-success')
+            }else{
+                $('#abstract_body_count').closest('div').addClass('text-success')
+                $('#abstract_body_count').closest('div').removeClass('text-danger')
+            }
+        })
+
         $('textarea.countWords').trigger('input');
-    })
-
-
+        $('textarea.countWordsCaption').trigger('input');
+    }
 
 
 </script>
