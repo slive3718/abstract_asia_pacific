@@ -194,6 +194,7 @@ $(function() {
                             '<td user-id="' + val.user_id + '" class="authorDataList" value="' + val.name + '">' + val.name + '</td>' +
                             '<td user-id="' + val.user_id + '" class="authorDataList" value="' + val.name + '">' + val.surname + '</td>' +
                             '<td user-id="' + val.user_id + '" class="authorDataList" value="' + val.name + '">' + val.email + '</td>' +
+                            '<td user-id="' + val.user_id + '" class="authorDataList" value="' + val.name + '">' + val.city + '</td>' +
                             '<td user-id="' + val.user_id + '" class="authorDataList" value="' + val.name + '">' + val.province + '</td>' +
                             '<td user-id="' + val.user_id + '" class="authorDataList" value="' + val.name + '">' + val.country + '</td>' +
                             '</tr>'
