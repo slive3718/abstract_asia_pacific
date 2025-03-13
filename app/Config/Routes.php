@@ -248,6 +248,11 @@ $routes->group('acceptance', function ($routes) {
 });
 
 
+$routes->group('institution',['filter' => 'authGuard'], function ($routes) {
+    $routes->post('add_new', 'Institution::add_new');
+});
+
+
 $routes->group('schedules', function ($routes) {
     $routes->get('/', 'ItineraryController::/index');
 });
@@ -290,7 +295,6 @@ $routes->group('',['filter' => 'authGuard'], function ($routes)
     $routes->get('user/update_author_details', 'User::update_author_details');
     $routes->post('user/update_paper_authors', 'User::update_paper_authors/$1');
     $routes->post('user/get_institution', 'User::get_institution');
-    $routes->post('user/add_new_institution', 'User::add_new_institution/$1');
     $routes->post('user/resend_disclosure_email', 'User::resend_disclosure_email/$1');
     $routes->post('user/get_author_info', 'User::get_author_info/$1');
 

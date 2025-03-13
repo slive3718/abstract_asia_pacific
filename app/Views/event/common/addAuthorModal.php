@@ -48,11 +48,7 @@
                                     <input type="email" name="authorConfirmEmail" id="authorConfirmEmail" class="form-control required" placeholder="Retype your email" required>
                                 </div>
 
-                                <!-- Institution & Degree -->
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold" for="authorInstitution">Institution <span class="text-danger">*</span></label>
-                                    <input type="text" name="authorInstitution" id="authorInstitution" class="form-control required" placeholder="Enter your institution" required>
-                                </div>
+                                <!--Degree -->
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold" for="authorDegree">Degree</label>
                                     <input type="text" name="authorDegree" id="authorDegree" class="form-control shadow-none" placeholder="Enter your degree">
@@ -80,7 +76,18 @@
                                     </div>
                                 </div>
 
+                                <!-- Institution  -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold" for="authorInstitution">Institution <span class="text-danger">*</span></label>
+                                    <!--                                    <input type="text" name="authorInstitution" id="authorInstitution" class="form-control required" placeholder="Enter your institution" required>-->
 
+                                    <p>Please start typing the name of this presenter's affiliation. This field will auto complete after four letters have been entered. If your institution is not in the database, 'Add New", will appear.  Choose that option and follow the prompts.</p>
+                                    <div class="input-group ">
+                                        <label class="input-group-text text-white" style="background-color:#2AA69C" for="authorInstitution">Find Institution <font color="red">* </font></label>
+                                        <input name="authorInstitution" title="Institution" id="authorInstitution" class="form-control shadow-none required">
+                                        <input name="authorInstitutionId" title="Institution" type="hidden" id="searchId" class="required">
+                                    </div>
+                                </div>
                             </div>
 
                         </div>
@@ -153,6 +160,45 @@
         $(document).on('change', 'input[name="designations[]"]', function() {
             toggleOtherDesignation();
         });
+
+        $('#designations').prepend('<option value=""> -- Select Designation -- </option>')
+
+        fetchDesignations().then(designations => {
+            let designationHTML = `<div class="d-flex flex-wrap gap-3">`;
+
+            $.each(designations, function(i, designation) {
+                designationHTML += `
+                                <div class="form-check">
+                                    <input class="form-check-input required" type="checkbox" name="designations[]"
+                                        id="designation_${designation.designation_id}" value="${designation.designation_id}">
+                                    <label class="form-check-label fw-bold" for="designation_${designation.designation_id}">
+                                        ${designation.name}
+                                    </label>
+                                </div>
+                            `;
+            });
+
+            designationHTML += `</div>`;
+            $('.designationDiv').html(designationHTML);
+        });
+
+
     });
+
+    async function fetchDesignations() {
+        try {
+            return await $.ajax({
+                url: base_url + '/user/get_designations',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                method: "POST",
+                dataType: "json"
+            });
+
+        } catch (error) {
+            console.error("Error fetching designations:", error);
+            return []; // Return an empty array if an error occurs
+        }
+    }
+
 
 </script>

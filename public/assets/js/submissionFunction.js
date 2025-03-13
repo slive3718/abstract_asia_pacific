@@ -557,6 +557,7 @@ $(function() {
                     $('#authorPosition').val(response.data.position)
                     $('#authorTitle').val(response.data.title)
                     $('#authorInstitution').val(response.data.institution)
+                    $('#searchId').val(response.data.institution_id)
                     $('#authorPhone').val((response.data.phone) ?response.data.phone:'' )
                     $('#searchId').val(response.data.institution_id)
 
@@ -568,7 +569,6 @@ $(function() {
                     $('#authorZipcode').val(response.data.zipcode)
                     $('#authorDeg').val(response.data.deg)
                     $('#authorPhone').val(response.data.phone)
-
                     $('#designations').prepend('<option value=""> -- Select Designation -- </option>')
 
                     fetchDesignations().then(designations => {

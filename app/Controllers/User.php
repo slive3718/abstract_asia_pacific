@@ -729,6 +729,7 @@ class User extends BaseController
         $insertAuthorDetailsArray = [
             'deg' => $post['authorDegree']?:'',
             'institution' => $post['authorInstitution']?:'',
+            'institution_id' => $post['authorInstitutionId']?:'',
             'phone' => $post['authorPhone']?:'',
             'address' => $post['authorAddress']?:'',
             'city' => $post['authorCity']?:'',
