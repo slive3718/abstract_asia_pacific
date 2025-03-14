@@ -21,9 +21,6 @@
 
             <form id="abstractSubmissionForm"  action="<?= $actionUrl ?>" method="post">
                 <input type="hidden" value="<?=(isset($paper_id) && !empty($paper_id))? $paper_id : ''?>" name="paper_id">
-                <div class="bg-warning p-5 text-center align-middle mb-5" >
-                    <p class="m-auto"><strong>Important Notice: </strong>  If you do not have an upload yet, still finalize your submission to confirm your entry.</p>
-                </div>
                 <div class="row">
                     <div class="col mt-4">
                         <div id="questionDiv_division">
