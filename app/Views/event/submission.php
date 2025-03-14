@@ -14,9 +14,8 @@
                 </div>
                 <div id="" class="my-3">
                     <div class="submission-page">
-                        <a href="<?=base_url().'user/papers_submission/'?>" class="btn btn-success addNewSubmissionBtn">Add a new submission</a>
+                        <a href="<?=base_url().'user/papers_submission/'?>" class="btn btn-success">Add a new submission</a>
                     </div>
-
                 </div>
                 <p>or</p>
                 <p>To edit an existing abstract, click on the submission number below:</p>
