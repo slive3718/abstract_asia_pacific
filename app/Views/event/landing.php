@@ -19,9 +19,13 @@
         flex: 1;
         text-align: center;
     }
+
+    .container-landing{
+        font-size:16px
+    }
 </style>
 <main class="light-white">
-    <div class="container shadow-lg glass-container">
+    <div class="container shadow-lg glass-container container-landing">
         <div class="card">
             <div class="row mt-4">
                 <div class="text-center ">
@@ -42,16 +46,16 @@
                 <p class="text-center">Abstract Submission: May 1, 2025 – June 30, 2025</p>
 
                 <h2 class="fw-bold mt-5">IMPORTANT DATES</h2>
-                <ul>
-                    <li>Abstract Submission: May 1, 2025 – June 30, 2025, at 11:59 Japan Standard Time</li>
-                    <li>Abstract Acceptance Notification via E-mail: September 4, 2025*</li>
-                    <li>Abstract Presenter Acceptance Deadline: October 2, 2025*</li>
-                    <li>Meeting Dates: February 2026</li>
+                <ul >
+                    <li><strong>Abstract Submission: </strong> May 1, 2025 – June 30, 2025, at 11:59 Japan Standard Time</li>
+                    <li><strong>Abstract Acceptance Notification via E-mail: </strong> September 4, 2025*</li>
+                    <li><strong>Abstract Presenter Acceptance Deadline:</strong>  October 2, 2025*</li>
+                    <li><strong>Meeting Dates:</strong>  <span class="text-danger">February 2026 </span></li>
                 </ul>
                 <p>*Dates are subject to change.</p>
 
-                <div class="text-center">
-                    <h3> <u> Prior to submission oran abstract, please review all information on this page</u></h3>
+                <div class="text-center mt-5">
+                    <h2 class="fw-bolder"> <u> Prior to submission of an abstract, please review all information on this page</u></h2>
                 </div>
 
                 <h2 class="fw-bold mt-5">ASIA & OCEANIA AUTHORSHIP</h2>
@@ -110,6 +114,18 @@
                 <p>The Scoliosis Research Society (SRS) must ensure balance, independence, objectivity and scientific rigor in all educational activities. Therefore, ALL abstract authors must disclose all financial relationships held in the past 24 months with ineligible companies.*</p>
                 <p>*An ineligible company is an entity whose primary business is producing, marketing, selling, re-selling, or distributing health care goods or services consumed by or on patients. For specific examples of ineligible companies visit accme.org/standards.</p>
 
+                <div>
+                    Visit this link to disclose:  <a onClick="window.location.href='<?=base_url().'author'?>login'" class="glass-button  btn btn-primary align-center" type="button">Disclosure</a> <br>
+                    The username is the email associated with your abstract and the password your first name.
+                </div>
+
+                <p>
+                    *An ineligible company is an entity whose primary business is producing, marketing, selling, re-selling,
+                    or distributing health care goods or services consumed by or on patients. For specific examples of
+                    ineligible companies visit accme.org/standards.
+                    If any faculty member in an accepted Education Session does not complete their Relevant Financial
+                    Relationship Disclosures, they will be removed from the Session and will need to be replaced.
+                </p>
                 <h2 class="fw-bold mt-5">NOTIFICATIONS</h2>
                 <ul>
                     <li>All submitters will be notified via email of the status of their submission(s). In the event that you do not receive notifications, please log into the submission site at ANY time to view any recent mail regarding your submissions.</li>
@@ -118,38 +134,65 @@
                 <h2 class="fw-bold mt-5">ACCEPTANCE</h2>
                 <ul>
                     <li>All selected authors will be required to respond to a formal invitation by the deadline set forth in their acceptance notification.</li>
-                    <li>Authors without an account AND an updated disclosure cannot be added after the invitation response deadline. No exceptions will be made.</li>
+                    <li><i class="fw-bolder">Authors without an account AND an updated disclosure cannot be added after the invitation response deadline. <u>No exceptions will be made </u></i>.</li>
                 </ul>
 
                 <h2 class="fw-bold mt-5">ATTENDANCE REQUIREMENTS</h2>
                 <ul>
-                    <li>By submitting an abstract to the TBA COURSE NAME, abstract authors agree that at least one (1) author will attend the meeting and will be available to present on the date and time assigned.</li>
-                    <li>Presenting authors are expected to register to attend the meetings for which they are accepted by the deadline set forth in their acceptance notification. Submissions for which an author is not pre-registered by the dates set forth may be withdrawn from the program.</li>
+                    <li>By su mitting an a stract to e TBA COURSE NAME, a stractau ors that at least one (l) author will attend the meetin and will be available to resent on the date and time assigned.
+                        <ul>
+                            <li>The Presenting author must be from the regions of Asia or Oceania.</li>
+                        </ul>
+                    </li>
+                    <li>Presenting authors are expected to register to attend the meetings for which they are accepted by
+                        the deadline set forth in their acceptance notification. Submissions for which an author is not
+                        pre-registered by the dates set forth may be withdrawn from the program.
+                    </li>
+                    <li>All travel arrangements are the responsibility of the authors.</li>
                 </ul>
+
+                <div>
+
+                    <h2 class="fw-bold mt-5">PODIUM PRESENTATION CANCELLATION & NO-SHOW POLICY </h2>
+                    <p> Authors unable to present their paper in person should inform SRS as soon as possible which co-author
+                        will present in their place. If no one is able to present the paper, SRS must be informed by October 23,
+                        2025, so an alternate paper can substituted.
+                    </p>
+                    <p> <i>In the case ofa "no-show" podium presentation, the presenting author associated with the "no-show"
+                            paper will be prohibited from presenting any papers at the next two Annual Meetings.</i></p>
+                </div>
 
                 <h2 class="fw-bold mt-5">TECHNOLOGY TROUBLESHOOTING</h2>
                 <ul>
                     <li>Please use one of the following browsers: Mozilla Firefox 4+, Safari 5+, Chrome 14+, Microsoft Edge</li>
                     <li>Browser back and forward arrows have been disabled. Users must use the page progress bar located at the top left of each page.</li>
                     <li>Inactivity of more than 90 minutes on system pages will result in a session time out. Please save your pages intermittently to avoid loss of data.</li>
-                    <li>To successfully receive emails regarding your submission, you must add “@owpm1.com” as a safe sender in your email client.</li>
+                    <li>To successfully receive emails regarding your submission, you must add "@owpm1.com" as a
+                        safe sender in your email client. <a href="#">Click here </a> for more information about adding safe senders.</li>
                 </ul>
 
-            </div>
+                <div class="row mt-5">
+                    <div class="col justify-content-center text-center ">
+                        <button onClick="window.location.href='<?=base_url()?>login'" class="glass-button w-700  btn btn-primary btn-lg align-center" type="button">Submit Or Update Abstract</button>
+                    </div>
+                </div>
 
-            <div class="row mt-4">
-                <div class="col justify-content-center text-center ">
-                    <button onClick="window.location.href='<?=base_url()?>login'" class="glass-button w-700  btn btn-primary btn-lg align-center" type="button">Submit Or Update Abstract</button>
+                <div class="row mt-4">
+                    <div class="text-center ">
+                        <label class="alert alert-success text-center glass-content submissionBtn w-700" role="alert">
+                            The submission site is now open!
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <h2>QUESTIONS?</h2>
+                    <p>For further instructions and details on abstract submission, please click <a href="">here</a>.</p>
+                    <p>For questions regarding your submission or technical issues, please contact <a href="education@srs.org">education@srs.org</a> </p>
                 </div>
             </div>
 
-            <div class="row mt-4">
-                <div class="text-center ">
-                    <label class="alert alert-success text-center glass-content submissionBtn w-700" role="alert">
-                        The submission site is now open!
-                    </label>
-                </div>
-            </div>
+
         </div>
     </div>
 </main>
