@@ -30,85 +30,111 @@
                     </label>
                 </div>
             </div>
-            <hr/>
             <div class="row mt-4">
                 <div class="col justify-content-center text-center ">
                     <button onClick="window.location.href='<?=base_url()?>login'" class="glass-button w-700  btn btn-primary btn-lg align-center" type="button">Submit Or Update Abstract</button>
                 </div>
             </div>
+            <hr/>
+            <div class="container p-5 mt-5">
+                <h1 class="text-center fw-bold">MEETING TITLE</h1>
+                <p class="text-center">TBA, Japan<br>February 2026</p>
+                <p class="text-center">Abstract Submission: May 1, 2025 – June 30, 2025</p>
 
-            <div class="row mt-3">
-                <div class="col-md-12">
-                    <div id="landing-page-contents" class="container-fluid p-4">
-                        <div class="container ">
-                            <div class="text-center mb-3 header-container">
-                                <img src="<?= base_url() ?>/public/assets/images/AFS_logo.png" class="header-logo" alt="AFS Logo">
+                <h2 class="fw-bold mt-5">IMPORTANT DATES</h2>
+                <ul>
+                    <li>Abstract Submission: May 1, 2025 – June 30, 2025, at 11:59 Japan Standard Time</li>
+                    <li>Abstract Acceptance Notification via E-mail: September 4, 2025*</li>
+                    <li>Abstract Presenter Acceptance Deadline: October 2, 2025*</li>
+                    <li>Meeting Dates: February 2026</li>
+                </ul>
+                <p>*Dates are subject to change.</p>
 
-                                <h1 class="mb-4 fw-bolder text-primary header-title"><span class="text-dark">
-                                        CASTEXPO & METALCASTING CONGRESS & WFO TECHNICAL FORUM </span>
-                                    <br>
-                                    <br>Call for Papers & Presentations</h1>
-                                <img src="<?= base_url() ?>/public/assets/images/LogoWFO.jpg" class="header-logo" style="height: 220px;" alt="WFO Logo">
-                            </div>
-                            <p>The American Foundry Society is issuing a call for papers and presentations for the <strong class="text-primary">129th Metalcasting Congress/CastExpo & Technical WFO Forum April 12-15, 2025 in Atlanta, Georgia. </strong></p>
-
-                            <h2 class="mt-5">Technical Papers & Presentations</h2>
-                            <p>Covering all issues related to metalcasting, diecasting, and foundry operations, including unique in-plant procedures, new technologies, equipment, products, and other innovations that have contributed to enhanced metalcasting productivity and quality will be considered. Topics of particular interest include:</p>
-                            <ul>
-                                <li>Melting and molten metal treatment</li>
-                                <li>Gating and risering</li>
-                                <li>Casting process innovations</li>
-                                <li>Additive manufacturing</li>
-                                <li>Quality</li>
-                                <li>Automation</li>
-                                <li>Foundry 4.0</li>
-                                <li>Artificial intelligence</li>
-                                <li>Finishing</li>
-                                <li>Sustainability</li>
-                                <li>Energy efficiency</li>
-                                <li>Environmental health & safety</li>
-                            </ul>
-
-                            <h2 class="mt-5">Management Papers and Presentations</h2>
-                            <p>Relating to:</p>
-                            <ul>
-                                <li>Diversity and Inclusion in Metalcasting</li>
-                                <li>Leadership Development for Young Professionals</li>
-                                <li>Talent Acquisition and Retention</li>
-                                <li>Marketing and Branding in the Metalcasting Industry</li>
-                                <li>Workforce Training and Development</li>
-                                <li>Employee Wellness and Well-being</li>
-                                <li>Performance Management and Feedback</li>
-                                <li>Women’s Leadership and Empowerment in Metalcasting</li>
-                                <li>Collaboration and Partnership Opportunities</li>
-                            </ul>
-
-                            <p>Contact Kim Perna: <a href="mailto:kperna@afsinc.org">kperna@afsinc.org</a></p>
-
-                            <h3 class="mt-5">Submission requirements & deadlines:</h3>
-                            <ul>
-                                <li><strong>Paper/Presentation Abstract Deadline:</strong> 15 August 2024</li>
-                                <li><strong>Paper/Presentation Submission Deadline:</strong> 15 September 2024</li>
-                                <li><strong>Panel Presentation Submission Deadline:</strong> 15 October 2024</li>
-                                <li><strong>PowerPoint Presentation Deadline:</strong> 15 February 2025</li>
-                            </ul>
-
-                            <h3 class="mt-5 fw-bolder">Questions and Technical Support</h3>
-                            <p>For technical assistance please click on the <strong class="text-danger">'Support'</strong> icon located on the top right hand of each page for support or contact <a href="mailto:kperna@afsinc.org">kperna@afsinc.org</a>. Email support requests are answered within a 24-hour period.</p>
-                            <p>Please note: In order to successfully receive emails regarding your submission, you must add '@owpm2.com' as a safe sender in your email client.
-                                <a href="<?=base_url().'public/assets/documents/Safe_Sender_2024.pdf'?>">Click here</a> for help adding safe senders.  Mail client examples include Microsoft Outlook, Apple Mail etc. </p>
-                            <p>For questions about the AFS submission guidelines and process for the 129th Metalcasting Congress please contact the AFS Office:</p>
-                            <address>
-                                American Foundry Society<br>
-                                1695 North Penny Lane<br>
-                                Schaumburg, IL 60173<br>
-                                <a href="mailto:castingcongress@afsinc.org">castingcongress@afsinc.org</a><br>
-                                Tel: +1-800/537-4237, +1-847/824-0181 x-246<br>
-                                Fax: +1-847/824-7848
-                            </address>
-                        </div>
-                    </div>
+                <div class="text-center">
+                    <h3> <u> Prior to submission oran abstract, please review all information on this page</u></h3>
                 </div>
+
+                <h2 class="fw-bold mt-5">ASIA & OCEANIA AUTHORSHIP</h2>
+                <p>This inaugural meeting will be for the region, by the region. Therefore, a submitted abstract must have a senior author, presenting author and a majority of co-authors from the regions of Asia and/or Oceania.</p>
+
+                <h2 class="fw-bold mt-5">SRS MEMBERSHIP</h2>
+                <p>Abstracts may be submitted by SRS members and non-members.</p>
+
+                <h2 class="fw-bold mt-5">ABSTRACT SUBMISSION SITE</h2>
+                <ul>
+                    <li>Please log in to submit your abstract here.</li>
+                    <li>If you have not submitted a proposal to SRS before or submitted one prior to 2020, you will need to create a new account.</li>
+                    <li>Submitters may revisit the site as often as necessary to edit the submission (finalized or not) at any time before the submission deadline.</li>
+                    <li>No changes can be made to the abstract text after the submission deadline.</li>
+                </ul>
+
+                <h2 class="fw-bold mt-5">ABSTRACT CATEGORIES</h2>
+                <ul>
+                    <li>Adolescent Idiopathic Scoliosis</li>
+                    <li>Adult Spinal Deformity</li>
+                    <li>Basic/Translational Science</li>
+                    <li>Cervical Deformity</li>
+                    <li>Early Onset Scoliosis</li>
+                    <li>Kyphosis (SK, Congenital and Pathological Conditions)</li>
+                    <li>Miscellaneous Categories (Spondy, Trauma, Tumor, etc.)</li>
+                    <li>Neuromuscular/Syndromic Deformity</li>
+                    <li>Non-Operative Treatment Methods</li>
+                    <li>Quality/Safety/Value/Complications</li>
+                </ul>
+
+                <h2 class="fw-bold mt-5">ABSTRACT SUBMISSION: KEY INFORMATION</h2>
+                <ul>
+                    <li>Abstracts are limited to a maximum of 2,500 characters.</li>
+                    <li>Characters in the abstract title, body and table/image caption will be counted (including spaces).</li>
+                    <li>Characters in the author and institution listing will not be counted.</li>
+                    <li>For each co-author listed, you will need:
+                        <ul>
+                            <li>Full name</li>
+                            <li>Designation/degree</li>
+                            <li>Email (please ensure to double check all email addresses are correct)</li>
+                            <li>Country</li>
+                            <li>Institution/affiliation</li>
+                        </ul>
+                    </li>
+                    <li>Only one (1) attachment is allowed per abstract. Attachments can include graphs, figures, images, or supplemental data.</li>
+                    <li>All submitted abstracts will undergo a blinded review. To maintain an unbiased review of all abstracts, please do NOT include any identifying information such as researcher, institution, or study group names in your abstract. Inclusion of any identifying information will disqualify your abstract from review.</li>
+                </ul>
+
+                <h2 class="fw-bold mt-5">PREVIOUS PRESENTATION</h2>
+                <p>Abstracts that have been presented or have been accepted to present at an SRS Annual Meeting or IMAST may not be considered for submission to this meeting.</p>
+
+                <h2 class="fw-bold mt-5">TWO-YEAR FOLLOW UP REQUIREMENT</h2>
+                <p>Two-year clinical follow-up is required for abstract submission. The two-year follow-up rule does not apply to categories of basic science or biomechanical studies or for topics where two-year follow-up is irrelevant, such as 30-day readmission rates.</p>
+
+                <h2 class="fw-bold mt-5">DISCLOSURES</h2>
+                <p>The Scoliosis Research Society (SRS) must ensure balance, independence, objectivity and scientific rigor in all educational activities. Therefore, ALL abstract authors must disclose all financial relationships held in the past 24 months with ineligible companies.*</p>
+                <p>*An ineligible company is an entity whose primary business is producing, marketing, selling, re-selling, or distributing health care goods or services consumed by or on patients. For specific examples of ineligible companies visit accme.org/standards.</p>
+
+                <h2 class="fw-bold mt-5">NOTIFICATIONS</h2>
+                <ul>
+                    <li>All submitters will be notified via email of the status of their submission(s). In the event that you do not receive notifications, please log into the submission site at ANY time to view any recent mail regarding your submissions.</li>
+                </ul>
+
+                <h2 class="fw-bold mt-5">ACCEPTANCE</h2>
+                <ul>
+                    <li>All selected authors will be required to respond to a formal invitation by the deadline set forth in their acceptance notification.</li>
+                    <li>Authors without an account AND an updated disclosure cannot be added after the invitation response deadline. No exceptions will be made.</li>
+                </ul>
+
+                <h2 class="fw-bold mt-5">ATTENDANCE REQUIREMENTS</h2>
+                <ul>
+                    <li>By submitting an abstract to the TBA COURSE NAME, abstract authors agree that at least one (1) author will attend the meeting and will be available to present on the date and time assigned.</li>
+                    <li>Presenting authors are expected to register to attend the meetings for which they are accepted by the deadline set forth in their acceptance notification. Submissions for which an author is not pre-registered by the dates set forth may be withdrawn from the program.</li>
+                </ul>
+
+                <h2 class="fw-bold mt-5">TECHNOLOGY TROUBLESHOOTING</h2>
+                <ul>
+                    <li>Please use one of the following browsers: Mozilla Firefox 4+, Safari 5+, Chrome 14+, Microsoft Edge</li>
+                    <li>Browser back and forward arrows have been disabled. Users must use the page progress bar located at the top left of each page.</li>
+                    <li>Inactivity of more than 90 minutes on system pages will result in a session time out. Please save your pages intermittently to avoid loss of data.</li>
+                    <li>To successfully receive emails regarding your submission, you must add “@owpm1.com” as a safe sender in your email client.</li>
+                </ul>
+
             </div>
 
             <div class="row mt-4">
