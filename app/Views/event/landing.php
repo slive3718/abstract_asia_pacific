@@ -40,7 +40,7 @@
                 </div>
             </div>
             <hr/>
-            <div class="container p-5 mt-5">
+            <div class="container p-5 ">
                 <h1 class="text-center fw-bold">MEETING TITLE</h1>
                 <p class="text-center">TBA, Japan<br>February 2026</p>
                 <p class="text-center">Abstract Submission: May 1, 2025 – June 30, 2025</p>
@@ -115,7 +115,7 @@
                 <p>*An ineligible company is an entity whose primary business is producing, marketing, selling, re-selling, or distributing health care goods or services consumed by or on patients. For specific examples of ineligible companies visit accme.org/standards.</p>
 
                 <div>
-                    Visit this link to disclose:  <a onClick="window.location.href='<?=base_url().'author'?>login'" class="glass-button  btn btn-primary align-center" type="button">Disclosure</a> <br>
+                    Visit this link to disclose:  <a onClick="window.location.href='<?=base_url().'author/login'?>'" class="glass-button  btn btn-primary align-center" type="button">Disclosure</a> <br>
                     The username is the email associated with your abstract and the password your first name.
                 </div>
 
