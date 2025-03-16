@@ -128,7 +128,7 @@
 
                 <h6 class="fw-bold mt-5">ATTENDANCE REQUIREMENTS</h6>
                 <ul>
-                    <li>By su mitting an a stract to e TBA COURSE NAME, a stractau ors that at least one (l) author will attend the meetin and will be available to resent on the date and time assigned.
+                    <li>By submitting an abstract to TBA COURSE NAME, abstract authors agree that at least one (1) author will attend the meeting and will be available to resent on the date and time assigned.
                         <ul>
                             <li>The Presenting author must be from the regions of Asia or Oceania.</li>
                         </ul>
