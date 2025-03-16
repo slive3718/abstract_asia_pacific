@@ -217,7 +217,7 @@
                                 <span class="text-danger">*</span>
                                 Additional Notes
                             </label>
-                            <textarea name="additional_notes" id="additional_notes" class="form-control countWords" rows="4" placeholder="Enter any additional notes..."><?=(!empty($paper) ? $paper['additional_notes'] : '')?></textarea>
+                            <textarea name="additional_notes" id="additional_notes" class="form-control" rows="4" placeholder="Enter any additional notes..."><?=(!empty($paper) ? $paper['additional_notes'] : '')?></textarea>
                             <label class="counted_words fw-bolder"></label>
                         </div>
                     </div>
