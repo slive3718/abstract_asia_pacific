@@ -120,7 +120,8 @@
                             </h5>
                             <p>PLEASE enter this title in mixed title case. Do NOT use capital letters and do NOT put the title in quotation marks.</p>
                             <label for="abstract_title">CORRECT - This iS the Title Of My Abstract INCORRECT = THIS IS THE TITLE OF MY ABSTRACT INCORRECT = This iS the title of my abstract</label>
-                            <input type="text" name="abstract_title" id="abstract_title" class="form-control" placeholder="Abstract Title" value="<?=(!empty($paper) ? $paper['title'] : '')?>">
+                            <textarea name="abstract_title" id="abstract_title" class="form-control countWords mt-2" rows="1" placeholder="Abstract Title" ><?=(!empty($paper) ? $paper['title'] : '')?></textarea>
+                            <label class="counted_words fw-bolder"></label>
                         </div>
                     </div>
                 </div>
