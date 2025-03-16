@@ -1,33 +1,30 @@
 var WordCounterHelper = (function () {
-    function updateWordCount(textarea, wordCountDisplay) {
+    function updateCharCount(textarea, charCountDisplay) {
         let text = textarea.val();
 
-        // Match words and count spaces explicitly
-        let words = text.match(/\S+/g) || [];  // Matches non-space sequences (words)
-        let spaces = (text.match(/\s/g) || []).length; // Matches all spaces
+        // Count all characters including spaces
+        let charCount = text.length;
 
-        let wordCount = words.length + spaces;
+        charCountDisplay.text('Character count: ' + charCount);
 
-        wordCountDisplay.text('Word count: ' + wordCount);
-
-        if (wordCount > 2500) {
-            wordCountDisplay.addClass('text-danger');
+        if (charCount > 2500) {
+            charCountDisplay.addClass('text-danger');
         } else {
-            wordCountDisplay.removeClass('text-danger');
+            charCountDisplay.removeClass('text-danger');
         }
     }
 
-    function countTotalWords(wordCountSelectors, totalDisplay) {
-        let totalWordsSum = 0;
+    function countTotalChars(charCountSelectors, totalDisplay) {
+        let totalCharsSum = 0;
 
-        wordCountSelectors.each(function () {
-            let wordCount = parseInt($(this).text().replace(/\D+/g, ''), 10) || 0;
-            totalWordsSum += wordCount;
+        charCountSelectors.each(function () {
+            let charCount = parseInt($(this).text().replace(/\D+/g, ''), 10) || 0;
+            totalCharsSum += charCount;
         });
 
-        totalDisplay.html(totalWordsSum);
+        totalDisplay.html(totalCharsSum);
 
-        if (totalWordsSum > 2500) {
+        if (totalCharsSum > 2500) {
             totalDisplay.closest('div').addClass('text-danger');
             totalDisplay.closest('div').removeClass('text-success');
         } else {
@@ -36,22 +33,22 @@ var WordCounterHelper = (function () {
         }
     }
 
-    function runCounter(textareaSelector, wordCountSelector, totalWordCountSelector) {
+    function runCounter(textareaSelector, charCountSelector, totalCharCountSelector) {
         $(textareaSelector).off('input keydown').on('input keydown', function (event) {
             let textarea = $(this);
-            let wordCountDisplay = textarea.siblings(wordCountSelector);
+            let charCountDisplay = textarea.siblings(charCountSelector);
 
-            // Only count words when input changes OR when space is pressed
+            // Only count characters when input changes or when space is pressed
             if (event.type === 'input' || event.key === ' ') {
-                updateWordCount(textarea, wordCountDisplay);
-                countTotalWords($(wordCountSelector), $(totalWordCountSelector));
+                updateCharCount(textarea, charCountDisplay);
+                countTotalChars($(charCountSelector), $(totalCharCountSelector));
             }
         });
     }
 
     return {
         init: runCounter,
-        updateWordCount: updateWordCount,
-        countTotalWords: countTotalWords
+        updateCharCount: updateCharCount,
+        countTotalChars: countTotalChars
     };
 })();

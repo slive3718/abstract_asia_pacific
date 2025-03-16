@@ -40,9 +40,7 @@
 
                 <div class="text-center m-auto p-4" style="width: 600px; border:4px dotted black">
                     Total Abstract Body Count: <span id="abstract_body_count">0 characters</span> <br>
-                    <?php if(!empty($paper) && trim($paper['image_caption']) !== ''): ?>
-                        Image Caption Body Count: <span id="image_caption_body_count" >0 characters</span><br>
-                    <?php endif ?>
+                    Image Caption Body Count: <span id="image_caption_body_count" >0 characters</span><br>
                     Limit: 2500
                 </div>
 
@@ -86,6 +84,7 @@
 <script src="<?=base_url()?>assets/js/helpers.js"></script>
 <script>
     let attrId_array = {};
+    let current_user_id = "<?=session('user_id')?>"
 
     $(function(){
 
@@ -163,14 +162,15 @@
             e.preventDefault();
 
 
-            let abstract_body_count = `<?= intVal($paper['abstract_body_count']) ?>`;
-            let image_caption_words_count = parseInt($('#image_caption_words_count').text());
+            let abstract_body_count = parseInt(`<?= intval($paper['abstract_body_count']) ?>`) || 0;
+            let image_caption_body_count = parseInt($('#image_caption_body_count').text()) || 0;
 
-
-            if (image_caption_words_count + parseInt($('#abstract_body_count').text()) > 2500) {
-                toastr.error('Total Words Count Exceed!')
+            console.log(image_caption_body_count + abstract_body_count);
+            if ((image_caption_body_count + abstract_body_count) > 2500) {
+                toastr.error('Total Words Count Exceed!');
                 return false;
             }
+
 
             $.ajax({
                 url: "<?= base_url().'user/update_paper_ajax' ?>",
