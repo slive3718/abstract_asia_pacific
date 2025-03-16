@@ -18,7 +18,7 @@ class UserModel extends Model
         'username',
         'is_deputy_reviewer',
         'is_regular_reviewer',
-        'is_session_moderator'
+        'is_session_moderator',
     ];
     // protected $allowedFields = ['title', 'description'];
 

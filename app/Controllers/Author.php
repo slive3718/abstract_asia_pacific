@@ -4,14 +4,18 @@ namespace App\Controllers;
 
 use App\Libraries\MailGunEmail;
 use App\Libraries\PhpMail;
+use App\Models\AffiliationsModel;
 use App\Models\AuthorDetailsModel;
 use App\Models\Core\Api;
 use App\Models\EmailLogsModel;
 use App\Models\EmailTemplatesModel;
 use App\Models\EventsModel;
+use App\Models\OrganizationsModel;
 use App\Models\PaperAuthorsModel;
 use App\Models\PapersModel;
 use App\Models\UserModel;
+use App\Models\UserOrganizationsModel;
+use App\Models\UsersProfileModel;
 use CodeIgniter\Controller;
 use Config\Mailgun;
 use GuzzleHttp\Client;
@@ -129,45 +133,141 @@ class Author extends BaseController
             ;
     }
 
-    public function conflict_of_interest_disclosure_review(){
-        session('user_type');
-        $_POST['author_id']= session('user_id');
-        $api2 = new Api();
-        $api3 = new Api();
-        $api4 = new Api();
-        $api5 = new Api();
-        $api6 = new Api();
-        $organizations = $api2->getRequest("author/get_organizations/{}");
-        $affiliations = $api3->getRequest("author/get_affiliations/{}");
-        $declarations = $api4->getRequest("author/get_declarations/{}");
-        $event = $this->api->getRequest("event/details/{}");
-        $author_details = $api5->post("author/get_author_cod_details/{}", $_POST);
-        $author_organizations = $api6->post("author/get_author_organizations/{}", $_POST);
-
-//        print_r($author_details);exit;
-        if(!$event){
-            return (new ErrorHandler($event))->errorPage();
+    public function financial_relationship_disclosure() {
+        $user_id = session('user_id');
+        if (!$user_id) {
+            exit;
         }
-//        print_r($declarations->data);exit;
+
+        $UserModel = new UserModel();
+        $OrganizationsModel = new OrganizationsModel();
+        $AffiliationsModel = new AffiliationsModel();
+        $UserOrganizationsModel = new UserOrganizationsModel(); // New model to handle user affiliations
+
+        // Get author data
+        $author = $UserModel
+            ->join('users_profile up', 'users.id = up.author_id', 'left')
+            ->where('users.id', $user_id)
+            ->asArray()
+            ->first();
+
+        $organizations = $OrganizationsModel->findAll();
+        $affiliations = $AffiliationsModel->findAll();
+
+        // Get saved affiliations for the user
+        $savedOrganizations = $UserOrganizationsModel
+            ->where('user_id', $user_id)
+            ->orderBy('id', 'asc') // <-- Order by insertion order
+            ->findAll();
+
+//        print_r($savedOrganizations);exit;
+        // Map saved affiliations to an easy-to-use array
+        $selectedOrganizations = [];
+        foreach ($savedOrganizations as $org) { // FIXED: Changed from $savedAffiliations to $savedOrganizations
+            $selectedOrganizations[$org['organization_id']] = [
+                'id' => $org['id'], // Include ID
+                'affiliations' => json_decode($org['affiliation'], true) ?? []
+            ];
+        }
 
         $header_data = [
-            'title' => "{$event->short_name} Login"
+            'title' => "Financial Relationship Disclosure"
         ];
+
         $data = [
-            'event'=> $event,
-            'organizations'=> $organizations->data,
-            'affiliations'=> $affiliations->data,
-            'declarations'=> $declarations->data,
-            'author_details'=> $author_details->data,
-            'author_organizations'=> $author_organizations->data,
+            'author' => $author,
+            'organizations' => $organizations,
+            'affiliations' => $affiliations,
+            'selectedOrganizations' => $selectedOrganizations
         ];
 
+//        print_r($data);exit;
 
-        return
-            view('author/common/header', $header_data).
-            view('author/conflict_of_interest_disclosure_review', $data).
-            view('author/common/footer')
-            ;
+        return view('author/common/header', $header_data)
+            . view('author/financial_relationship_disclosure', $data)
+            . view('author/common/footer');
+    }
+
+
+
+    public function save_financial_relationship() {
+        $request = $this->request->getPost();
+
+        // Log the data for debugging
+        log_message('debug', print_r($request, true));
+
+        // Assuming user ID is stored in session
+        $userId = session()->get('user_id');
+
+        if (!$userId) {
+            return $this->response->setJSON(['success' => false, 'message' => 'User not logged in']);
+        }
+
+        // Prepare data for updating user profile
+        $data = [
+            'financial_relationship' => $request['financial_relationship'] ?? null,
+            'disclosure_support'     => isset($request['disclosure_support']) ? 1 : 0,
+            'disclosure_discussed'   => isset($request['disclosure_discussed']) ? 1 : 0,
+            'disclosure_signature'   => $request['disclosure_signature'] ?? null,
+            'updated_at'             => date('Y-m-d H:i:s'), // Use `updated_at` for updates
+        ];
+
+        $model = new UsersProfileModel();
+
+        // Update the existing user record
+        $isUpdated = $model->set($data)->where('author_id', $userId)->update();
+
+        if ($isUpdated) {
+            // Save organization data if financial relationship is 'yes'
+            if ($request['financial_relationship'] === 'yes' && !empty($request['organization'])) {
+                $db = db_connect();
+                $builder = $db->table('user_organizations');
+
+                $existingIds = [];
+                foreach ($request['organization'] as $organization) {
+                    $orgId = $organization['name'] ?? null;
+                    $affiliations = isset($organization['affiliation']) ? json_encode($organization['affiliation']) : null;
+
+                    if ($orgId) {
+                        $data = [
+                            'user_id'         => $userId,
+                            'organization_id' => $orgId,
+                            'affiliation'     => $affiliations,
+                        ];
+
+                        // Try updating existing record
+                        $exists = $builder
+                            ->where('user_id', $userId)
+                            ->where('organization_id', $orgId)
+                            ->countAllResults();
+
+                        if ($exists) {
+                            // Update existing record
+                            $builder->where('user_id', $userId)
+                                ->where('organization_id', $orgId)
+                                ->update($data);
+                        } else {
+                            // Insert new record
+                            $builder->insert($data);
+                        }
+
+                        // Keep track of valid records
+                        $existingIds[] = $orgId;
+                    }
+                }
+
+                // Remove records that are no longer in the request (cleanup step)
+                if (!empty($existingIds)) {
+                    $builder->where('user_id', $userId)
+                        ->whereNotIn('organization_id', $existingIds)
+                        ->delete();
+                }
+            }
+
+            return $this->response->setJSON(['success' => true]);
+        } else {
+            return $this->response->setJSON(['success' => false, 'message' => 'Failed to update user profile']);
+        }
     }
 
 

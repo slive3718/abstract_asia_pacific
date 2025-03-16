@@ -247,6 +247,23 @@ $routes->group('acceptance', function ($routes) {
     $routes->post('getAuthorAcceptance/(:any)', 'acceptance\AcceptanceController::getAuthorAcceptance/$1');
 });
 
+$routes->group('author',['filter' => 'authGuard'], function ($routes)
+{
+    $routes->get('login', 'Author::validateLogin');
+    $routes->get('view_copyright', 'Author::view_copyright/$1');
+    $routes->get('profile', 'Author::profile/$1');
+
+    $routes->get('financial_relationship_disclosure', 'Author::financial_relationship_disclosure');
+    $routes->get('save_financial_relationship', 'Author::save_financial_relationship');
+
+    $routes->get('copyright_of_publication_agreement/(:num)', 'Author::copyright_of_publication_agreement/$1');
+    $routes->get('review', 'Author::conflict_of_interest_disclosure_review/$1');
+    $routes->get('finalize', 'Author::finalize_disclosure/$1');
+    $routes->get('finalize_success', 'Author::finalize_success/$1');
+    $routes->post('confirm_copyright_ajax', 'Author::confirm_copyright_ajax');
+});
+
+
 
 $routes->group('institution',['filter' => 'authGuard'], function ($routes) {
     $routes->post('add_new', 'Institution::add_new');
@@ -339,14 +356,6 @@ $routes->group('',['filter' => 'authGuard'], function ($routes)
 
     $routes->get('permissions/(:any)', 'User::view_permissions/$1');
 
-    $routes->get('author/login', 'Author::validateLogin');
-    $routes->get('author/view_copyright', 'Author::view_copyright/$1');
-    $routes->get('author/profile', 'Author::profile/$1');
-    $routes->get('author/copyright_of_publication_agreement/(:num)', 'Author::copyright_of_publication_agreement/$1');
-    $routes->get('author/review', 'Author::conflict_of_interest_disclosure_review/$1');
-    $routes->get('author/finalize', 'Author::finalize_disclosure/$1');
-    $routes->get('author/finalize_success', 'Author::finalize_success/$1');
-    $routes->post('author/confirm_copyright_ajax', 'Author::confirm_copyright_ajax');
 
     //Event landing page
 
