@@ -41,11 +41,16 @@
             </div>
             <hr/>
             <div class="container p-5 ">
-                <h1 class="text-center fw-bold">MEETING TITLE</h1>
+                <h6 class="text-center fw-bold">
+                    32nd Scoliosis Research Society (SRS) <Br>
+                    International Meeting on Advanced Spine Techniques (IMAST)<br>
+                    Glasgow, Scotland<br>
+                    April 2-5, 2025
+                </h6>
                 <p class="text-center">TBA, Japan<br>February 2026</p>
                 <p class="text-center">Abstract Submission: May 1, 2025 – June 30, 2025</p>
 
-                <h2 class="fw-bold mt-5">IMPORTANT DATES</h2>
+                <h6 class="fw-bold mt-5">IMPORTANT DATES</h6>
                 <ul >
                     <li><strong>Abstract Submission: </strong> May 1, 2025 – June 30, 2025, at 11:59 Japan Standard Time</li>
                     <li><strong>Abstract Acceptance Notification via E-mail: </strong> September 4, 2025*</li>
@@ -55,16 +60,16 @@
                 <p>*Dates are subject to change.</p>
 
                 <div class="text-center mt-5">
-                    <h2 class="fw-bolder"> <u> Prior to submission of an abstract, please review all information on this page</u></h2>
+                    <h6 class="fw-bolder"> <u> Prior to submission of an abstract, please review all information on this page</u></h6>
                 </div>
 
-                <h2 class="fw-bold mt-5">ASIA & OCEANIA AUTHORSHIP</h2>
+                <h6 class="fw-bold mt-5">ASIA & OCEANIA AUTHORSHIP</h6>
                 <p>This inaugural meeting will be for the region, by the region. Therefore, a submitted abstract must have a senior author, presenting author and a majority of co-authors from the regions of Asia and/or Oceania.</p>
 
-                <h2 class="fw-bold mt-5">SRS MEMBERSHIP</h2>
+                <h6 class="fw-bold mt-5">SRS MEMBERSHIP</h6>
                 <p>Abstracts may be submitted by SRS members and non-members.</p>
 
-                <h2 class="fw-bold mt-5">ABSTRACT SUBMISSION SITE</h2>
+                <h6 class="fw-bold mt-5">ABSTRACT SUBMISSION SITE</h6>
                 <ul>
                     <li>Please log in to submit your abstract here.</li>
                     <li>If you have not submitted a proposal to SRS before or submitted one prior to 2020, you will need to create a new account.</li>
@@ -72,7 +77,7 @@
                     <li>No changes can be made to the abstract text after the submission deadline.</li>
                 </ul>
 
-                <h2 class="fw-bold mt-5">ABSTRACT CATEGORIES</h2>
+                <h6 class="fw-bold mt-5">ABSTRACT CATEGORIES</h6>
                 <ul>
                     <li>Adolescent Idiopathic Scoliosis</li>
                     <li>Adult Spinal Deformity</li>
@@ -86,7 +91,7 @@
                     <li>Quality/Safety/Value/Complications</li>
                 </ul>
 
-                <h2 class="fw-bold mt-5">ABSTRACT SUBMISSION: KEY INFORMATION</h2>
+                <h6 class="fw-bold mt-5">ABSTRACT SUBMISSION: KEY INFORMATION</h6>
                 <ul>
                     <li>Abstracts are limited to a maximum of 2,500 characters.</li>
                     <li>Characters in the abstract title, body and table/image caption will be counted (including spaces).</li>
@@ -104,13 +109,13 @@
                     <li>All submitted abstracts will undergo a blinded review. To maintain an unbiased review of all abstracts, please do NOT include any identifying information such as researcher, institution, or study group names in your abstract. Inclusion of any identifying information will disqualify your abstract from review.</li>
                 </ul>
 
-                <h2 class="fw-bold mt-5">PREVIOUS PRESENTATION</h2>
+                <h6 class="fw-bold mt-5">PREVIOUS PRESENTATION</h6>
                 <p>Abstracts that have been presented or have been accepted to present at an SRS Annual Meeting or IMAST may not be considered for submission to this meeting.</p>
 
-                <h2 class="fw-bold mt-5">TWO-YEAR FOLLOW UP REQUIREMENT</h2>
+                <h6 class="fw-bold mt-5">TWO-YEAR FOLLOW UP REQUIREMENT</h6>
                 <p>Two-year clinical follow-up is required for abstract submission. The two-year follow-up rule does not apply to categories of basic science or biomechanical studies or for topics where two-year follow-up is irrelevant, such as 30-day readmission rates.</p>
 
-                <h2 class="fw-bold mt-5">DISCLOSURES</h2>
+                <h6 class="fw-bold mt-5">DISCLOSURES</h6>
                 <p>The Scoliosis Research Society (SRS) must ensure balance, independence, objectivity and scientific rigor in all educational activities. Therefore, ALL abstract authors must disclose all financial relationships held in the past 24 months with ineligible companies.*</p>
                 <p>*An ineligible company is an entity whose primary business is producing, marketing, selling, re-selling, or distributing health care goods or services consumed by or on patients. For specific examples of ineligible companies visit accme.org/standards.</p>
 
@@ -126,18 +131,18 @@
                     If any faculty member in an accepted Education Session does not complete their Relevant Financial
                     Relationship Disclosures, they will be removed from the Session and will need to be replaced.
                 </p>
-                <h2 class="fw-bold mt-5">NOTIFICATIONS</h2>
+                <h6 class="fw-bold mt-5">NOTIFICATIONS</h6>
                 <ul>
                     <li>All submitters will be notified via email of the status of their submission(s). In the event that you do not receive notifications, please log into the submission site at ANY time to view any recent mail regarding your submissions.</li>
                 </ul>
 
-                <h2 class="fw-bold mt-5">ACCEPTANCE</h2>
+                <h6 class="fw-bold mt-5">ACCEPTANCE</h6>
                 <ul>
                     <li>All selected authors will be required to respond to a formal invitation by the deadline set forth in their acceptance notification.</li>
                     <li><i class="fw-bolder">Authors without an account AND an updated disclosure cannot be added after the invitation response deadline. <u>No exceptions will be made </u></i>.</li>
                 </ul>
 
-                <h2 class="fw-bold mt-5">ATTENDANCE REQUIREMENTS</h2>
+                <h6 class="fw-bold mt-5">ATTENDANCE REQUIREMENTS</h6>
                 <ul>
                     <li>By su mitting an a stract to e TBA COURSE NAME, a stractau ors that at least one (l) author will attend the meetin and will be available to resent on the date and time assigned.
                         <ul>
@@ -153,7 +158,7 @@
 
                 <div>
 
-                    <h2 class="fw-bold mt-5">PODIUM PRESENTATION CANCELLATION & NO-SHOW POLICY </h2>
+                    <h6 class="fw-bold mt-5">PODIUM PRESENTATION CANCELLATION & NO-SHOW POLICY </h6>
                     <p> Authors unable to present their paper in person should inform SRS as soon as possible which co-author
                         will present in their place. If no one is able to present the paper, SRS must be informed by October 23,
                         2025, so an alternate paper can substituted.
@@ -162,7 +167,7 @@
                             paper will be prohibited from presenting any papers at the next two Annual Meetings.</i></p>
                 </div>
 
-                <h2 class="fw-bold mt-5">TECHNOLOGY TROUBLESHOOTING</h2>
+                <h6 class="fw-bold mt-5">TECHNOLOGY TROUBLESHOOTING</h6>
                 <ul>
                     <li>Please use one of the following browsers: Mozilla Firefox 4+, Safari 5+, Chrome 14+, Microsoft Edge</li>
                     <li>Browser back and forward arrows have been disabled. Users must use the page progress bar located at the top left of each page.</li>
@@ -186,7 +191,7 @@
                 </div>
 
                 <div>
-                    <h2>QUESTIONS?</h2>
+                    <h6>QUESTIONS?</h6>
                     <p>For further instructions and details on abstract submission, please click <a href="">here</a>.</p>
                     <p>For questions regarding your submission or technical issues, please contact <a href="education@srs.org">education@srs.org</a> </p>
                 </div>
