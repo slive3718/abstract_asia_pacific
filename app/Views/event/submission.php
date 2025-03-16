@@ -10,15 +10,15 @@
             <div class="card-body">
                 <div class="px-2 mt-3">
                     <strong>Welcome <?= ucFirst(session('name')).' '.ucFirst(session('surname'))?></strong>
-                    <p>Please choose to add a new submission or click on a previous submission below.</p>
+                    <p>Please choose to add a new submission or click on View/Edit to access a previous submission.</p>
                 </div>
                 <div id="" class="my-3">
                     <div class="submission-page">
                         <a href="<?=base_url().'user/papers_submission/'?>" class="btn btn-success">Add a new submission</a>
                     </div>
                 </div>
-                <p>or</p>
-                <p>To edit an existing abstract, click on the submission number below:</p>
+<!--                <p>or</p>-->
+<!--                <p>To edit an existing abstract, click on the submission number below:</p>-->
             </div>
         <div class="paper-content">
             <?php if(isset($papers) && !empty($papers)):
@@ -26,11 +26,11 @@
                     $count = 0;
                     if($paper->submission_type == 'paper'): ?>
                         <div class="card bg-white">
-                            <div class="card-header"> <strong>Submission #</strong><?=$paper->custom_id?> - <?= strip_tags($paper->title)?>
+                            <div class="card-header"> <strong>Submission # <?=$paper->custom_id?></strong> - <?= strip_tags($paper->title)?>
                                 <span class="float-end"><a href="<?=base_url().'user/submission_menu/'.$paper->id?>" class="btn btn-success btn-sm" paper_id="<?=$paper->id?>">View/Edit</a></span>
                             </div>
                             <div class="card-body" >
-                                Submitted for <?=$paper->acronym ?? ''?> - Presenter : <?=Ucfirst($paper->name). ' '. Ucfirst($paper->surname)?>
+                                <?=$paper->acronym ?? ''?> Presenter : <?=Ucfirst($paper->name). ' '. Ucfirst($paper->surname)?>
                                 <span class="float-end">Submission Status: <?=isset($paper)?($paper->is_finalized == "1")? '<span class="text-success">Finalized</span>':'<span class="text-danger">Incomplete</span>':''?></span>
 
                                 <div class="mt-2">
