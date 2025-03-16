@@ -149,7 +149,7 @@ class User extends BaseController
 
     public function papers_submission(){
 
-        $categories = (new AbstractCategoriesModel())->findAll();
+        $categories = (new AbstractCategoriesModel())->orderBy('name', 'asc')->findAll();
         $paper_type = (new PaperTypeModel())->findAll();
 
         $header_data = [
@@ -172,7 +172,7 @@ class User extends BaseController
         $this->validate_user_access($paper_id);
 
         $paper = (new PapersModel())->where('id', $paper_id)->asArray()->first();
-        $categories = (new AbstractCategoriesModel())->findAll();
+        $categories = (new AbstractCategoriesModel())->orderBy('name', 'asc')->findAll();
         $paper_type = (new PaperTypeModel())->findAll();
 
         if(!$paper){
