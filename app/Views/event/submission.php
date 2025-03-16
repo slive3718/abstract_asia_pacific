@@ -34,9 +34,9 @@
                                 <span class="float-end">Submission Status: <?=isset($paper)?($paper->is_finalized == "1")? '<span class="text-success">Finalized</span>':'<span class="text-danger">Incomplete</span>':''?></span>
 
                                 <div class="mt-2">
-                                    <a class="btn btn-primary btn-sm" data-bs-toggle="collapse" href="#collapse_comments_<?=$paper->id?>" role="button" aria-expanded="false" aria-controls="collapse_comments_<?=$paper->id?>">
-                                        + Reviewer Comments
-                                    </a>
+<!--                                    <a class="btn btn-primary btn-sm" data-bs-toggle="collapse" href="#collapse_comments_--><?php //=$paper->id?><!--" role="button" aria-expanded="false" aria-controls="collapse_comments_--><?php //=$paper->id?><!--">-->
+<!--                                        + Reviewer Comments-->
+<!--                                    </a>-->
                                     <div class="collapse mt-2" id="collapse_comments_<?=$paper->id?>">
                                         <?php if($paper->reviewers):
                                             foreach($paper->reviewers as $reviewer):
