@@ -20,7 +20,7 @@
             </div>
             <div class="row mt-4">
                 <div class="col justify-content-center text-center ">
-                    <button onClick="window.location.href='<?=base_url()?>login'" class="glass-button w-700  btn btn-primary btn-lg align-center" type="button">Submit Or Update Abstract</button>
+                    <button onClick="window.location.href='<?=base_url()?>login'" class="glass-button w-700  btn btn-primary btn-lg align-center" type="button">Please click here to submit / edit  your submission</button>
                 </div>
             </div>
             <hr/>
@@ -162,7 +162,7 @@
 
                 <div class="row mt-5">
                     <div class="col justify-content-center text-center ">
-                        <button onClick="window.location.href='<?=base_url()?>login'" class="glass-button w-700  btn btn-primary btn-lg align-center" type="button">Submit Or Update Abstract</button>
+                        <button onClick="window.location.href='<?=base_url()?>login'" class="glass-button w-700  btn btn-primary btn-lg align-center" type="button">Please click here to submit / edit  your submission</button>
                     </div>
                 </div>
 
