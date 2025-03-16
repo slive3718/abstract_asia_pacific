@@ -162,7 +162,6 @@
         let organizationCount = 0;
         let selectedOrganizations = `<?= json_encode($selectedOrganizations) ?>`;
         selectedOrganizations = JSON.parse(selectedOrganizations);
-        console.log(selectedOrganizations);
 
         // Show fields based on radio button selection
         $('input[name="financial_relationship"]').change(function () {
@@ -170,8 +169,8 @@
                 $('#organization-list').show();
                 $('#add-organization-btn').show();
 
-                // Populate existing data if available
-                if (organizationCount === 0 && Object.keys(selectedOrganizations).length > 0) {
+                //  Populate existing data if available (preserve order)
+                if (organizationCount === 0 && selectedOrganizations) {
                     populateOrganizations(selectedOrganizations);
                 } else if (organizationCount === 0) {
                     addOrganization();
@@ -186,15 +185,16 @@
         // Add Organization Field (without data)
         $('#add-organization-btn').click(addOrganization);
 
-        // Populate Existing Organizations
+        //  Populate Existing Organizations (Preserve Order)
         function populateOrganizations(data) {
-            Object.keys(data).forEach(function (orgId) {
-                let orgData = data[orgId];
-                addOrganization(orgData, orgId);
-            });
+            for (const key in data) {
+                if (data.hasOwnProperty(key)) {
+                    addOrganization(data[key], key);
+                }
+            }
         }
 
-        // Add Organization Field (with or without data)
+        //  Add Organization Field (with or without data)
         function addOrganization(data = {}, orgId = null) {
             organizationCount++;
 
@@ -204,15 +204,50 @@
 
             // Pre-fill data if provided
             if (orgId) {
-                $(`select[name="organization[${organizationCount}][name]"]`).val(orgId);
-                $(`input[name="organization[${organizationCount}][id]"]`).val(data.id); // Include the ID
+                $(`select[name="organization[${organizationCount}][name]"]`).val(data.organization_id);
+                $(`input[name="organization[${organizationCount}][id]"]`).val(data.organization_id);
 
                 if (data.affiliations?.length) {
                     data.affiliations.forEach(function (affiliationId) {
                         $(`input[name="organization[${organizationCount}][affiliation][]"][value="${affiliationId}"]`).prop('checked', true);
                     });
                 }
+
+                //  If "Other" is selected, show the textbox and pre-fill value
+                if (data.organization_id === '29') {
+                    $(`.other-organization-input[data-org="${organizationCount}"]`)
+                        .val(data.custom_organization || '')
+                        .prop('required', true)
+                        .attr('data-existing-value', data.custom_organization || '')
+                        .closest('div').show();
+                }else{
+                    $(`.other-organization-input[data-org="${organizationCount}"]`)
+                        .val('')
+                        .prop('required', false)
+                        .closest('div').hide()
+                }
+
             }
+
+            //  Handle "Other" Selection
+            $(document).on('change', 'select[name^="organization"]', function () {
+                let selectedValue = $(this).val();
+                let organizationCount = $(this).closest('.organization-item').data('id');
+                let otherInput = $(`input[name="organization[${organizationCount}][other_name]"]`);
+
+
+                if (selectedValue == '29') { // Assuming '29' is the ID for "Other"
+                    otherInput.show().prop('required', true);
+
+                    // ✅ Populate the input if it exists in the data
+                    let existingValue = otherInput.attr('data-existing-value');
+                    if (existingValue) {
+                        otherInput.val(existingValue);
+                    }
+                } else {
+                    otherInput.hide().val('').prop('required', false);
+                }
+            });
         }
 
         // Remove Organization
@@ -226,6 +261,24 @@
         $('#frd_save_btn').on('click', function (e) {
             e.preventDefault();
 
+            let isValid = true;
+            let missingFields = [];
+
+            // Check all visible other-organization-input fields
+            $('.other-organization-input:visible').each(function () {
+                if (!$(this).val().trim()) {
+                    isValid = false;
+                    let organizationName = $(this).closest('.organization-item').find('label').first().text().trim();
+                    missingFields.push(organizationName);
+                }
+            });
+
+            if (!isValid) {
+                alert('Please fill in the "Specify Other" field for the following organizations: ' + missingFields.join(', '));
+                return;
+            }
+
+
             let formData = new FormData($('form')[0]);
 
             $.ajax({
@@ -237,7 +290,7 @@
                 success: function(response) {
                     if (response.success) {
                         alert('Data saved successfully!');
-                        window.location.href = '<?= base_url('next-step') ?>';
+                        window.location.href = '<?= base_url('author/preview_finalize') ?>';
                     } else {
                         alert('Failed to save data.');
                     }
@@ -249,11 +302,13 @@
             });
         });
 
-        // If data exists, trigger the population
-        if (Object.keys(selectedOrganizations).length > 0) {
+        //  Trigger the population if data exists
+        if (selectedOrganizations) {
             $('input[name="financial_relationship"][value="yes"]').prop('checked', true).trigger('change');
         }
     });
+
+
 
 
 

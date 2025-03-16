@@ -160,15 +160,18 @@ class Author extends BaseController
             ->orderBy('id', 'asc') // <-- Order by insertion order
             ->findAll();
 
-//        print_r($savedOrganizations);exit;
         // Map saved affiliations to an easy-to-use array
         $selectedOrganizations = [];
-        foreach ($savedOrganizations as $org) { // FIXED: Changed from $savedAffiliations to $savedOrganizations
-            $selectedOrganizations[$org['organization_id']] = [
-                'id' => $org['id'], // Include ID
-                'affiliations' => json_decode($org['affiliation'], true) ?? []
-            ];
+        if (!empty($savedOrganizations)) {
+            foreach ($savedOrganizations as $org) {
+                $selectedOrganizations[$org['id']] = [
+                    'organization_id' => $org['organization_id'], // Fixed ID to match organization_id
+                    'affiliations' => json_decode($org['affiliation'], true) ?? [],
+                    'custom_organization' => $org['custom_organization'] ?? null
+                ];
+            }
         }
+
 
         $header_data = [
             'title' => "Financial Relationship Disclosure"
@@ -227,12 +230,14 @@ class Author extends BaseController
                 foreach ($request['organization'] as $organization) {
                     $orgId = $organization['name'] ?? null;
                     $affiliations = isset($organization['affiliation']) ? json_encode($organization['affiliation']) : null;
+                    $otherName = $organization['other_name'] ?? null;
 
                     if ($orgId) {
                         $data = [
                             'user_id'         => $userId,
                             'organization_id' => $orgId,
                             'affiliation'     => $affiliations,
+                            'custom_organization'      => ($orgId == 29) ? $otherName : null,
                         ];
 
                         // Try updating existing record
@@ -269,6 +274,63 @@ class Author extends BaseController
             return $this->response->setJSON(['success' => false, 'message' => 'Failed to update user profile']);
         }
     }
+
+    public function preview_finalize()
+    {
+        $user_id = session('user_id');
+        if (!$user_id) {
+            exit;
+        }
+
+        $UserModel = new UserModel();
+        $OrganizationsModel = new OrganizationsModel();
+        $AffiliationsModel = new AffiliationsModel();
+        $UserOrganizationsModel = new UserOrganizationsModel(); // New model to handle user affiliations
+
+        // Get author data
+        $author = $UserModel
+            ->join('users_profile up', 'users.id = up.author_id', 'left')
+            ->where('users.id', $user_id)
+            ->asArray()
+            ->first();
+
+        $organizations = $OrganizationsModel->findAll();
+        $affiliations = $AffiliationsModel->findAll();
+
+        // Get saved affiliations for the user
+        $savedOrganizations = $UserOrganizationsModel
+            ->where('user_id', $user_id)
+            ->orderBy('id', 'asc') // <-- Order by insertion order
+            ->findAll();
+
+        // Map saved affiliations to an easy-to-use array
+        $selectedOrganizations = [];
+        if (!empty($savedOrganizations)) {
+            foreach ($savedOrganizations as $org) {
+                $selectedOrganizations[$org['organization_id']] = [
+                    'id' => $org['organization_id'], // Fixed ID to match organization_id
+                    'affiliations' => json_decode($org['affiliation'], true) ?? []
+                ];
+            }
+        }
+
+
+        $header_data = [
+            'title' => "Financial Relationship Disclosure"
+        ];
+
+        $data = [
+            'author' => $author,
+            'organizations' => $organizations,
+            'affiliations' => $affiliations,
+            'selectedOrganizations' => $selectedOrganizations
+        ];
+
+        return view('author/common/header', $header_data)
+            . view('author/preview_finalize', $data)
+            . view('author/common/footer');
+    }
+
 
 
     public function confirm_copyright_ajax(){

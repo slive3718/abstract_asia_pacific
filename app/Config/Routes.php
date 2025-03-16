@@ -255,6 +255,7 @@ $routes->group('author',['filter' => 'authGuard'], function ($routes)
 
     $routes->get('financial_relationship_disclosure', 'Author::financial_relationship_disclosure');
     $routes->get('save_financial_relationship', 'Author::save_financial_relationship');
+    $routes->get('preview_finalize', 'Author::preview_finalize');
 
     $routes->get('copyright_of_publication_agreement/(:num)', 'Author::copyright_of_publication_agreement/$1');
     $routes->get('review', 'Author::conflict_of_interest_disclosure_review/$1');

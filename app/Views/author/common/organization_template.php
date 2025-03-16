@@ -4,11 +4,25 @@
         <select class="form-select" name="organization[${organizationCount}][name]" required>
             <option value="">Select an organization</option>
             <?php if(!empty($organizations)) : ?>
-            <?php foreach ($organizations as $organization) : ?>
-            <option value="<?=$organization['organization_id']?>" selected=""><?=$organization['name']?></option>
-            <?php endforeach; ?>
+                <?php foreach ($organizations as $organization) : ?>
+                    <option value="<?= $organization['organization_id'] ?>">
+                        <?= $organization['name'] ?>
+                    </option>
+                <?php endforeach; ?>
             <?php endif ?>
         </select>
+
+        <div class="form-floating mt-2 other-organization-input-div">
+            <input type="text" class="form-control other-organization-input"
+                   name="organization[${organizationCount}][other_name]"
+                   id="organization-other-${organizationCount}"
+                   placeholder="Specify Other"
+                   data-org="${organizationCount}"
+            />
+            <label for="organization-other-${organizationCount}">Specify Other</label>
+        </div>
+
+
     </div>
     <div class="mb-3">
         <label class="form-label">Type of Affiliation/Financial Interest</label>

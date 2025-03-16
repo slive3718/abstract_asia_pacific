@@ -29,7 +29,7 @@
                             </a>
 
                             <!-- Row 2 -->
-                            <button class="btn btn-light border w-100 text-start d-flex align-items-center">
+                            <a href="<?= base_url().'author/preview_finalize/'?>" class="btn btn-light border w-100 text-start d-flex align-items-center">
                                 <div class="bg-warning text-white px-3 py-2 fw-bold">2</div>
                                 <div class="flex-grow-1 px-2">
                                     <strong>Print/Preview/Finalize</strong>
@@ -39,7 +39,7 @@
                                     Expires: <span class="">02/24/26</span> &nbsp; | &nbsp;
                                     <span class="text-success fw-bold">Complete</span>
                                 </div>
-                            </button>
+                            </a>
                         </div>
 
                     </div>
