@@ -1486,7 +1486,7 @@ class User extends BaseController
 
         // ###################  Save to Email logs #####################
         $email_logs_array = [
-            'user_id' => session('user_id'),
+            'user_id' => session('user_id') ?? '',
             'add_to' => (json_encode($to)),
             'subject' => $subject,
             'ref_1' => 'support',
