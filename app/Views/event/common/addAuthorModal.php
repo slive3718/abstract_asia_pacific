@@ -15,9 +15,11 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="personal-tab" data-bs-toggle="tab" data-bs-target="#personal" type="button" role="tab" aria-controls="personal" aria-selected="true">Personal Information</button>
                         </li>
+                        <?php if (1 == 2): ?>
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="other-details-tab" data-bs-toggle="tab" data-bs-target="#other-details" type="button" role="tab" aria-controls="other-details" aria-selected="false">Address Information</button>
                         </li>
+                        <?php endif ?>
                     </ul>
                     <!-- Tab panes -->
                     <div class="tab-content" id="myTabContent">
@@ -91,6 +93,7 @@
                             </div>
 
                         </div>
+                        <?php if(1 == 2): ?>
                         <div class="tab-pane fade" id="other-details" role="tabpanel" aria-labelledby="other-details-tab">
                             <!-- Other Details Fields -->
                             <div class="row my-3">
@@ -131,6 +134,7 @@
                                 </div>
                             </div>
                         </div>
+                        <?php endif ?>
                     </div>
 
             </div>
