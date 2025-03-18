@@ -33,7 +33,7 @@
             </div>
             <div class="my-4">
                 <p><strong>Step 1.</strong> Click on "Choose File" and navigate the file you wish to upload.</p>
-                <input type="file" name="uploadFile" accept=".jpg,.png.JPG,.PNG" class="form-control uploadFile" id=""  >
+                <input type="file" name="uploadFile" accept=".jpeg, .JPEG" class="form-control uploadFile" id=""  >
                 <p><strong>Step 2.</strong> Click on "Upload File" to upload the new file to the system server.</p>
                 <button class="btn btn-primary btn-sm uploadFileBtn">Upload File</button> <br><br>
 
