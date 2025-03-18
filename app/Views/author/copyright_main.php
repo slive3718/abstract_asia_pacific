@@ -22,22 +22,32 @@
                                     <strong>Financial Relationship Disclosure</strong>
                                 </div>
                                 <div class="text-end">
-                                    Current date: <span class="">02/24/25</span> &nbsp; | &nbsp;
-                                    Expires: <span class="">02/24/26</span> &nbsp; | &nbsp;
-                                    <span class="text-success fw-bold">Complete</span>
+                                    Current date: <span class=""> <?=$disclosure_current_date ?? ''?></span> &nbsp; | &nbsp;
+                                    Expires: <span class=""><?=$disclosure_expire_date ?? ''?></span> &nbsp; | &nbsp;
+                                   <?= !empty($author['disclosure_signature']) && $author['signature_signed_date'] ? '<span class="text-success fw-bold">Completed </span>' : '<span class="text-danger fw-bold">Incomplete</span>' ?>
                                 </div>
                             </a>
 
-                            <!-- Row 2 -->
+                            <!-- Row 1 -->
+                            <a href="<?= base_url().'author/attestation/'?>"  class="btn btn-light border w-100 text-start d-flex align-items-center mb-2">
+                                <div class="bg-warning text-white px-3 py-2 fw-bold">1</div>
+                                <div class="flex-grow-1 px-2">
+                                    <strong>Attestation</strong>
+                                </div>
+                                <div class="text-end">
+                                    Current date: <span class=""> <?=$disclosure_current_date ?? ''?></span> &nbsp; | &nbsp;
+                                    Expires: <span class=""><?=$disclosure_expire_date ?? ''?></span> &nbsp; | &nbsp;
+                                    <?= !empty($author['attestation_signature']) && $author['attestation_date'] ? '<span class="text-success fw-bold">Completed </span>' : '<span class="text-danger fw-bold">Incomplete</span>' ?>
+                                </div>
+                            </a>
+
+                            <!-- Row 3 -->
                             <a href="<?= base_url().'author/preview_finalize/'?>" class="btn btn-light border w-100 text-start d-flex align-items-center">
                                 <div class="bg-warning text-white px-3 py-2 fw-bold">2</div>
                                 <div class="flex-grow-1 px-2">
-                                    <strong>Print/Preview/Finalize</strong>
+                                    <strong>Print/Preview</strong>
                                 </div>
                                 <div class="text-end">
-                                    Current date: <span class="">02/24/25</span> &nbsp; | &nbsp;
-                                    Expires: <span class="">02/24/26</span> &nbsp; | &nbsp;
-                                    <span class="text-success fw-bold">Complete</span>
                                 </div>
                             </a>
                         </div>

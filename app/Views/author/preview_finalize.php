@@ -1,81 +1,96 @@
 <?php echo view('author/common/menu'); ?>
 
 <main>
-    <div class="container-fluid pb-5">
-
-        <div class="row">
-            <div class="col-md-12 p-0">
-                <img id="main-banner" src="" class="img-fluid figure-img" alt="Main Banner"/>
-            </div>
-            <hr />
-        </div>
-
-        <div class="row">
-            <div class="col-md-12 text-center text-sm-start">
-                <h4><strong></strong></h4>
-            </div>
-        </div>
-
-        <div class="card p-5">
-            <div class="row">
-                <div class="col">
-                    <h4 class="fw-bold">Preview</h4>
-                    <hr />
-                    <p>You must click on the 'Finalize Disclosure' button to complete your disclosure and receive your confirmation email.</p>
-                    <a class="btn btn-primary btn-sm finalizeAuthorDisclosureBtn">Finalize Disclosure</a>
+    <div class="container py-5">
+        <!-- Card Section -->
+        <div class="card shadow-sm">
+            <?= view('author/common/shortcut_link') ?>
+            <div class="card-body">
+                <!-- Preview Section -->
+                <div class="mb-4">
+                    <h4 class="mb-4 fw-bold">Preview</h4>
+                    <p class="text-secondary">
+                        Please click on the <strong>"Finalize Disclosure"</strong> button to complete your disclosure and receive your confirmation email.
+                    </p>
+<!--                    <button class="btn btn-primary btn-sm finalizeAuthorDisclosureBtn">-->
+<!--                        Finalize Disclosure-->
+<!--                    </button>-->
                 </div>
-            </div>
 
-            <div class="row">
-                <div class="col disclosure_data">
-                    <h5 class="fw-bold">
-                        Disclosure Information for
-                        <?= ucfirst($author['name']) ?> <?= ucfirst($author['surname']) ?>
+                <!-- Disclosure Information -->
+                <div id="printSection">
+                    <h5 class="fw-bold text-primary mb-3">
+                        Disclosure Information for <?= ucfirst($author['name']) ?> <?= ucfirst($author['surname']) ?>
                     </h5>
-                    <table class="table table-bordered">
+
+                    <table class="table table-bordered align-middle">
                         <tbody>
                         <!-- Financial Disclosure -->
                         <tr>
-                            <td style="width:200px;">Financial Disclosure:</td>
+                            <td class="fw-bold bg-light" style="width: 220px;">Financial Disclosure:</td>
                             <td>
                                 <?= ($author['financial_relationship'] === 'Yes')
                                     ? 'I have held a financial relationship with an ineligible company within the past 24 months.'
                                     : 'I have NO financial relationship(s) with an ineligible company producing healthcare goods or services.'; ?>
                             </td>
+                            <td> <a href="<?=base_url().'author/financial_relationship_disclosure/#yes_relationship'?>" class="btn btn-primary btn-sm"><i class="fas fa-edit"> </i> Edit </a></td>
                         </tr>
 
                         <!-- Disclosure Support -->
                         <tr>
-                            <td>Disclosure Support:</td>
+                            <td class="fw-bold bg-light">Disclosure Support:</td>
                             <td>
-                                <?= ($author['disclosure_support'] == 1)
-                                    ? 'Yes'
-                                    : 'No'; ?>
+                                <input type="checkbox" <?= ($author['disclosure_support'] == 1) ? 'checked' : ''; ?> disabled />
+                                <label>Practice recommendations that are relevant to the inilegible companies with whom you have relationships/affiliations will be supported by the best available evidence or absent evidence will be consistent with generally accepted medical practice. </label>
+                            </td>
+                            <td>
+                                <a href="<?=base_url().'author/financial_relationship_disclosure/#disclosure_support'?>" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
                             </td>
                         </tr>
 
-                        <!-- Disclosure Discussed -->
                         <tr>
-                            <td>Disclosure Discussed:</td>
+                            <td class="fw-bold bg-light">Disclosure Discussed:</td>
                             <td>
-                                <?= ($author['disclosure_discussed'] == 1)
-                                    ? 'Yes'
-                                    : 'No'; ?>
+                                <input type="checkbox" <?= ($author['disclosure_discussed'] == 1) ? 'checked' : ''; ?> disabled />
+                                <label> All reasonable clinical alternatives will be discussed when making practice recommendations. </label>
+                            </td>
+                            <td>
+                                <a href="<?=base_url().'author/financial_relationship_disclosure/#disclosure_discussed'?>" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
                             </td>
                         </tr>
+
+                        <tr>
+                            <td class="fw-bold bg-light">Disclosure Relationship:</td>
+                            <td>
+                                <input type="checkbox" <?= ($author['disclosure_relationship'] == 1) ? 'checked' : ''; ?> disabled />
+                                <label> Relationships with ineligible companies will not bias or otherwise influence your involvement in the CME activity. </label>
+                            </td>
+                            <td>
+                                <a href="<?=base_url().'author/financial_relationship_disclosure/#disclosure_relationship'?>" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                            </td>
+                        </tr>
+
 
                         <!-- Signature -->
                         <tr>
-                            <td>Signature:</td>
-                            <td><?= !empty($author['disclosure_signature'])
+                            <td class="fw-bold bg-light">Signature:</td>
+                            <td>
+                                <?= !empty($author['disclosure_signature'])
                                     ? htmlspecialchars($author['disclosure_signature'])
                                     : 'N/A'; ?>
                             </td>
+                            <td> <a href="<?=base_url().'author/financial_relationship_disclosure/#eSignature'?>" class="btn btn-primary btn-sm"><i class="fas fa-edit"> </i> Edit </a></td>
                         </tr>
 
                         <!-- Organizations and Affiliations -->
                         <tr>
-                            <td>Organizations and Affiliations:</td>
+                            <td class="fw-bold bg-light">Organizations and Affiliations:</td>
                             <td>
                                 <?php if (!empty($selectedOrganizations)): ?>
                                     <?php
@@ -86,40 +101,51 @@
 
                                     <?php foreach ($selectedOrganizations as $org): ?>
                                         <?php
-                                        // Get organization name directly from map
-                                        $organizationName = $organizationMap[$org['id']]['name'] ?? 'N/A';
+                                        $organizationName = $organizationMap[$org['organization_id']]['name'] ?? 'N/A';
+                                        $customOrganization = $org['custom_organization'] ?? 'N/A';
                                         ?>
-                                        <strong><?= htmlspecialchars($organizationName) ?></strong>
+                                        <p class="mb-1">
+                                            <strong>Name of Corporate Organization:</strong>
+                                            <?= htmlspecialchars($organizationName) ?>
+                                            <?= $organizationName == 'Other' ? ($customOrganization ? " ({$customOrganization})" : '') : '' ?>
+                                        </p>
 
                                         <?php if (!empty($org['affiliations'])): ?>
-                                            <ul>
+                                            <ul class="list-unstyled ms-3">
                                                 <?php foreach ($org['affiliations'] as $affiliationId): ?>
                                                     <?php
-                                                    // Get affiliation name directly from map
                                                     $affiliationName = $affiliationMap[$affiliationId]['name'] ?? 'N/A';
                                                     ?>
-                                                    <li><?= htmlspecialchars($affiliationName) ?></li>
+                                                    <li>- <?= htmlspecialchars($affiliationName) ?></li>
                                                 <?php endforeach; ?>
                                             </ul>
                                         <?php endif; ?>
                                     <?php endforeach; ?>
                                 <?php else: ?>
-                                    No affiliated organizations.
+                                    <p class="text-secondary">No affiliated organizations.</p>
                                 <?php endif; ?>
                             </td>
+                            <td> <a href="<?=base_url().'author/financial_relationship_disclosure'?>" class="btn btn-primary btn-sm"><i class="fas fa-edit"> </i> Edit </a></td>
                         </tr>
                         </tbody>
                     </table>
 
-
-                    <!-- Finalize Button -->
-                    <a class="btn btn-primary btn-sm finalizeAuthorDisclosureBtn">Finalize Disclosure</a>
+                    <!-- Finalize and Print Buttons -->
+                    <div class="mt-4 mb-5">
+<!--                        <button class="btn btn-primary finalizeAuthorDisclosureBtn me-2">-->
+<!--                            Finalize Disclosure-->
+<!--                        </button>-->
+                        <button class="btn btn-primary" onclick="printDiv('printSection')">
+                            Print
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </main>
 
+<!-- JavaScript -->
 <script>
     $(function() {
         $('.finalizeAuthorDisclosureBtn').on('click', function(e) {
@@ -134,11 +160,42 @@
                 }
             });
 
-            if (onError) {
-                return false;
-            } else {
-                window.location.href = "<?= base_url('/author/finalize') ?>";
-            }
+            $.ajax({
+                url: '<?= base_url('/author/confirm_copyright_ajax') ?>',
+                method: 'POST',
+                data:{},
+                success: function(response) {
+                    if (response.status === 'success') {
+                        alert('Copyright confirmed successfully!');
+                        // Optionally reload or redirect
+                        window.location.reload();
+                    } else {
+                        alert(response.message || 'Failed to confirm copyright.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', xhr.responseText);
+                    alert('An error occurred while confirming copyright.');
+                }
+            });
+
         });
     });
+
+    function printDiv(divId) {
+        window.onbeforeprint = function() {
+            $('a:has(i.fas.fa-<a href="<?=base_url().'author/financial_relationship_disclosure'?>" class="btn btn-primary btn-sm"><i class="fas fa-edit"> </i> Edit </a>)').hide();
+        };
+        window.onafterprint = function() {
+            $('a:has(i.fas.fa-<a href="<?=base_url().'author/financial_relationship_disclosure'?>" class="btn btn-primary btn-sm"><i class="fas fa-edit"> </i> Edit </a>)').show();
+        };
+
+        let printContents = document.getElementById(divId).innerHTML;
+        let originalContents = document.body.innerHTML;
+
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+        location.reload(); // Restore original content after printing
+    }
 </script>
