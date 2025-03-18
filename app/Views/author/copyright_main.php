@@ -22,8 +22,8 @@
                                     <strong>Financial Relationship Disclosure</strong>
                                 </div>
                                 <div class="text-end">
-                                    Current date: <span class=""> <?=$disclosure_current_date ?? ''?></span> &nbsp; | &nbsp;
-                                    Expires: <span class=""><?=$disclosure_expire_date ?? ''?></span> &nbsp; | &nbsp;
+                                    Current date: <span class=""> <?=$author['signature_signed_date'] ?? ''?></span> &nbsp; | &nbsp;
+                                    Expires: <span class=""><?= $author['signature_signed_date'] ? date('Y-m-d', strtotime($author['signature_signed_date'] . ' +1 year')) : ''; ?></span> &nbsp; | &nbsp;
                                    <?= !empty($author['disclosure_signature']) && $author['signature_signed_date'] ? '<span class="text-success fw-bold">Completed </span>' : '<span class="text-danger fw-bold">Incomplete</span>' ?>
                                 </div>
                             </a>
@@ -35,8 +35,8 @@
                                     <strong>Attestation</strong>
                                 </div>
                                 <div class="text-end">
-                                    Current date: <span class=""> <?=$disclosure_current_date ?? ''?></span> &nbsp; | &nbsp;
-                                    Expires: <span class=""><?=$disclosure_expire_date ?? ''?></span> &nbsp; | &nbsp;
+<!--                                    Current date: <span class=""> --><?php //=$author['attestation_date'] ?? ''?><!--</span> &nbsp; | &nbsp;-->
+<!--                                    Expires: <span class="">--><?php //= $author['attestation_date']  ? date('Y-m-d', strtotime($author['attestation_date'] . ' +1 year')) : ''; ?><!--</span> &nbsp; | &nbsp;-->
                                     <?= !empty($author['attestation_signature']) && $author['attestation_date'] ? '<span class="text-success fw-bold">Completed </span>' : '<span class="text-danger fw-bold">Incomplete</span>' ?>
                                 </div>
                             </a>
