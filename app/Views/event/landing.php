@@ -120,7 +120,7 @@
                 <p>*An ineligible company is an entity whose primary business is producing, marketing, selling, re-selling, or distributing health care goods or services consumed by or on patients. For specific examples of ineligible companies visit accme.org/standards.</p>
 
                 <div>
-                    Visit this link to disclose:  <a onClick="window.location.href='<?=base_url().'author/login'?>'" class="glass-button  btn btn-primary align-center" type="button">Disclosure</a> <br>
+                    Visit this link to disclose:  <a onClick="window.location.href='<?=base_url().'author'?>'" class="glass-button  btn btn-primary align-center" type="button">Disclosure</a> <br>
                     The username is the email associated with your abstract and the password your first name.
                 </div>
 
@@ -144,7 +144,7 @@
 
                 <h6 class="fw-bold mt-5">ATTENDANCE REQUIREMENTS</h6>
                 <ul>
-                    <li>By submitting an abstract to TBA COURSE NAME, abstract authors agree that at least one (l) author will attend the meeting and will be available to resent on the date and time assigned.
+                    <li>By submitting an abstract to TBA COURSE NAME, abstract authors agree that at least one (l) author will attend the meeting and will be available to present on the date and time assigned.
                         <ul>
                             <li>The Presenting author must be from the regions of Asia or Oceania.</li>
                         </ul>
