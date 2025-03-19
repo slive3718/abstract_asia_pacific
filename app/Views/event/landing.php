@@ -41,12 +41,6 @@
             </div>
             <hr/>
             <div class="container p-5 ">
-                <h6 class="text-center fw-bold">
-                    32nd Scoliosis Research Society (SRS) <Br>
-                    International Meeting on Advanced Spine Techniques (IMAST)<br>
-                    Glasgow, Scotland<br>
-                    April 2-5, 2025
-                </h6>
                 <p class="text-center">TBA, Japan<br>February 2026</p>
                 <p class="text-center">Abstract Submission: May 1, 2025 – June 30, 2025</p>
 
@@ -116,20 +110,28 @@
                 <p>Two-year clinical follow-up is required for abstract submission. The two-year follow-up rule does not apply to categories of basic science or biomechanical studies or for topics where two-year follow-up is irrelevant, such as 30-day readmission rates.</p>
 
                 <h6 class="fw-bold mt-5">DISCLOSURES</h6>
-                <p>The Scoliosis Research Society (SRS) must ensure balance, independence, objectivity and scientific rigor in all educational activities. Therefore, ALL abstract authors must disclose all financial relationships held in the past 24 months with ineligible companies.*</p>
-                <p>*An ineligible company is an entity whose primary business is producing, marketing, selling, re-selling, or distributing health care goods or services consumed by or on patients. For specific examples of ineligible companies visit accme.org/standards.</p>
+                <p>
+                    The Scoliosis Research Society (SRS) must ensure balance, independence,
+                    objectivity and scientific rigor in all educational activities. Therefore,
+                    ALL abstract authors must disclose <strong> all financial relationships held in the past 24 months with ineligible companies.* </strong>
+                    If the financial relationship has occurred in the past 24 months, but has since ended, we still require you to disclose the relationship.
+                </p>
 
-                <div>
+                <div class="mb-4">
                     Visit this link to disclose:  <a onClick="window.location.href='<?=base_url().'author'?>'" class="glass-button  btn btn-primary align-center" type="button">Disclosure</a> <br>
-                    The username is the email associated with your abstract and the password your first name.
+                    <i class="bg-warning bg-opacity-50">Please use the email address that was used in the abstract you are part of. </i>
                 </div>
 
+                <p><i>*An ineligible company is an entity whose primary business is producing, marketing, selling, re-selling, or distributing health care goods or services consumed by or on patients. For specific examples of ineligible companies visit accme.org/standards.</i></p>
+
                 <p>
+                    <i>
                     *An ineligible company is an entity whose primary business is producing, marketing, selling, re-selling,
                     or distributing health care goods or services consumed by or on patients. For specific examples of
                     ineligible companies visit accme.org/standards.
                     If any faculty member in an accepted Education Session does not complete their Relevant Financial
                     Relationship Disclosures, they will be removed from the Session and will need to be replaced.
+                    </i>
                 </p>
                 <h6 class="fw-bold mt-5">NOTIFICATIONS</h6>
                 <ul>
@@ -163,7 +165,7 @@
                         will present in their place. If no one is able to present the paper, SRS must be informed by October 23,
                         2025, so an alternate paper can substituted.
                     </p>
-                    <p> <i>In the case ofa "no-show" podium presentation, the presenting author associated with the "no-show"
+                    <p> <i>In the case of a "no-show" podium presentation, the presenting author associated with the "no-show"
                             paper will be prohibited from presenting any papers at the next two Annual Meetings.</i></p>
                 </div>
 
@@ -172,7 +174,7 @@
                     <li>Please use one of the following browsers: Mozilla Firefox 4+, Safari 5+, Chrome 14+, Microsoft Edge</li>
                     <li>Browser back and forward arrows have been disabled. Users must use the page progress bar located at the top left of each page.</li>
                     <li>Inactivity of more than 90 minutes on system pages will result in a session time out. Please save your pages intermittently to avoid loss of data.</li>
-                    <li>To successfully receive emails regarding your submission, you must add "@owpm1.com" as a
+                    <li>To successfully receive emails regarding your submission, you must add "@owpm2.com" as a
                         safe sender in your email client. <a href="#">Click here </a> for more information about adding safe senders.</li>
                 </ul>
 
