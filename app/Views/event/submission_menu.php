@@ -41,7 +41,7 @@
                             <?php $stepNumber = 1; ?>
 
                             <a href="<?=base_url()?>user/edit_papers_submission/<?=$paper_id?>" class="btn btn-white btn-sm round-0 text-start ps-0 fw-bold" style="width:100%; border-bottom:1px solid blue">
-                                <num class="btn-sm me-2 text-white " style="background-color:#0072bb; padding:5px 10px 5px 10px"><?= $stepNumber++ ?> </num> Paper Details
+                                <num class="btn-sm me-2 text-white " style="background-color:#0072bb; padding:5px 10px 5px 10px"><?= $stepNumber++ ?> </num> Abstract Details
                                 <?php if(!empty($incompleteStatus['paper'])):?>
                                     <span class="float-end text-danger"><i class="fw-bold fas fa-exclamation-circle"></i> Incomplete </span>
                                 <?php else: ?>

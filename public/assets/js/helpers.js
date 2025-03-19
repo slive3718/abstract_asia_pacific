@@ -5,7 +5,7 @@ var WordCounterHelper = (function () {
         // Count all characters including spaces
         let charCount = text.length;
 
-        charCountDisplay.text('Character count: ' + charCount);
+        charCountDisplay.text('Character count with spaces: ' + charCount);
 
         if (charCount > 2500) {
             charCountDisplay.addClass('text-danger');
