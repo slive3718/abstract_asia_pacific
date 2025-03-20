@@ -488,11 +488,6 @@ class Author extends BaseController
         $addContent = $email_body;
 
         try{
-            $insertArray = [
-                'is_copyright_agreement_accepted'=> '1',
-                'electronic_signature'=> $post['signature'],
-                'copyright_agreement_date'=> date("Y-m-d H:i:s")
-            ];
 
             $paperAuthors = $PaperAuthors->where(['paper_id'=>$post['paper_id'], 'author_id'=>session('user_id')])->set($insertArray)->update();
             if($paperAuthors) {

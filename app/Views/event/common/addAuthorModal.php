@@ -50,12 +50,6 @@
                                     <input type="email" name="authorConfirmEmail" id="authorConfirmEmail" class="form-control required" placeholder="Retype your email" required>
                                 </div>
 
-                                <!--Degree -->
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold" for="authorDegree">Degree</label>
-                                    <input type="text" name="authorDegree" id="authorDegree" class="form-control shadow-none" placeholder="Enter your degree">
-                                </div>
-
                                 <!-- Work Phone & Fax -->
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold" for="authorPhone">Work Phone </label>
