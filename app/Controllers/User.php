@@ -5,6 +5,8 @@ namespace App\Controllers;
 use App\Libraries\PhpMail;
 use App\Models\AbstractCategoriesModel;
 use App\Models\AbstractReviewModel;
+use App\Models\CitiesModel;
+use App\Models\CountriesModel;
 use App\Models\DesignationsModel;
 use App\Models\EmailLogsModel;
 use App\Models\EmailTemplatesModel;
@@ -410,11 +412,26 @@ class User extends BaseController
         if($post){
             try {
                 $authors = $authorModel
-                    ->select('users_profile.*, users.id as user_id,users.email, users.surname, users.name, users.middle_name')
-                    ->join($UsersModel->table, 'users_profile.author_id = users.id', 'right')
-                    ->where('users.surname', $post['searchValue']['authorName'])
-//                    ->where('users.id !=', session('user_id'))
+                    ->select('
+                        users_profile.*, 
+                        u.id as user_id,
+                        u.email, 
+                        u.surname, 
+                        u.name, 
+                        u.middle_name, 
+                        i.name as institution_name, 
+                        ci.name as institution_city, 
+                        co.name as institution_country
+                    ')
+                    ->join($UsersModel->table . ' u', 'users_profile.author_id = u.id', 'right')
+                    ->join((new UsersProfileModel())->table . ' up', 'u.id = up.author_id', 'right')
+                    ->join((new InstitutionModel())->table . ' i', 'up.institution_id = i.id', 'left')
+                    ->join((new CitiesModel())->table . ' ci', 'i.city_id = ci.id', 'left')
+                    ->join((new CountriesModel())->table . ' co', 'ci.country_id = co.id', 'left')
+                    ->where('u.surname', $post['searchValue']['authorName'])
+                    // ->where('u.id !=', session('user_id')) // Uncomment if needed
                     ->findAll();
+
                 if(($authors))
                     echo json_encode(array('status'=>'200', 'message'=>'Match found', 'data'=>$authors));
                 else{
