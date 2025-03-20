@@ -339,13 +339,13 @@ class User extends BaseController
 
 
     function generateCustomID($paper_id){
-        $nextYear = date('Y');
+        $nextYear = date('Y') < 2026 ? 2026 : date('Y');
         $newCustomId = sprintf('%s-%03d', $nextYear, $paper_id);
         return $newCustomId;
     }
 
     function generatePanelistCustomID($paper_id){
-        $nextYear = date('Y');
+        $nextYear = date('Y') < 2026 ? 2026 : date('Y');
         $newCustomId = sprintf('%s-%03d', $nextYear, $paper_id);
         return $newCustomId;
     }
