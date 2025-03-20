@@ -58,12 +58,12 @@
 
                                 <!-- Work Phone & Fax -->
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold" for="authorPhone">Work Phone <span class="text-danger">*</span></label>
-                                    <input type="tel" name="authorPhone" id="authorPhone" class="form-control shadow-none" placeholder="Enter your work phone" required>
+                                    <label class="form-label fw-bold" for="authorPhone">Work Phone </label>
+                                    <input type="tel" name="authorPhone" id="authorPhone" class="form-control shadow-none" placeholder="Enter your work phone">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold" for="authorFax">Fax</label>
-                                    <input type="text" name="authorFax" id="authorFax" class="form-control shadow-none" placeholder="Enter fax number">
+                                    <label class="form-label fw-bold" for="authorFax">Cell Phone</label>
+                                    <input type="text" name="cellphone" id="cellphone" class="form-control shadow-none" placeholder="Enter cellphone number">
                                 </div>
 
                                 <!-- Designations -->

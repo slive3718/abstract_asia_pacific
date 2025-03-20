@@ -300,6 +300,8 @@ class User extends BaseController
             'primary_investigator'   => isset($post['primary_investigator']) ? trim($post['primary_investigator']) : $existingPaper['primary_investigator'],
             'grant_year'             => isset($post['grant_year']) ? trim($post['grant_year']) : $existingPaper['grant_year'],
             'image_caption'          => isset($post['image_caption']) ? trim($post['image_caption']) : $existingPaper['image_caption'],
+            'author_q_1'          => isset($post['author_q_1']) ? trim($post['author_q_1']) : $existingPaper['author_q_1'],
+            'author_q_2'          => isset($post['author_q_2']) ? trim($post['author_q_2']) : $existingPaper['author_q_2'],
         ];
 
 
@@ -362,6 +364,8 @@ class User extends BaseController
             ->where('author_type', 'author')
             ->findAll();
 
+        $disclosure_current_date = (new SiteSettingModel())->where('name', 'disclosure_current_date')->first()['value'];
+
         $header_data = [
             'title' => "Authors and Copyright"
         ];
@@ -370,6 +374,7 @@ class User extends BaseController
             'paper_id' => $paper_id,
             'paper'=> $paper ? :'',
             'recentAuthors'=>$recentAuthors,
+            'disclosure_current_date'=>$disclosure_current_date
         ];
         return
             view('event/common/header', $header_data).
@@ -632,12 +637,13 @@ class User extends BaseController
                     $insertAuthorDetailsArray = [
                         'deg' => $post['authorDegree']?:'',
                         'phone' => $post['authorPhone']?:'',
+                        'cellphone' => $post['cellphone']?:'',
                         'institution' => $post['authorInstitution']?:'',
-                        'address' => $post['authorAddress']?:'',
-                        'city' => $post['authorCity']?:'',
-                        'country' => $post['authorCountry']?:'',
-                        'province' => $post['authorProvince']?:'',
-                        'zipcode' => $post['authorZipcode']?:'',
+//                        'address' => $post['authorAddress']?:'',
+//                        'city' => $post['authorCity']?:'',
+//                        'country' => $post['authorCountry']?:'',
+//                        'province' => $post['authorProvince']?:'',
+//                        'zipcode' => $post['authorZipcode']?:'',
                         'author_id' => $userResult,
                         'designations' => !empty($post['designations']) ? json_encode($post['designations']) : '',
                         'other_designation' => $post['other_designation'] ?? ''
@@ -731,11 +737,12 @@ class User extends BaseController
             'institution' => $post['authorInstitution']?:'',
             'institution_id' => $post['authorInstitutionId']?:'',
             'phone' => $post['authorPhone']?:'',
-            'address' => $post['authorAddress']?:'',
-            'city' => $post['authorCity']?:'',
-            'country' => $post['authorCountry']?:'',
-            'province' => $post['authorProvince']?:'',
-            'zipcode' => $post['authorZipcode']?:'',
+            'cellphone' => $post['cellphone']?:'',
+//            'address' => $post['authorAddress']?:'',
+//            'city' => $post['authorCity']?:'',
+//            'country' => $post['authorCountry']?:'',
+//            'province' => $post['authorProvince']?:'',
+//            'zipcode' => $post['authorZipcode']?:'',
             'designations' => !empty($post['designations']) ? json_encode($post['designations']): '',
             'other_designation' => $post['other_designation'] ?? ''
         ];
@@ -932,6 +939,10 @@ class User extends BaseController
                         ->update();
                 }
             }
+
+           if(!$this->update_paper_ajax()){
+                throw new \Exception('Error updating paper');
+           }
 
 
             // Check transaction status
@@ -1474,7 +1485,7 @@ class User extends BaseController
         }
 
         $sendMail = new PhpMail();
-        $from = ['email' => 'afs@owpm2.com', 'name' => 'AFS'];
+        $from = ['email' => 'ap@owpm2.com', 'name' => 'Abstract Support'];
         $subject = 'Support Request From '.$post['fname']." ".$post['lname'];
         $message = "First Name: ".$post['fname']."<br>";
         $message .= "Last Name: ".$post['lname']."<br>";

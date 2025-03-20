@@ -7,6 +7,7 @@ use App\Libraries\PhpMail;
 use App\Models\Core\Api;
 use App\Models\AbstractEventsModel;
 use App\Models\UserModel;
+use App\Models\UsersProfileModel;
 use DateTimeImmutable;
 use Firebase\JWT\JWT;
 
@@ -78,11 +79,16 @@ class Account extends BaseController
                 'password'=>password_hash($post['password'], PASSWORD_DEFAULT)
             ])->insert();
 
+        $insertID = $usersModel->insertID();
+        if($insertID){
+            (new UsersProfileModel())->set(['author_id' => $insertID])->insert();
+        }
+
         $expiry = (isset($post['expiry']))?$post['expiry']:24; // hours
 
         $cred_check = $usersModel
             ->select('id, prefix, name, surname, suffix, email, is_super_admin')
-            ->where(['id'=>$usersModel->insertID()])
+            ->where(['id'=>$insertID])
             ->first()??false;
 
 
@@ -105,7 +111,6 @@ class Account extends BaseController
                 'email'=>$cred_check['email'],
                 'token'=>$token,
                 'user_id'=>$cred_check['id'],
-                'event_uri'=>'afs',
                 'user_type'=>"user",
                 'name'=>$cred_check['name'],
                 'surname'=>$cred_check['surname'],

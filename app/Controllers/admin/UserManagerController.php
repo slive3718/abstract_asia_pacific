@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Controllers\User;
 
 use App\Models\AbstractReviewModel;
+use App\Models\CitiesModel;
 use App\Models\DivisionsModel;
 use App\Models\EmailLogsModel;
 use App\Models\InstitutionModel;
@@ -21,13 +22,10 @@ class UserManagerController extends Controller
 {
 
     protected $helpers = ['form'];
-    private UserModel $userModel;
-    private UsersProfileModel $userProfileModel;
     private $db;
     public function __construct()
     {
-        $this->userModel = new UserModel();
-        $this->userProfileModel = new UsersProfileModel();
+
         $this->db = \Config\Database::connect();
     }
 
@@ -85,8 +83,6 @@ class UserManagerController extends Controller
                         'email' => $cellValue[4]
                     ];
 
-                    // Check and set reviewer roles
-                    $importData = $this->setReviewerRole($importData, trim($cellValue[7]));
 
                     $division = $DivisionModel->like('LOWER(name)', strtolower(trim($cellValue[6])))->first();
                     $division_id = (!empty($division->division_id) ? $division->division_id : '');
@@ -112,7 +108,7 @@ class UserManagerController extends Controller
 
                         // Update or create profile data
                         $existingProfile = $UserProfileModel->where('author_id', $user_id)->first();
-                        $profileData = $this->mergeProfileData($existingProfile, $cellValue[5], $division_id);
+                        $profileData = $this->updateProfileData($existingProfile, $cellValue[5], $division_id);
                         if ($existingProfile) {
                             $UserProfileModel->update($existingProfile['id'], $profileData);
                         } else {
@@ -139,6 +135,222 @@ class UserManagerController extends Controller
         }
     }
 
+    public function importUsers()
+    {
+        $file = $this->request->getFile('user_import_file');
+
+        $UserModel = new UserModel();
+        $UserProfileModel = new UsersProfileModel();
+        $duplicate = [];
+        $insertedCount = 0;
+        $updatedCount = 0;
+        $count = 0;
+
+        session()->set('import_progress', 0);
+
+        try {
+            if ($file->isValid() && in_array($file->getExtension(), ['xlsx', 'xls'])) {
+                // Load Excel library
+                helper('excel');
+                $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file);
+                $worksheet = $spreadsheet->getActiveSheet();
+                $totalRows = $worksheet->getHighestDataRow();
+
+                foreach ($worksheet->getRowIterator() as $index => $row) {
+                    if ($index === 1) continue; // Skip header row
+
+                    $count++;
+                    $cellValue = []; // Reset cell values for each row
+
+                    foreach ($row->getCellIterator() as $cell) {
+                        $cellValue[] = $cell->getValue();
+                    }
+
+                    $importData = [
+                        'name'        => trim($cellValue[0]) ?: '',
+                        'middle_name' => trim($cellValue[1]) ?: '',
+                        'surname'     => trim($cellValue[2]) ?: '',
+                        'email'       => trim($cellValue[3]) ?: '',
+                        'username'    => trim($cellValue[4]) ?: '',
+                        'password'    => $cellValue[5] ? password_hash(trim($cellValue[5]), PASSWORD_DEFAULT) : '',
+                    ];
+
+                    // Validate email and username before inserting
+                    if (empty($importData['email'])) {
+                        continue;
+                    }
+
+                    $user = $UserModel->where('email', $importData['email'])->first();
+
+                    if (empty($user)) {
+                        // ✅ Insert new user
+                        $user_id = $UserModel->insert($importData);
+
+                        if ($user_id) {
+                            $this->create_user_profile_data($user_id, $cellValue);
+                            $insertedCount++;
+                        }
+                    } else {
+                        // ✅ Update existing user
+                        $user_id = $user['id'];
+                        $UserModel->update($user_id, $importData);
+
+                        $existingProfile = $UserProfileModel->where('author_id', $user_id)->first();
+
+                        $this->update_user_profile_data($existingProfile, $user_id, $cellValue);
+
+                        // ✅ Handle reviewer roles
+                        $reviewerData = $this->setReviewerRole([], trim($cellValue[7]));
+                        if (!empty($reviewerData)) {
+                            $UserModel->update($user_id, $reviewerData);
+                        }
+
+                        $updatedCount++;
+                    }
+
+                    // ✅ Update import progress
+                    $progress = ($count / $totalRows) * 100;
+                    session()->set('import_progress', $progress);
+                }
+
+                return json_encode([
+                    'status'  => 200,
+                    'message' => "Users imported successfully! Inserted Count: {$insertedCount}, Updated Count: {$updatedCount}",
+                    'data'    => ''
+                ]);
+            } else {
+                return json_encode([
+                    'status'  => 500,
+                    'message' => "Invalid file format. Please upload a valid Excel file.",
+                    'data'    => ''
+                ]);
+            }
+        } catch (\Exception $e) {
+            return json_encode([
+                'status'  => 500,
+                'message' => $e->getMessage(),
+                'data'    => ''
+            ]);
+        }
+    }
+
+   private function create_user_profile_data($user_id, $cellValue) {
+        $InstitutionModel = new InstitutionModel();
+        $UserProfileModel = new UsersProfileModel();
+
+        $searchInstitution = strtolower(trim($cellValue[9]));
+
+        // Try to find the institution
+        $institution = $InstitutionModel
+            ->like("REPLACE(LOWER(name), ' ', '')", str_replace(' ', '', $searchInstitution))
+            ->asArray()
+            ->first();
+
+        if (!$institution || $institution['id'] == 1) {
+            $institution_id = $this->create_institution($cellValue);
+        } else {
+            $institution_id = $institution['id'];
+        }
+
+        // Ensure institution_id is null if no valid institution is found
+        if ($institution_id === null || $institution_id == 1) {
+            $institution_id = null;
+        }
+
+        $profileData = [
+            'author_id'      => $user_id,
+            'institution_id' => $institution_id,
+            'deg'            => trim($cellValue[6]) ?: '',
+            'phone'          => trim($cellValue[7]) ?: '',
+            'cellphone'          => trim($cellValue[8]) ?: '',
+        ];
+
+        $UserProfileModel->insert($profileData);
+        return $UserProfileModel->insertID(); // Return inserted profile ID
+    }
+
+    private function create_institution($cellValue) {
+        $InstitutionModel = new InstitutionModel();
+        $cityModel = new CitiesModel();
+
+        $searchCity = trim($cellValue[10]);
+        $searchCountry = trim($cellValue[11]);
+
+        $city = $cityModel
+            ->select('cities.*')
+            ->join('countries', 'countries.id = cities.country_id', 'left')
+            ->where('LOWER(cities.name)', strtolower($searchCity))
+            ->where('LOWER(countries.name)', strtolower($searchCountry))
+            ->first();
+
+        if (!$city) {
+            return null; // Return null if city is not found
+        }
+
+        $city_id = $city['id'];
+        $country_id = $city['country_id'];
+        $state_id = $city['state_id'];
+
+        $institution_fields = [
+            'name'       => trim($cellValue[9]),
+            'country_id' => $country_id,
+            'state_id'   => $state_id,
+            'city_id'    => $city_id,
+        ];
+
+        // Insert institution and return the ID
+        if ($InstitutionModel->insert($institution_fields)) {
+            return $InstitutionModel->insertID();
+        }
+
+        return null;
+    }
+
+    private function update_user_profile_data($existingProfile, $user_id, $cellValue) {
+        $InstitutionModel = new InstitutionModel();
+        $UserProfileModel = new UsersProfileModel();
+
+        $searchInstitution = strtolower(trim($cellValue[9]));
+
+        $institution = $InstitutionModel
+            ->like("REPLACE(LOWER(name), ' ', '')", str_replace(' ', '', $searchInstitution))
+            ->asArray()
+            ->first();
+
+        $institution_id = $institution ? $institution['id'] : $this->create_institution($cellValue);
+
+        if ($institution_id === null || $institution_id == 1) {
+            $institution_id = null;
+        }
+
+        $profileData = [
+            'institution_id' => $institution_id,
+            'deg'            => trim($cellValue[6]) ?: '',
+            'phone'          => trim($cellValue[7]) ?: '',
+        ];
+
+        if ($existingProfile) {
+            $updateData = [];
+
+            foreach ($profileData as $key => $value) {
+                if ($existingProfile[$key] != $value) {
+                    $updateData[$key] = $value;
+                }
+            }
+
+            if (!empty($updateData)) {
+                $UserProfileModel->update($existingProfile['id'], $updateData);
+                return $existingProfile['id'];
+            }
+        } else {
+            $profileData['author_id'] = $user_id;
+            $UserProfileModel->insert($profileData);
+            return $UserProfileModel->insertID();
+        }
+
+        return true;
+    }
+
     private function setReviewerRole($importData, $role)
     {
         if ($role == 'Program Chair') {
@@ -149,16 +361,16 @@ class UserManagerController extends Controller
         return $importData;
     }
 
-    private function createProfileData($user_id, $company, $division_id)
+    private function createProfileData($user_id)
     {
         return [
             'author_id' => $user_id,
             'company' => !empty($company) ? $company : "",
-            'division_id' => json_encode(!empty($division_id) ? [$division_id] : [""])
+            'division_id' => json_encode(!empty($division_id) ? [$division_id] : null)
         ];
     }
 
-    private function mergeProfileData($existingProfile, $company, $division_id)
+    private function updateProfileData($existingProfile, $company, $division_id)
     {
         $mergedDivisions = [];
         if ($existingProfile) {

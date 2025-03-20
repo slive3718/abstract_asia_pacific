@@ -71,7 +71,7 @@ $(function() {
 
                 let formData = new FormData(form);
                 formData.append('abstract_body_count', abstract_body_count)
-                let abstractTitle = $('#q1').val();
+                let abstractTitle = $('#abstract_title').val();
 
                 if (typeof userID === 'undefined') {
                     console.error("userID is not defined!");
@@ -436,7 +436,10 @@ $(function() {
                     'selectedCorrespondents': selectedCorrespondents,
                     'author_orders': author_orders,
                     'presenting_authors': presenting_authors,
-                    'paper_id': paper_id
+                    'paper_id': paper_id,
+                    'author_q_1' : $('input[name="author_q_1"]:checked').val(),
+                    'author_q_2' : $('input[name="author_q_2"]:checked').val()
+
                 },
                 method: "POST",
                 dataType: "json",
@@ -875,55 +878,57 @@ function getPaperAuthors(paper_id = null){
             'paper_id':paper_id,
         },
 
-        function(response){
-            // console.log(response);
-            $('.authorList').html('');
-            $.each(response.data, function(index, val){
-                console.log(val)
-                let complete_status = 1;
-                let presenting = (val.is_presenting_author === 'Yes')?'checked':'unchecked';
-                let correspondent = (val.is_correspondent === 'Yes')?'checked':'unchecked';
+        function(response) {
+    $('.authorList').html('');
+    $.each(response.data, function(index, val) {
+        let complete_status = 1;
+        let presenting = (val.is_presenting_author === 'Yes') ? 'checked' : 'unchecked';
+        let correspondent = (val.is_correspondent === 'Yes') ? 'checked' : 'unchecked';
 
-                let copyright_agreement_date = new Date(val.copyright_agreement_date).toISOString().split('T')[0].replace(/-/g, '/');
-                let copyrightStatus = (val.is_copyright_agreement_accepted == 1)? '<small class="text-success text-wrap"> current : <br>'+copyright_agreement_date+' </small>':'<small class="text-warning "> none </a>';
-                let emailed = "<small class='small'>" + ((val.mailLogs) ? (val.mailLogs.updated_at !== null) ? val.mailLogs.updated_at.split(' ')[0]: (val.mailLogs.created_at !== null) ? val.mailLogs.created_at.split(' ')[0] : 'none' : 'none') + "</small>";
-                let resendEmailBtn = ((val.is_copyright_agreement_accepted == null)?'<a class=" btn btn-sm btn-primary text-white resendEmailBtn" author_id="'+val.author_id+'" paper_authors_id="'+val.id+'" paper_id="'+val.paper_id+'" user_id="'+val.user_id+'"><i class="fa-solid fa-square-envelope"></i> Resend </a>':'<span class="small"> none </span>');
-                let disclose_now ='<a class=" btn btn-sm btn-info text-white discloseNowBtn" author_id="'+val.author_id+'" paper_authors_id="'+val.id+'" paper_id="'+val.paper_id+'" user_id="'+val.user_id+'"><i class="fa-solid fa-square-envelope"></i> Disclose Now</a>';
-                let required_info = ['email', 'institution', 'deg', 'city', 'country', 'province'];
+        let current_date = new Date(disclosure_current_date).toISOString().split('T')[0].replace(/-/g, '/');
+        let copyright_agreement_date = new Date(val.signature_signed_date).toISOString().split('T')[0].replace(/-/g, '/');
 
-                let submitNowBtn = '<a href="submitNowBtn" author_id="'+val.author_id+'" paper_authors_id="'+val.id+'" paper_id="'+val.paper_id+'" user_id="'+val.user_id+'">Submit Copyright Now</a>'
+        let isCurrent = new Date(copyright_agreement_date) > new Date(disclosure_current_date);
 
-                $.each(required_info, function(index, arr){
-                   /* console.log(val[arr] );*/
-                    if(val[arr] == '' || val[arr] == null){
-                        complete_status = 0;
-                    }
-                })
+        let copyrightStatus = (val.signature_signed_date) ?
+            (isCurrent ? '<small class="text-success text-wrap"> current : <br>' + copyright_agreement_date + '</small>' : '<small class="text-danger text-wrap"> expired : <br>' + copyright_agreement_date + '</small>') :
+            '<small class="text-warning"> none </small>';
 
-                // console.log(val)
+        let emailed = ((val.mailLogs) ? (val.mailLogs.updated_at !== null) ? val.mailLogs.updated_at.split(' ')[0] : (val.mailLogs.created_at !== null) ? val.mailLogs.created_at.split(' ')[0] : 'none' : 'none');
 
-                $('.authorList').append('<tr class="author_order" author_id="'+val.author_id+'" order="'+val.author_order+'" name="'+val.name+'" paper_authors_id="'+val.ID+'" paper_id="'+val.paper_id+'">'+
-                    '<td><span class="order_num">'+(index+1)+'.</span></td>'+
-                    '<td class="text-nowrap">'+val.name+' '+val.surname+'</td>'+
-                    '<td class="text-nowrap"><input id="correspondent_'+val.author_id+'" type="checkbox" class="correspondent markedCorrespondent" author-id="'+val.author_id+'" '+correspondent+'> <label for="correspondent_'+val.author_id+'"> Correspondent</label></td>'+
-                    '<td class="text-nowrap"><input id="presentingAuthor_'+val.author_id+'" type="checkbox" class="presentingAuthor" name="presentingAuthor" author-id="'+val.author_id+'" id="presenting_author_'+val.author_id+'" '+presenting+' author_name="'+val.name+'" author_surname="'+val.surname+'"> <label for="presentingAuthor_'+val.author_id+'"> Presenting Author </label></td>'+
-                    '<td class="text-nowrap"><input id="coAuthor_'+val.author_id+'" type="radio" class="co-author" name="co-author" author-id="'+val.author_id+'" id="presenting_author_'+val.author_id+'" '+presenting+' author_name="'+val.name+'" author_surname="'+val.surname+'"> <label  for="coAuthor_'+val.author_id+'"> Senior Author </label></td>'+
-                    '<td class="text-nowrap"><a class=" btn btn-sm btn-primary text-white moveUp"><i class="fa-solid fa-arrow-up "></i> </a> </td>'+
-                    '<td class="text-nowrap"><a class=" btn btn-sm btn-primary text-white moveDown"><i class="fa-solid fa-arrow-down"></i> </a></td>'+
-                    '<td class="text-nowrap"><a class=" btn btn-sm btn-info text-white editAuthorListedBtn"  author_id="'+val.author_id+'"  paper_authors_id="'+val.id+'" paper_id="'+val.paper_id+'"><i class="fa-solid fa-user-pen"></i> </a> </td>'+
-                    '<td class="text-nowrap"><a class=" btn btn-sm btn-danger text-white removePaperAuthor" author_id="'+val.author_id+'"  paper_authors_id="'+val.id+'" paper_id="'+val.paper_id+'"><i class="fa-solid fa-user-xmark"></i> </a></td>'+
-                    '<td class="tdCompleteStatus" status="'+complete_status+'">'+(complete_status == 1 ? '<span class="text-success small">Completed</span>':'<span class="text-danger small">Incomplete</span>' )+'</td>'+
-                    '<td style="text-align:center" class="copyrightStatus text-wrap"> '+copyrightStatus+'</td>'+
-                    '<td class="text-nowrap"><span class="">'+emailed+' </span></td>'+
-                    '<td class="text-nowrap">'+
-                    ((val.is_copyright_agreement_accepted == null && val.author_id == current_user_id) ? disclose_now :
-                        ((val.is_copyright_agreement_accepted == null && val.author_id != current_user_id) ? resendEmailBtn :
-                            '<i class="fa-sharp fa-solid fa-circle-check text-success"></i>'))+
-                    '</td>'+
-                    '</tr>'
-                )
-            })
-        },'json')
+        console.log(emailed)
+        let resendEmailBtn = (val.is_copyright_agreement_accepted == null) ? '<a class="btn btn-sm btn-primary text-white resendEmailBtn" author_id="' + val.author_id + '" paper_authors_id="' + val.id + '" paper_id="' + val.paper_id + '" user_id="' + val.user_id + '"><i class="fa-solid fa-square-envelope"></i> '+(emailed !== 'none' ? "Resend": "Email Now")+'  </a>' : '<span class="small"> none </span>';
+
+        let disclose_now = '<a class="btn btn-sm btn-info text-white discloseNowBtn" author_id="' + val.author_id + '" paper_authors_id="' + val.id + '" paper_id="' + val.paper_id + '" user_id="' + val.user_id + '"><i class="fa-solid fa-square-envelope"></i> Disclose Now</a>';
+        let required_info = ['email', 'institution', 'deg', 'city', 'country', 'province'];
+
+        let submitNowBtn = '<a href="submitNowBtn" author_id="' + val.author_id + '" paper_authors_id="' + val.id + '" paper_id="' + val.paper_id + '" user_id="' + val.user_id + '">Submit Copyright Now</a>';
+
+        $.each(required_info, function(index, arr) {
+            if (val[arr] == '' || val[arr] == null) {
+                complete_status = 0;
+            }
+        });
+
+        $('.authorList').append(
+            '<tr class="author_order" author_id="' + val.author_id + '" order="' + val.author_order + '" name="' + val.name + '" paper_authors_id="' + val.ID + '" paper_id="' + val.paper_id + '">' +
+            '<td><span class="order_num">' + (index + 1) + '.</span></td>' +
+            '<td class="text-nowrap">' + val.name + ' ' + val.surname + '</td>' +
+            '<td class="text-nowrap"><input id="correspondent_' + val.author_id + '" type="checkbox" class="correspondent markedCorrespondent" author-id="' + val.author_id + '" ' + correspondent + '> <label for="correspondent_' + val.author_id + '"> Correspondent</label></td>' +
+            '<td class="text-nowrap"><input id="presentingAuthor_' + val.author_id + '" type="checkbox" class="presentingAuthor" name="presentingAuthor" author-id="' + val.author_id + '" ' + presenting + ' author_name="' + val.name + '" author_surname="' + val.surname + '"> <label for="presentingAuthor_' + val.author_id + '"> Presenting Author </label></td>' +
+            '<td class="text-nowrap"><input id="coAuthor_' + val.author_id + '" type="radio" class="co-author" name="co-author" author-id="' + val.author_id + '" ' + presenting + ' author_name="' + val.name + '" author_surname="' + val.surname + '"> <label for="coAuthor_' + val.author_id + '"> Senior Author </label></td>' +
+            '<td class="text-nowrap"><a class="btn btn-sm btn-primary text-white moveUp"><i class="fa-solid fa-arrow-up"></i></a></td>' +
+            '<td class="text-nowrap"><a class="btn btn-sm btn-primary text-white moveDown"><i class="fa-solid fa-arrow-down"></i></a></td>' +
+            '<td class="text-nowrap"><a class="btn btn-sm btn-info text-white editAuthorListedBtn" author_id="' + val.author_id + '" paper_authors_id="' + val.id + '" paper_id="' + val.paper_id + '"><i class="fa-solid fa-user-pen"></i></a></td>' +
+            '<td class="text-nowrap"><a class="btn btn-sm btn-danger text-white removePaperAuthor" author_id="' + val.author_id + '" paper_authors_id="' + val.id + '" paper_id="' + val.paper_id + '"><i class="fa-solid fa-user-xmark"></i></a></td>' +
+            '<td class="tdCompleteStatus" status="' + complete_status + '">' + (complete_status == 1 ? '<span class="text-success small">Completed</span>' : '<span class="text-danger small">Incomplete</span>') + '</td>' +
+            '<td style="text-align:center" class="copyrightStatus text-wrap">' + copyrightStatus + '</td>' +
+            '<td class="text-nowrap"><span class="small">' + emailed + '</span></td>' +
+            '<td class="text-nowrap">' + ((isCurrent) ? disclose_now : ((val.is_copyright_agreement_accepted == null && val.author_id != current_user_id) ? resendEmailBtn : '<i class="fa-sharp fa-solid fa-circle-check text-success"></i>')) + '</td>' +
+            '</tr>'
+        );
+    });
+}, 'json');
 }
 //
 //
