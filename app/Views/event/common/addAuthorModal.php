@@ -147,8 +147,18 @@
         function toggleOtherDesignation() {
             let isChecked = $('input[name="designations[]"][value="13"]').is(':checked');
             $('#otherDesignationContainer').toggle(isChecked);
-        }
 
+            // Check if "None" (value = 12) is selected
+            let isNoneChecked = $('input[name="designations[]"][value="12"]').is(':checked');
+
+            if (isNoneChecked) {
+                // Uncheck and disable all other checkboxes except "None"
+                $('input[name="designations[]"]').not('[value="12"]').prop('checked', false).prop('disabled', true);
+            } else {
+                // Enable all checkboxes when "None" is unchecked
+                $('input[name="designations[]"]').prop('disabled', false);
+            }
+        }
         // Run on modal load
         $('#addAuthorModal').on('shown.bs.modal', function() {
             toggleOtherDesignation(); // Check status on modal load
