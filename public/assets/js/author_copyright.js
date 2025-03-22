@@ -436,7 +436,7 @@ $(function(){
             method: "POST",
             dataType: "json",
             success: function (response, status) {
-                // console.log(response)
+                console.log(response)
 
                 if(response.status == 200){
 
@@ -453,7 +453,6 @@ $(function(){
                     $('#authorInstitution').val(response.data.institution)
                     $('#searchId').val(response.data.institution_id)
                     $('#authorPhone').val((response.data.phone) ?response.data.phone:'' )
-                    $('#searchId').val(response.data.institution_id)
 
                     // Address
                     $('#authorAddress').val(response.data.address)
@@ -461,7 +460,6 @@ $(function(){
                     $('#authorCity').val(response.data.city)
                     $('#authorProvince').val(response.data.province)
                     $('#authorZipcode').val(response.data.zipcode)
-                    $('#authorPhone').val(response.data.phone)
                     $('#designations').prepend('<option value=""> -- Select Designation -- </option>')
 
                     fetchDesignations().then(designations => {

@@ -106,7 +106,7 @@ $(function() {
                                     if(attributes.id == 'updateContinuePapers' || attributes.id == 'saveContinuePapers')
                                         window.location.href = base_url + '/user/authors_and_copyright/' + response.data.abstract_id;
                                     else
-                                        window.location.reload()
+                                        window.location.href = base_url + '/user/edit_papers_submission/' + response.data.abstract_id;
                                 } else {
                                     $.each(response.msg, function(i, val){
                                         toastr.error(val);
