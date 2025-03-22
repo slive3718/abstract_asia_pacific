@@ -15,9 +15,11 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="personal-tab" data-bs-toggle="tab" data-bs-target="#personal" type="button" role="tab" aria-controls="personal" aria-selected="true">Personal Information</button>
                         </li>
+                        <?php if (1 == 2): ?>
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="other-details-tab" data-bs-toggle="tab" data-bs-target="#other-details" type="button" role="tab" aria-controls="other-details" aria-selected="false">Address Information</button>
                         </li>
+                        <?php endif ?>
                     </ul>
                     <!-- Tab panes -->
                     <div class="tab-content" id="myTabContent">
@@ -48,20 +50,14 @@
                                     <input type="email" name="authorConfirmEmail" id="authorConfirmEmail" class="form-control required" placeholder="Retype your email" required>
                                 </div>
 
-                                <!--Degree -->
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold" for="authorDegree">Degree</label>
-                                    <input type="text" name="authorDegree" id="authorDegree" class="form-control shadow-none" placeholder="Enter your degree">
-                                </div>
-
                                 <!-- Work Phone & Fax -->
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold" for="authorPhone">Work Phone <span class="text-danger">*</span></label>
-                                    <input type="tel" name="authorPhone" id="authorPhone" class="form-control shadow-none" placeholder="Enter your work phone" required>
+                                    <label class="form-label fw-bold" for="authorPhone">Work Phone </label>
+                                    <input type="tel" name="authorPhone" id="authorPhone" class="form-control shadow-none" placeholder="Enter your work phone">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold" for="authorFax">Fax</label>
-                                    <input type="text" name="authorFax" id="authorFax" class="form-control shadow-none" placeholder="Enter fax number">
+                                    <label class="form-label fw-bold" for="authorFax">Cell Phone</label>
+                                    <input type="text" name="cellphone" id="cellphone" class="form-control shadow-none" placeholder="Enter cellphone number">
                                 </div>
 
                                 <!-- Designations -->
@@ -91,6 +87,7 @@
                             </div>
 
                         </div>
+                        <?php if(1 == 2): ?>
                         <div class="tab-pane fade" id="other-details" role="tabpanel" aria-labelledby="other-details-tab">
                             <!-- Other Details Fields -->
                             <div class="row my-3">
@@ -131,6 +128,7 @@
                                 </div>
                             </div>
                         </div>
+                        <?php endif ?>
                     </div>
 
             </div>
@@ -149,8 +147,18 @@
         function toggleOtherDesignation() {
             let isChecked = $('input[name="designations[]"][value="13"]').is(':checked');
             $('#otherDesignationContainer').toggle(isChecked);
-        }
 
+            // Check if "None" (value = 12) is selected
+            let isNoneChecked = $('input[name="designations[]"][value="12"]').is(':checked');
+
+            if (isNoneChecked) {
+                // Uncheck and disable all other checkboxes except "None"
+                $('input[name="designations[]"]').not('[value="12"]').prop('checked', false).prop('disabled', true);
+            } else {
+                // Enable all checkboxes when "None" is unchecked
+                $('input[name="designations[]"]').prop('disabled', false);
+            }
+        }
         // Run on modal load
         $('#addAuthorModal').on('shown.bs.modal', function() {
             toggleOtherDesignation(); // Check status on modal load

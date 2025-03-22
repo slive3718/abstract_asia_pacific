@@ -9,11 +9,8 @@
     <div class="container" style="padding-bottom: 200px">
         <?php echo view('event/common/shortcut_link'); ?>
         <div class="card p-lg-5 p-md-2 p-sm-1 p-xs-1 p-3 shadow">
-            <p>You may upload your proposal here as a PowerPoint (pptx, ppt), Word (docx, doc) and Adobe Acrobat (pdf).</p>
-            <p>The maximum file size limit is:  200 MB</p>
-            <p class="">The system will automatically add the date and your proposal ID proceeding the name of your file. For example, the naming protocol will be: 09252017_17-001_myfile.pdf. Please be sure not to include the name of any authors in your file name. </p>
-            <p class="">These files cannot be removed. Once a new file is uploaded to the system the Program Chair will be automatically notified. </p>
-            <div class="card p-3">
+            <p>You may upload one associated file or graphic in jpeg format here. If you have no image to include then 'Continue' to next page.</p>
+           <div class="card p-3">
                 <p class="fw-bold">Current uploaded files</p>
                 <table class="table table-striped table-bordered table-hover uploadsTable">
                     <thead>
@@ -33,7 +30,7 @@
             </div>
             <div class="my-4">
                 <p><strong>Step 1.</strong> Click on "Choose File" and navigate the file you wish to upload.</p>
-                <input type="file" name="uploadFile" accept=".jpg,.png.JPG,.PNG" class="form-control uploadFile" id=""  >
+                <input type="file" name="uploadFile" accept=".jpeg, .JPEG" class="form-control uploadFile" id=""  >
                 <p><strong>Step 2.</strong> Click on "Upload File" to upload the new file to the system server.</p>
                 <button class="btn btn-primary btn-sm uploadFileBtn">Upload File</button> <br><br>
 
@@ -89,74 +86,127 @@
     $(function(){
 
         getPaperUploads();
-        //
+
         $('.uploadFileBtn').on('click', function(){
+            if(paper_id){
+                let file = $('.uploadFile')[0].files[0];
+                let fd = new FormData();
 
-            Swal.fire({
-                title: "Info",
-                icon: 'info',
-                html: 'We highly recommend that you use the AFS Congress Powerpoint Template that can be downloaded under the Submitter Instructions icon found above.',
-                showCancelButton: true,
-                confirmButtonText: "Save",
-                denyButtonText: `Don't save`
-            }).then((result) => {
-                /* Read more about isConfirmed, isDenied below */
-                if (result.isConfirmed) {
-                    if(paper_id){
-                        let file = $('.uploadFile')[0].files[0];
-                        let fd = new FormData();
-
-                        if (!file) {
-                            // Display a SweetAlert message if no file is selected
-                            Swal.fire({
-                                title: "Info",
-                                icon: 'info',
-                                html: 'No file selected!',
-                            });
-                            // Prevent further actions
-                            return false;
-                        }
-                        fd.append('file', file);
-                        fd.append('paper_id', paper_id);
-
-                        $.ajax({
-                            url : base_url+ 'user/presentation_do_upload',
-                            type: 'POST',
-                            data: fd,
-                            contentType: false,
-                            processData: false,
-                            mimeType: "multipart/form-data",
-                            beforeSend: function() {
-                                Swal.fire({
-                                    title: 'Uploading...',
-                                    allowOutsideClick: false,
-                                    didOpen: () => {
-                                        Swal.showLoading();
-                                    }
-                                });
-                            },
-                            success: function(response) {
-                                console.log(response);
-                                response = JSON.parse(response);
-                                Swal.close();
-                                $('.uploadFile').val('');
-                                if(response.status == 200){
-                                    Swal.fire({ icon: 'success', title: 'success', text: 'Presentation file uploaded successfully' });
-                                    getPaperUploads();
-                                } else if(response.status == 401){
-                                    Swal.fire({ icon: 'error', title: 'Warning', text: response.message });
-                                }
-                            }, error: function(e) {
-                                Swal.fire({ icon: 'error', title: 'Oops...', text: 'Something went wrong: ' + e.message, });
-                            }})
-                    }else{
-                        toast.r('no abstract id.')
-                    }
+                if (!file) {
+                    // Display a SweetAlert message if no file is selected
+                    Swal.fire({
+                        title: "Info",
+                        icon: 'info',
+                        html: 'No file selected!',
+                    });
+                    // Prevent further actions
+                    return false;
                 }
-            });
+                fd.append('file', file);
+                fd.append('paper_id', paper_id);
 
-
+                $.ajax({
+                    url : base_url+ 'user/presentation_do_upload',
+                    type: 'POST',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    mimeType: "multipart/form-data",
+                    beforeSend: function() {
+                        Swal.fire({
+                            title: 'Uploading...',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        response = JSON.parse(response);
+                        Swal.close();
+                        $('.uploadFile').val('');
+                        if(response.status == 200){
+                            Swal.fire({ icon: 'success', title: 'success', text: 'Presentation file uploaded successfully' });
+                            getPaperUploads();
+                        } else if(response.status == 401){
+                            Swal.fire({ icon: 'error', title: 'Warning', text: response.message });
+                        }
+                    }, error: function(e) {
+                        Swal.fire({ icon: 'error', title: 'Oops...', text: 'Something went wrong: ' + e.message, });
+                    }})
+            }else{
+                toast.r('no abstract id.')
+            }
         })
+        //
+        // $('.uploadFileBtn').on('click', function(){
+        //
+        //     Swal.fire({
+        //         title: "Info",
+        //         icon: 'info',
+        //         html: 'We highly recommend that you use the AFS Congress Powerpoint Template that can be downloaded under the Submitter Instructions icon found above.',
+        //         showCancelButton: true,
+        //         confirmButtonText: "Save",
+        //         denyButtonText: `Don't save`
+        //     }).then((result) => {
+        //         /* Read more about isConfirmed, isDenied below */
+        //         if (result.isConfirmed) {
+        //             if(paper_id){
+        //                 let file = $('.uploadFile')[0].files[0];
+        //                 let fd = new FormData();
+        //
+        //                 if (!file) {
+        //                     // Display a SweetAlert message if no file is selected
+        //                     Swal.fire({
+        //                         title: "Info",
+        //                         icon: 'info',
+        //                         html: 'No file selected!',
+        //                     });
+        //                     // Prevent further actions
+        //                     return false;
+        //                 }
+        //                 fd.append('file', file);
+        //                 fd.append('paper_id', paper_id);
+        //
+        //                 $.ajax({
+        //                     url : base_url+ 'user/presentation_do_upload',
+        //                     type: 'POST',
+        //                     data: fd,
+        //                     contentType: false,
+        //                     processData: false,
+        //                     mimeType: "multipart/form-data",
+        //                     beforeSend: function() {
+        //                         Swal.fire({
+        //                             title: 'Uploading...',
+        //                             allowOutsideClick: false,
+        //                             didOpen: () => {
+        //                                 Swal.showLoading();
+        //                             }
+        //                         });
+        //                     },
+        //                     success: function(response) {
+        //                         console.log(response);
+        //                         response = JSON.parse(response);
+        //                         Swal.close();
+        //                         $('.uploadFile').val('');
+        //                         if(response.status == 200){
+        //                             Swal.fire({ icon: 'success', title: 'success', text: 'Presentation file uploaded successfully' });
+        //                             getPaperUploads();
+        //                         } else if(response.status == 401){
+        //                             Swal.fire({ icon: 'error', title: 'Warning', text: response.message });
+        //                         }
+        //                     }, error: function(e) {
+        //                         Swal.fire({ icon: 'error', title: 'Oops...', text: 'Something went wrong: ' + e.message, });
+        //                     }})
+        //             }else{
+        //                 toast.r('no abstract id.')
+        //             }
+        //         }
+        //     });
+        //
+        //
+        // })
 
         $('.presentationContinueBtn').on('click', function(e){
             e.preventDefault();

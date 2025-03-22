@@ -39,10 +39,9 @@
                                             <th>First Name</th>
                                             <th>Last Name</th>
                                             <th>Email</th>
-                                            <th>City</th>
-                                            <th>State</th>
-                                            <th>Country</th>
-                                            <th>Search Results</th>
+                                            <th>Institution</th>
+                                            <th>Institution City</th>
+                                            <th>Institution Country</th>
                                         </tr>
                                         </thead>
                                         <tbody class="authorResultTableBody" id="authorResultTableBody">

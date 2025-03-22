@@ -78,7 +78,7 @@
 
                                 <div class="mt-2">
                                     <a class="btn btn-primary btn-sm" data-bs-toggle="collapse" href="#collapse_copyright_<?=$paper->id?>" role="button" aria-expanded="false" aria-controls="collapse_copyright_<?=$paper->id?>">
-                                        + Copyright
+                                        + View Disclosures
                                     </a>
                                     <?php foreach ($paper->authors as $author) {
                                         // Check if the value of 'is_copyright_agreement_accepted' is 1
@@ -87,7 +87,7 @@
                                             $count++;
                                         }
                                     } ?>
-                                    <span class="float-end">Copyright Status:  <?=($count == count($paper->authors))?'<span class="text-success">Complete</span>':'<span class="text-danger">Incomplete</span>'?>  <?=$count?>/ <?=count($paper->authors)?></span>
+                                    <span class="float-end">Disclosure Status:  <?=($count == count($paper->authors))?'<span class="text-success">Complete</span>':'<span class="text-danger">Incomplete</span>'?>  <?=$count?>/ <?=count($paper->authors)?></span>
 
                                     <div class="collapse mt-2" id="collapse_copyright_<?=$paper->id?>">
                                         <?php if($paper->authors):

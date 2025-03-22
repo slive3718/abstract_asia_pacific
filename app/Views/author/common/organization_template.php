@@ -12,7 +12,7 @@
             <?php endif ?>
         </select>
 
-        <div class="form-floating mt-2 other-organization-input-div">
+        <div class="form-floating mt-2 other-organization-input-div" style="display: none">
             <input type="text" class="form-control other-organization-input"
                    name="organization[${organizationCount}][other_name]"
                    id="organization-other-${organizationCount}"
@@ -24,7 +24,7 @@
 
 
     </div>
-    <div class="mb-3">
+    <div class="mb-3 mt-2">
         <label class="form-label">Type of Affiliation/Financial Interest</label>
         <?php if(!empty($affiliations)): ?>
         <?php foreach ($affiliations as $affiliation): ?>

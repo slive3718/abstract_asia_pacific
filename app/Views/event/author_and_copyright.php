@@ -5,7 +5,7 @@
 
 
 <?php echo view('event/common/menu'); ?>
-<!-- <?php// print_r($abstract_details->id); exit;?> -->
+<!-- --><?php //print_R($author);exit;?>
 <style>
     .table > :not(caption) > * > * {
         padding: 0;
@@ -99,9 +99,40 @@
                         </table>
                     </div>
                 </div>
-                <br><br><br><br>
+                <br><br>
+            </div>
+            <div class="row container">
+                <h5>Is the first author of this paper from Asia or Oceania?</h5>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="author_q_1" id="author_q_1_yes" value="1" <?=!empty($paper) && $paper['author_q_1'] == 1 ? 'checked' : ''?>>
+                    <label class="form-check-label" for="author_q_1_yes">
+                        Yes, the first author of this paper is from Asia or Oceania
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="author_q_1" id="author_q_1_no" value="0" <?=!empty($paper) && $paper['author_q_1'] == 0 ? 'checked' : ''?>>
+                    <label class="form-check-label" for="author_q_1_no">
+                        No, the first author of this paper is <strong>not</strong> from Asia or Oceania
+                    </label>
+                </div>
+
+                <h5 class="mt-4">Are the majority of co-authors on this paper from Asia or Oceania?</h5>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="author_q_2" id="author_q_2_yes" value="1" <?=!empty($paper) && $paper['author_q_2'] == 1 ? 'checked' : ''?>>
+                    <label class="form-check-label" for="author_q_2_yes">
+                        Yes, the majority of co-authors on this paper are from Asia or Oceania
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="author_q_2" id="author_q_2_no" value="0" <?=!empty($paper) && $paper['author_q_2'] == 0 ? 'checked' : ''?>>
+                    <label class="form-check-label" for="author_q_2_no">
+                        No, the majority of co-authors on this paper are from other continents (Europe, North America, South America)
+                    </label>
+                </div>
             </div>
             <div class="row">
+
+
 
                 <div class="col-8"><button class="btn btn-success" id="savePaperAuthors" style="max-width:200px"> Save and Continue</button></div>
 
@@ -131,10 +162,10 @@
 <?= view('event/common/searchAuthorModal'); ?>
 <?= view('event/common/addAuthorModal'); ?>
 <?= view('event/common/addInstitutionModal'); ?>
-
 <script>
     let current_user_id = "<?=session('user_id')?>"
     let basic_science_format_status = "<?= !empty($paper) && $paper['basic_science_format'] == 'Yes' ? 1 : 0?>"
+    let disclosure_current_date = `<?= $disclosure_current_date ?? ''?>`
 </script>
 <script>
     $(function(){

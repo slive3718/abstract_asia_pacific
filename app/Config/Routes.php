@@ -109,6 +109,7 @@ $routes->group('admin',['filter' => 'authGuard'], function ($routes) {
     $routes->get('exportSample', 'ExcelController::exportSample/$1'); //Excel
 
     $routes->post('importReviewers', 'admin\UserManagerController::importReviewers');
+    $routes->post('importUsers', 'admin\UserManagerController::importUsers');
     $routes->post('user/create_user', 'admin\UserManagerController::createUser');
     $routes->post('user/update_user', 'admin\UserManagerController::updateUser');
 
@@ -256,6 +257,10 @@ $routes->group('author',['filter' => 'authGuard'], function ($routes)
     $routes->get('financial_relationship_disclosure', 'Author::financial_relationship_disclosure');
     $routes->get('save_financial_relationship', 'Author::save_financial_relationship');
     $routes->get('preview_finalize', 'Author::preview_finalize');
+
+    $routes->get('attestation', 'Author::attestation');
+    $routes->post('submit_attestation', 'Author::submit_attestation');
+
 
     $routes->get('copyright_of_publication_agreement/(:num)', 'Author::copyright_of_publication_agreement/$1');
     $routes->get('review', 'Author::conflict_of_interest_disclosure_review/$1');

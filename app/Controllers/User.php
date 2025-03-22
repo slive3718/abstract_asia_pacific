@@ -5,6 +5,8 @@ namespace App\Controllers;
 use App\Libraries\PhpMail;
 use App\Models\AbstractCategoriesModel;
 use App\Models\AbstractReviewModel;
+use App\Models\CitiesModel;
+use App\Models\CountriesModel;
 use App\Models\DesignationsModel;
 use App\Models\EmailLogsModel;
 use App\Models\EmailTemplatesModel;
@@ -300,6 +302,8 @@ class User extends BaseController
             'primary_investigator'   => isset($post['primary_investigator']) ? trim($post['primary_investigator']) : $existingPaper['primary_investigator'],
             'grant_year'             => isset($post['grant_year']) ? trim($post['grant_year']) : $existingPaper['grant_year'],
             'image_caption'          => isset($post['image_caption']) ? trim($post['image_caption']) : $existingPaper['image_caption'],
+            'author_q_1'          => isset($post['author_q_1']) ? trim($post['author_q_1']) : $existingPaper['author_q_1'],
+            'author_q_2'          => isset($post['author_q_2']) ? trim($post['author_q_2']) : $existingPaper['author_q_2'],
         ];
 
 
@@ -335,13 +339,13 @@ class User extends BaseController
 
 
     function generateCustomID($paper_id){
-        $nextYear = date('Y');
+        $nextYear = date('Y') < 2026 ? 2026 : date('Y');
         $newCustomId = sprintf('%s-%03d', $nextYear, $paper_id);
         return $newCustomId;
     }
 
     function generatePanelistCustomID($paper_id){
-        $nextYear = date('Y');
+        $nextYear = date('Y') < 2026 ? 2026 : date('Y');
         $newCustomId = sprintf('%s-%03d', $nextYear, $paper_id);
         return $newCustomId;
     }
@@ -362,6 +366,8 @@ class User extends BaseController
             ->where('author_type', 'author')
             ->findAll();
 
+        $disclosure_current_date = (new SiteSettingModel())->where('name', 'disclosure_current_date')->first()['value'];
+
         $header_data = [
             'title' => "Authors and Copyright"
         ];
@@ -370,6 +376,7 @@ class User extends BaseController
             'paper_id' => $paper_id,
             'paper'=> $paper ? :'',
             'recentAuthors'=>$recentAuthors,
+            'disclosure_current_date'=>$disclosure_current_date
         ];
         return
             view('event/common/header', $header_data).
@@ -405,11 +412,26 @@ class User extends BaseController
         if($post){
             try {
                 $authors = $authorModel
-                    ->select('users_profile.*, users.id as user_id,users.email, users.surname, users.name, users.middle_name')
-                    ->join($UsersModel->table, 'users_profile.author_id = users.id', 'right')
-                    ->where('users.surname', $post['searchValue']['authorName'])
-//                    ->where('users.id !=', session('user_id'))
+                    ->select('
+                        users_profile.*, 
+                        u.id as user_id,
+                        u.email, 
+                        u.surname, 
+                        u.name, 
+                        u.middle_name, 
+                        i.name as institution_name, 
+                        ci.name as institution_city, 
+                        co.name as institution_country
+                    ')
+                    ->join($UsersModel->table . ' u', 'users_profile.author_id = u.id', 'right')
+                    ->join((new UsersProfileModel())->table . ' up', 'u.id = up.author_id', 'right')
+                    ->join((new InstitutionModel())->table . ' i', 'up.institution_id = i.id', 'left')
+                    ->join((new CitiesModel())->table . ' ci', 'i.city_id = ci.id', 'left')
+                    ->join((new CountriesModel())->table . ' co', 'ci.country_id = co.id', 'left')
+                    ->where('u.surname', $post['searchValue']['authorName'])
+                    // ->where('u.id !=', session('user_id')) // Uncomment if needed
                     ->findAll();
+
                 if(($authors))
                     echo json_encode(array('status'=>'200', 'message'=>'Match found', 'data'=>$authors));
                 else{
@@ -632,12 +654,13 @@ class User extends BaseController
                     $insertAuthorDetailsArray = [
                         'deg' => $post['authorDegree']?:'',
                         'phone' => $post['authorPhone']?:'',
+                        'cellphone' => $post['cellphone']?:'',
                         'institution' => $post['authorInstitution']?:'',
-                        'address' => $post['authorAddress']?:'',
-                        'city' => $post['authorCity']?:'',
-                        'country' => $post['authorCountry']?:'',
-                        'province' => $post['authorProvince']?:'',
-                        'zipcode' => $post['authorZipcode']?:'',
+//                        'address' => $post['authorAddress']?:'',
+//                        'city' => $post['authorCity']?:'',
+//                        'country' => $post['authorCountry']?:'',
+//                        'province' => $post['authorProvince']?:'',
+//                        'zipcode' => $post['authorZipcode']?:'',
                         'author_id' => $userResult,
                         'designations' => !empty($post['designations']) ? json_encode($post['designations']) : '',
                         'other_designation' => $post['other_designation'] ?? ''
@@ -731,11 +754,12 @@ class User extends BaseController
             'institution' => $post['authorInstitution']?:'',
             'institution_id' => $post['authorInstitutionId']?:'',
             'phone' => $post['authorPhone']?:'',
-            'address' => $post['authorAddress']?:'',
-            'city' => $post['authorCity']?:'',
-            'country' => $post['authorCountry']?:'',
-            'province' => $post['authorProvince']?:'',
-            'zipcode' => $post['authorZipcode']?:'',
+            'cellphone' => $post['cellphone']?:'',
+//            'address' => $post['authorAddress']?:'',
+//            'city' => $post['authorCity']?:'',
+//            'country' => $post['authorCountry']?:'',
+//            'province' => $post['authorProvince']?:'',
+//            'zipcode' => $post['authorZipcode']?:'',
             'designations' => !empty($post['designations']) ? json_encode($post['designations']): '',
             'other_designation' => $post['other_designation'] ?? ''
         ];
@@ -932,6 +956,10 @@ class User extends BaseController
                         ->update();
                 }
             }
+
+           if(!$this->update_paper_ajax()){
+                throw new \Exception('Error updating paper');
+           }
 
 
             // Check transaction status
@@ -1474,7 +1502,7 @@ class User extends BaseController
         }
 
         $sendMail = new PhpMail();
-        $from = ['email' => 'afs@owpm2.com', 'name' => 'AFS'];
+        $from = ['email' => 'ap@owpm2.com', 'name' => 'Abstract Support'];
         $subject = 'Support Request From '.$post['fname']." ".$post['lname'];
         $message = "First Name: ".$post['fname']."<br>";
         $message .= "Last Name: ".$post['lname']."<br>";
@@ -1486,7 +1514,7 @@ class User extends BaseController
 
         // ###################  Save to Email logs #####################
         $email_logs_array = [
-            'user_id' => session('user_id'),
+            'user_id' => session('user_id') ?? '',
             'add_to' => (json_encode($to)),
             'subject' => $subject,
             'ref_1' => 'support',

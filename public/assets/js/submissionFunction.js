@@ -71,7 +71,7 @@ $(function() {
 
                 let formData = new FormData(form);
                 formData.append('abstract_body_count', abstract_body_count)
-                let abstractTitle = $('#q1').val();
+                let abstractTitle = $('#abstract_title').val();
 
                 if (typeof userID === 'undefined') {
                     console.error("userID is not defined!");
@@ -194,9 +194,9 @@ $(function() {
                             '<td user-id="' + val.user_id + '" class="authorDataList" value="' + val.name + '">' + val.name + '</td>' +
                             '<td user-id="' + val.user_id + '" class="authorDataList" value="' + val.name + '">' + val.surname + '</td>' +
                             '<td user-id="' + val.user_id + '" class="authorDataList" value="' + val.name + '">' + val.email + '</td>' +
-                            '<td user-id="' + val.user_id + '" class="authorDataList" value="' + val.name + '">' + val.city + '</td>' +
-                            '<td user-id="' + val.user_id + '" class="authorDataList" value="' + val.name + '">' + val.province + '</td>' +
-                            '<td user-id="' + val.user_id + '" class="authorDataList" value="' + val.name + '">' + val.country + '</td>' +
+                            '<td user-id="' + val.user_id + '" class="authorDataList" value="' + val.name + '">' + val.institution_name + '</td>' +
+                            '<td user-id="' + val.user_id + '" class="authorDataList" value="' + val.name + '">' + val.institution_city + '</td>' +
+                            '<td user-id="' + val.user_id + '" class="authorDataList" value="' + val.name + '">' + val.institution_country + '</td>' +
                             '</tr>'
                         );
                     });
@@ -436,7 +436,10 @@ $(function() {
                     'selectedCorrespondents': selectedCorrespondents,
                     'author_orders': author_orders,
                     'presenting_authors': presenting_authors,
-                    'paper_id': paper_id
+                    'paper_id': paper_id,
+                    'author_q_1' : $('input[name="author_q_1"]:checked').val(),
+                    'author_q_2' : $('input[name="author_q_2"]:checked').val()
+
                 },
                 method: "POST",
                 dataType: "json",
@@ -553,7 +556,6 @@ $(function() {
                     $('#authorConfirmEmail').val(response.data.email)
 
                     // Affiliation
-                    $('#authorDegree').val(response.data.deg)
                     $('#authorPosition').val(response.data.position)
                     $('#authorTitle').val(response.data.title)
                     $('#authorInstitution').val(response.data.institution)
@@ -567,7 +569,6 @@ $(function() {
                     $('#authorCity').val(response.data.city)
                     $('#authorProvince').val(response.data.province)
                     $('#authorZipcode').val(response.data.zipcode)
-                    $('#authorDeg').val(response.data.deg)
                     $('#authorPhone').val(response.data.phone)
                     $('#designations').prepend('<option value=""> -- Select Designation -- </option>')
 
@@ -868,63 +869,154 @@ $(function() {
 
 });
 
-function getPaperAuthors(paper_id = null){
+function getPaperAuthors(paper_id = null) {
     $('.authorList').html('');
-    $.post(base_url+'/user/get_paper_authors',
-        {
-            'paper_id':paper_id,
-        },
 
-        function(response){
-            // console.log(response);
-            $('.authorList').html('');
-            $.each(response.data, function(index, val){
-                console.log(val)
-                let complete_status = 1;
-                let presenting = (val.is_presenting_author === 'Yes')?'checked':'unchecked';
-                let correspondent = (val.is_correspondent === 'Yes')?'checked':'unchecked';
+    $.post(`${base_url}/user/get_paper_authors`, { paper_id }, function(response) {
+        $('.authorList').html('');
 
-                let copyright_agreement_date = new Date(val.copyright_agreement_date).toISOString().split('T')[0].replace(/-/g, '/');
-                let copyrightStatus = (val.is_copyright_agreement_accepted == 1)? '<small class="text-success text-wrap"> current : <br>'+copyright_agreement_date+' </small>':'<small class="text-warning "> none </a>';
-                let emailed = "<small class='small'>" + ((val.mailLogs) ? (val.mailLogs.updated_at !== null) ? val.mailLogs.updated_at.split(' ')[0]: (val.mailLogs.created_at !== null) ? val.mailLogs.created_at.split(' ')[0] : 'none' : 'none') + "</small>";
-                let resendEmailBtn = ((val.is_copyright_agreement_accepted == null)?'<a class=" btn btn-sm btn-primary text-white resendEmailBtn" author_id="'+val.author_id+'" paper_authors_id="'+val.id+'" paper_id="'+val.paper_id+'" user_id="'+val.user_id+'"><i class="fa-solid fa-square-envelope"></i> Resend </a>':'<span class="small"> none </span>');
-                let disclose_now ='<a class=" btn btn-sm btn-info text-white discloseNowBtn" author_id="'+val.author_id+'" paper_authors_id="'+val.id+'" paper_id="'+val.paper_id+'" user_id="'+val.user_id+'"><i class="fa-solid fa-square-envelope"></i> Disclose Now</a>';
-                let required_info = ['email', 'institution', 'deg', 'city', 'country', 'province'];
+        $.each(response.data, function(index, author) {
+            console.log(author)
+            let completeStatus = checkCompleteStatus(author);
+            let presenting = author.is_presenting_author === 'Yes' ? 'checked' : '';
+            let correspondent = author.is_correspondent === 'Yes' ? 'checked' : '';
 
-                let submitNowBtn = '<a href="submitNowBtn" author_id="'+val.author_id+'" paper_authors_id="'+val.id+'" paper_id="'+val.paper_id+'" user_id="'+val.user_id+'">Submit Copyright Now</a>'
+            let copyrightStatus = getCopyrightStatus(author);
+            let emailed = getEmailStatus(author);
+            let actionButton = getActionButton(author, emailed);
 
-                $.each(required_info, function(index, arr){
-                   /* console.log(val[arr] );*/
-                    if(val[arr] == '' || val[arr] == null){
-                        complete_status = 0;
-                    }
-                })
-
-                // console.log(val)
-
-                $('.authorList').append('<tr class="author_order" author_id="'+val.author_id+'" order="'+val.author_order+'" name="'+val.name+'" paper_authors_id="'+val.ID+'" paper_id="'+val.paper_id+'">'+
-                    '<td><span class="order_num">'+(index+1)+'.</span></td>'+
-                    '<td class="text-nowrap">'+val.name+' '+val.surname+'</td>'+
-                    '<td class="text-nowrap"><input id="correspondent_'+val.author_id+'" type="checkbox" class="correspondent markedCorrespondent" author-id="'+val.author_id+'" '+correspondent+'> <label for="correspondent_'+val.author_id+'"> Correspondent</label></td>'+
-                    '<td class="text-nowrap"><input id="presentingAuthor_'+val.author_id+'" type="checkbox" class="presentingAuthor" name="presentingAuthor" author-id="'+val.author_id+'" id="presenting_author_'+val.author_id+'" '+presenting+' author_name="'+val.name+'" author_surname="'+val.surname+'"> <label for="presentingAuthor_'+val.author_id+'"> Presenting Author </label></td>'+
-                    '<td class="text-nowrap"><input id="coAuthor_'+val.author_id+'" type="radio" class="co-author" name="co-author" author-id="'+val.author_id+'" id="presenting_author_'+val.author_id+'" '+presenting+' author_name="'+val.name+'" author_surname="'+val.surname+'"> <label  for="coAuthor_'+val.author_id+'"> Senior Author </label></td>'+
-                    '<td class="text-nowrap"><a class=" btn btn-sm btn-primary text-white moveUp"><i class="fa-solid fa-arrow-up "></i> </a> </td>'+
-                    '<td class="text-nowrap"><a class=" btn btn-sm btn-primary text-white moveDown"><i class="fa-solid fa-arrow-down"></i> </a></td>'+
-                    '<td class="text-nowrap"><a class=" btn btn-sm btn-info text-white editAuthorListedBtn"  author_id="'+val.author_id+'"  paper_authors_id="'+val.id+'" paper_id="'+val.paper_id+'"><i class="fa-solid fa-user-pen"></i> </a> </td>'+
-                    '<td class="text-nowrap"><a class=" btn btn-sm btn-danger text-white removePaperAuthor" author_id="'+val.author_id+'"  paper_authors_id="'+val.id+'" paper_id="'+val.paper_id+'"><i class="fa-solid fa-user-xmark"></i> </a></td>'+
-                    '<td class="tdCompleteStatus" status="'+complete_status+'">'+(complete_status == 1 ? '<span class="text-success small">Completed</span>':'<span class="text-danger small">Incomplete</span>' )+'</td>'+
-                    '<td style="text-align:center" class="copyrightStatus text-wrap"> '+copyrightStatus+'</td>'+
-                    '<td class="text-nowrap"><span class="">'+emailed+' </span></td>'+
-                    '<td class="text-nowrap">'+
-                    ((val.is_copyright_agreement_accepted == null && val.author_id == current_user_id) ? disclose_now :
-                        ((val.is_copyright_agreement_accepted == null && val.author_id != current_user_id) ? resendEmailBtn :
-                            '<i class="fa-sharp fa-solid fa-circle-check text-success"></i>'))+
-                    '</td>'+
-                    '</tr>'
-                )
-            })
-        },'json')
+            $('.authorList').append(getAuthorRow(index, author, presenting, correspondent, completeStatus, copyrightStatus, emailed, actionButton));
+        });
+    }, 'json');
 }
+
+function checkCompleteStatus(author) {
+    const requiredFields = ['email', 'institution_id'];
+    return requiredFields.every(field => author[field]);
+}
+
+function getCopyrightStatus(author) {
+    if (!author.signature_signed_date) {
+        return `<small class="text-warning">none</small>`;
+    }
+
+    let signedDate = formatDate(author.signature_signed_date);
+    let isCurrent = new Date(signedDate) > new Date(disclosure_current_date);
+
+    return isCurrent
+        ? `<small class="text-success">current : <br>${signedDate}</small>`
+        : `<small class="text-danger">expired : <br>${signedDate}</small>`;
+}
+
+function getEmailStatus(author) {
+    if (!author.mailLogs) return 'none';
+
+    return author.mailLogs.updated_at?.split(' ')[0] ||
+        author.mailLogs.created_at?.split(' ')[0] ||
+        'none';
+}
+
+function getActionButton(author, emailed) {
+    let isCurrent = author.signature_signed_date
+        ? new Date(formatDate(author.signature_signed_date)) > new Date(disclosure_current_date)
+        : false;
+
+    // If the agreement is current, show a success icon
+    if (isCurrent) {
+        return `<i class="fa-sharp fa-solid fa-circle-check text-success"></i>`;
+    }
+
+    // If the user is the current user
+    if (author.author_id === current_user_id) {
+        // If signature is present but not current, show Resend/Email button
+        if (author.signature_signed_date) {
+            let actionType = emailed !== 'none' ? 'Resend' : 'Email Now';
+            return `
+                <a class="btn btn-sm btn-primary text-white resendEmailBtn" 
+                   author_id="${author.author_id}" 
+                   paper_authors_id="${author.id}" 
+                   paper_id="${author.paper_id}" 
+                   user_id="${author.user_id}">
+                   <i class="fa-solid fa-square-envelope"></i> ${actionType}
+                </a>`;
+        } else {
+            // If no signature, allow disclosure
+            return `
+                <a class="btn btn-sm btn-info text-white discloseNowBtn"
+                   author_id="${author.author_id}"
+                   paper_authors_id="${author.id}"
+                   paper_id="${author.paper_id}"
+                   user_id="${author.user_id}">
+                   <i class="fa-solid fa-square-envelope"></i> Disclose Now
+                </a>`;
+        }
+    }
+
+    // Default case — show Resend/Email Now for other users
+    let actionType = emailed !== 'none' ? 'Resend' : 'Email Now';
+    return `
+        <a class="btn btn-sm btn-primary text-white resendEmailBtn" 
+           author_id="${author.author_id}" 
+           paper_authors_id="${author.id}" 
+           paper_id="${author.paper_id}" 
+           user_id="${author.user_id}">
+           <i class="fa-solid fa-square-envelope"></i> ${actionType}
+        </a>`;
+}
+
+
+function getAuthorRow(index, author, presenting, correspondent, completeStatus, copyrightStatus, emailed, actionButton) {
+    return `
+        <tr class="author_order" author_id="${author.author_id}" order="${author.author_order}" name="${author.name}" paper_authors_id="${author.id}" paper_id="${author.paper_id}">
+            <td><span class="order_num">${index + 1}.</span></td>
+            <td class="text-nowrap">${author.name} ${author.surname}</td>
+            <td class="text-nowrap">
+                <input id="correspondent_${author.author_id}" type="checkbox" class="correspondent markedCorrespondent" author-id="${author.author_id}" ${correspondent}>
+                <label for="correspondent_${author.author_id}"> Correspondent</label>
+            </td>
+            <td class="text-nowrap">
+                <input id="presentingAuthor_${author.author_id}" type="checkbox" class="presentingAuthor" author-id="${author.author_id}" ${presenting}>
+                <label for="presentingAuthor_${author.author_id}"> Presenting Author</label>
+            </td>
+            <td class="text-nowrap">
+                <input id="coAuthor_${author.author_id}" type="radio" class="co-author" name="co-author" author-id="${author.author_id}" ${presenting}>
+                <label for="coAuthor_${author.author_id}"> Senior Author</label>
+            </td>
+            <td class="text-nowrap">
+                <a class="btn btn-sm btn-primary text-white moveUp"><i class="fa-solid fa-arrow-up"></i></a>
+            </td>
+            <td class="text-nowrap">
+                <a class="btn btn-sm btn-primary text-white moveDown"><i class="fa-solid fa-arrow-down"></i></a>
+            </td>
+            <td class="text-nowrap">
+                <a class="btn btn-sm btn-info text-white editAuthorListedBtn" 
+                   author_id="${author.author_id}" 
+                   paper_authors_id="${author.id}" 
+                   paper_id="${author.paper_id}">
+                   <i class="fa-solid fa-user-pen"></i>
+                </a>
+            </td>
+            <td class="text-nowrap">
+                <a class="btn btn-sm btn-danger text-white removePaperAuthor" 
+                   author_id="${author.author_id}" 
+                   paper_authors_id="${author.id}" 
+                   paper_id="${author.paper_id}">
+                   <i class="fa-solid fa-user-xmark"></i>
+                </a>
+            </td>
+            <td class="tdCompleteStatus" status="${completeStatus ? 1 : 0}">
+                ${completeStatus ? `<span class="text-success small">Completed</span>` : `<span class="text-danger small">Incomplete</span>`}
+            </td>
+            <td style="text-align:center" class="copyrightStatus text-wrap">${copyrightStatus}</td>
+            <td class="text-nowrap"><span class="small">${emailed}</span></td>
+            <td class="text-nowrap">${actionButton}</td>
+        </tr>`;
+}
+
+function formatDate(date) {
+    return new Date(date).toISOString().split('T')[0].replace(/-/g, '/');
+}
+
 //
 //
 // function submitNewInstitution(institution_name,institution_countryId,institution_stateId,institution_cityId){

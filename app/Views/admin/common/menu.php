@@ -36,6 +36,7 @@
                                 <li><a class="dropdown-item" href="<?= base_url() ?>/admin/reviewer_list">All Reviewers</a></li>
                                 <li><a class="dropdown-item" href="#" onclick="searchUserBox(event)">Manage Users</a></li>
                                 <li><a class="dropdown-item" href="#" onclick="addNewUser(event)">Add New User</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="importUsers()">Import Users</a></li>
                             </ul>
                         </div>
                     </li>
@@ -227,13 +228,16 @@
 
 <div class="pt-5">
     <div class="text-center mt-md-4" style="width: 70% !important; margin:auto">
-        <img id="main-banner" src="<?=$event->main_banner?>" class=" figure-img" alt="Main Banner" style="width: 100% !important;object-fit: cover; mix-blend-mode: multiply;" />
+        <img id="main-banner" src="" class=" figure-img" alt="Main Banner" style="width: 100% !important;object-fit: cover; mix-blend-mode: multiply;" />
     </div>
     <hr />
 </div>
 
 <?php echo view('admin/common/searchUsersModal'); ?>
 <?php echo view('admin/common/addNewUserModal'); ?>
+<?php echo view('admin/common/modal'); ?>
+
+<script src="<?=base_url()?>/assets/js/admin/import_users.js"></script>
 
 <script>
     $(function(){

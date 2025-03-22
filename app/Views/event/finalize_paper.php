@@ -58,7 +58,7 @@
                                     <?php if($authorInfo):
                                     foreach ($authorInfo as $author):?>
                                     <?=($author['is_presenting_author'] == "Yes")? '<strong> Presenting Author </strong>: ':'<strong> Co-Author </strong>: '?>
-                                        (<?=$author['author_order']?>)
+                                        <?=$author['author_order'] ? '('.$author['author_order']. ')' : ''?>
 
                                         <?=$author['name'].' '.$author['surname'] ?><br>
                                     <?php endforeach; endif; ?>
