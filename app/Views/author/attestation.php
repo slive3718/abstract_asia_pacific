@@ -32,7 +32,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="attestation_date" class="fw-bolder">Date :</label>
-                                <input type="date" name="attestation_date" value="<?= !empty($author['attestation_date']) ? date('Y-m-d', strtotime($author['attestation_date'])) : '' ?>" id="attestation_date" class="form-control" required>
+                                <input type="date" name="attestation_date" value="<?= !empty($author['attestation_date']) ? date('Y-m-d', strtotime($author['attestation_date'])) : date('Y-m-d') ?>" id="attestation_date" class="form-control" readonly required>
                                 <div class="invalid-feedback">Please select a date.</div>
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
