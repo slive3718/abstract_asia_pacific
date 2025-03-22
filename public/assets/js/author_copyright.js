@@ -213,7 +213,7 @@ $(function(){
         formData.append('paper_id', paper_id);
 
         $.ajax({
-            url: $(this).attr('action'),
+            url: $this.attr("action"), // Ensure the form has an action attribute
             data: formData,
             method: "POST",
             dataType: "json",
@@ -221,8 +221,8 @@ $(function(){
             contentType: false,
             beforeSend: function () {
                 Swal.fire({
-                    title: 'Please Wait !',
-                    html: 'Saving changes...',
+                    title: "Please Wait!",
+                    html: "Saving changes...",
                     allowOutsideClick: false,
                     didOpen: () => {
                         Swal.showLoading();
@@ -230,43 +230,51 @@ $(function(){
                 });
             },
             success: function (response) {
-                if (response) {
-                    if (response.status === "400") {
-                        Swal.fire({
-                            icon: "info",
-                            html:
-                                "This Author is already in the system.<br>" +
-                                "Name: <label class='text-info'>" +
-                                response.data.name +
-                                " " +
-                                response.data.surname +
-                                "</label> <br>" +
-                                "<a href='#' onclick='addSearchedAuthor(paper_id, [" +
-                                response.data.id +
-                                "])'>Add this author</a>"
-                        });
-                        return false;
-                    } else {
-                        if (response) {
-                            $('#addAuthorModal').attr('isEdit', 1);
-                            Swal.fire("Success", response.message, "success");
-                            $("#authorResultModal, #addAuthorModal, #searchAuthorModal").modal("hide");
-
-                            if ($this.attr('update') == "0") {
-                                addSearchedAuthor(paper_id, [response.data]);
-                            }
-                        } else {
-                            toastr.error("Please fill all the required fields");
-                        }
-                    }
-
-                    getPaperAuthors(paper_id);
+                if (!response) {
+                    toastr.error("Unexpected response from the server.");
+                    return;
                 }
+
+                if (response.status !== "200") {
+                    Swal.fire({
+                        icon: "info",
+                        html:"Something went wrong. Please contact admin or support. Thank you! "
+                    });
+                    console.error(response? response.data : 'error 500')
+                    return false;
+                }
+                if (response.status === "400") {
+                    Swal.fire({
+                        icon: "info",
+                        html:
+                            "This Author is already in the system.<br>" +
+                            "Name: <label class='text-info'>" +
+                            response.data.name +
+                            " " +
+                            response.data.surname +
+                            "</label> <br>" +
+                            "<a href='#' onclick='addSearchedAuthor(" + paper_id + ", [" +
+                            response.data.id + "])'>Add this author</a>"
+                    });
+                    return;
+                }
+
+                $('#addAuthorModal').attr('isEdit', 1);
+                Swal.fire("Success", response.message, "success");
+                $("#authorResultModal, #addAuthorModal, #searchAuthorModal").modal("hide");
+
+                if ($this.attr("update") == "0") {
+                    addSearchedAuthor(paper_id, [response.data]);
+                }
+
+                getPaperAuthors(paper_id);
             },
             error: function (xhr) {
+                console.error(xhr.responseText); // Log error for debugging
                 toastr.error("An error occurred: " + (xhr.responseJSON?.message || xhr.statusText));
             }
         });
+
     });
 
 

@@ -652,10 +652,11 @@ class User extends BaseController
 
                 if ($userResult) {
                     $insertAuthorDetailsArray = [
-                        'deg' => $post['authorDegree']?:'',
+//                        'deg' => $post['authorDegree']?:'',
                         'phone' => $post['authorPhone']?:'',
                         'cellphone' => $post['cellphone']?:'',
                         'institution' => $post['authorInstitution']?:'',
+                        'institution_id' => $post['authorInstitutionId']?:'',
 //                        'address' => $post['authorAddress']?:'',
 //                        'city' => $post['authorCity']?:'',
 //                        'country' => $post['authorCountry']?:'',
@@ -674,7 +675,7 @@ class User extends BaseController
             } catch (\Exception $e) {
                 // Handle the database error
                 $db->transRollback();
-                return json_encode(array('status'=>'200', 'message'=>'Error:','data'=>$e->getMessage()));
+                return json_encode(array('status'=>'500', 'message'=>'Error:','data'=>$e->getMessage()));
             }
         }
 
