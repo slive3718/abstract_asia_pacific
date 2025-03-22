@@ -246,9 +246,15 @@
                 <div class="row">
                     <div class="col">
                         <?php if(isset($is_edit) && $is_edit == 1): ?>
-                            <div><input type="submit" id="updatePapers" value="Update and Continue" class="btn btn-primary"></div>
+                            <div>
+                                <input type="submit" id="updatePapers" value="Update" class="btn btn-primary">
+                                <input type="submit" id="updateContinuePapers" value="Update and Continue" class="btn btn-primary">
+                            </div>
                         <?php else:?>
-                            <div><input type="submit" id="savePapers" value="Save and Continue" class="btn btn-primary"></div>
+                            <div>
+                                <input type="submit" id="savePapers" value="Save" class="btn btn-primary">
+                                <input type="submit" id="saveContinuePapers" value="Save and Continue" class="btn btn-primary">
+                            </div>
                         <?php endif ?>
                     </div>
                 </div>
