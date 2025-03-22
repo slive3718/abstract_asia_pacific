@@ -750,7 +750,7 @@ class User extends BaseController
         ];
 
         $insertAuthorDetailsArray = [
-            'deg' => $post['authorDegree']?:'',
+//            'deg' => $post['authorDegree']?:'',
             'institution' => $post['authorInstitution']?:'',
             'institution_id' => $post['authorInstitutionId']?:'',
             'phone' => $post['authorPhone']?:'',
@@ -1351,7 +1351,7 @@ class User extends BaseController
         $userInfo = $UsersModel->find(session('user_id'));
 
         $paper_uploads = $PaperUploadsModel->where('paper_id', $paper_id)->findAll();
-
+        $categories = (new AbstractCategoriesModel())->findALl();
 
         $authors = $PaperAuthorsModel
             ->join($UsersProfileModel->table, 'paper_authors.author_id = users_profile.author_id', 'left')
@@ -1365,13 +1365,7 @@ class User extends BaseController
         $paper = $PapersModel->find($paper_id);
 
         $authorDetailsRequiredFields = [
-            'electronic_signature' => 'Copyright',
-            'is_copyright_agreement_accepted' => 'Copyright Agreement',
             'institution' => 'Institution',
-            'country' => 'Country',
-            'city' => 'City',
-            'province' => 'Province',
-            'deg' => 'Degree'
         ];
 
         $paperUploads = (new PaperUploadsModel())->where('paper_id', $paper_id)->findAll();
@@ -1407,7 +1401,8 @@ class User extends BaseController
             'userInfo'=> $userInfo,
             'paper_uploads' => $paper_uploads,
             'incompleteStatus' => $incomplete,
-            'authors'=>$authors
+            'authors'=>$authors,
+            'categories' => $categories
         ];
 
         return
@@ -1468,13 +1463,7 @@ class User extends BaseController
 
     public function update_user_info($event_uri){
         $_POST['user_id'] = session('user_id');
-//        $result = $this->api->post("user/update_user_info/{$this->event_uri}", $_POST);
-//        if(!$result->status){
-//            return (new ErrorHandler($result->data))->errorPage();
-//        }
-//        if($result) {
-//            echo(json_encode(($result)));
-//        }
+
         return '';
     }
 
